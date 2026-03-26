@@ -1,0 +1,32 @@
+    search machine for
+
+cookies
+datetime
+uuid
+current dns
+available dns
+available tailscale dns
+database (crawl.db) 
+import modules (cores, cli, crawler, dns, requests, routing, utils)
+
+packages to update: everything but cli
+
+
+    set machine variables
+generate a tempfile restore point   
+
+        generate an csv of system info pertaining to crawler masking
+        
+        use csv on sysexit to restore functionality if broken
+
+clear cookies
+datetime malfunction?
+mask os 
+mask dns
+intilaze database and compare hash
+intilaze tailscale
+intilaze cli
+
+packages to update cli + everything
+
+    userinput stuff

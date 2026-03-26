@@ -1,0 +1,154 @@
+🧪 EXAMPLES
+Start a crawl
+python crawler.py --mode crawl --start-url https://example.com
+
+python crawler.py --mode crawl --start-url https://example.com
+
+Crawl with depth 5 and 20 threads
+python crawler.py --mode crawl --start-url https://example.com \
+                  --max-depth 5 --max-threads 20
+
+
+List all crawls
+python crawler.py --mode offline --list-crawls
+
+
+Show a stored page
+python crawler.py --mode offline --show-page --page-id 42
+
+
+Search for a keyword
+python crawler.py --mode offline --search --keyword "security"
+
+
+Run correlation engine
+python crawler.py --mode correlate --scan-id 3
+
+
+Show global stats
+python crawler.py --mode stats
+
+
+
+🚪 EXIT STATUS
+- 0 — success
+- 1 — missing required arguments or runtime error
+
+👤 AUTHOR
+Vanessa V. Greenwald
+
+🔗 SEE ALSO
+sqlite3(1), curl(1), python3(1), wayback-machine-api
+
+If you want, I can also generate:
+- a man‑page‑formatted .1 file
+- a fuzzed/asterisked version
+- a README.md version
+- a developer architecture doc
+- a module interaction diagram
+Just tell me where you want to take this next.
+
+
+
+# ... existing code ...
+import textwrap
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from crawler import main as crawler_main
+
+PROG_NAME = "PROG"
+DEFAULT_KEYWORD = "demo"
+HELP_TEXT = textwrap.dedent(
+    """\
+    EthicalCrawler: An Invasive OSINT Tool
+    --------------------------------
+    This is the final project for Python Programming. It is a tool that demonstrates additions to SpiderFoot 4.0.0: Open Source Intelligence Automation scripting to be more invasive towards its host.
+    """
+)
+WELCOME_MESSAGE = (
+    "\nWelcome to EthicalCrawler! This tool is designed to demonstrate how to use "
+    "Python for OSINT gathering in a playful yet invasive way. Please follow the prompts to get started.\n"
+)
+
+
+def build_parser() -> ArgumentParser:
+    return ArgumentParser(
+        prog=PROG_NAME,
+        formatter_class=RawDescriptionHelpFormatter,
+        description=HELP_TEXT,
+    )
+
+
+def get_keyword() -> str:
+    keyword = input(
+        f"Please enter the keyword you want to search for, default ({DEFAULT_KEYWORD}): "
+    ).strip()
+    return keyword or DEFAULT_KEYWORD
+
+
+def build_crawler_variables(keyword: str) -> dict[str, str]:
+    return {
+        "mode": "crawl",
+        "search_term": keyword,
+    }
+
+
+def main():
+    parser = build_parser()
+    parser.print_help()
+    print(WELCOME_MESSAGE)
+
+    keyword = get_keyword()
+    crawler_variables = build_crawler_variables(keyword)
+    crawler_main(crawler_variables)
+
+
+import textwrap
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+
+from crawler import main as crawler_main
+
+PROG_NAME = "PROG"
+DEFAULT_KEYWORD = "demo"
+KEYWORD_PROMPT = (
+    f"Please enter the keyword you want to search for, default ({DEFAULT_KEYWORD}): "
+)
+HELP_TEXT = textwrap.dedent(
+    """\
+    EthicalCrawler: An Invasive OSINT Tool
+    --------------------------------
+    This is the final project for Python Programming. It is a tool that demonstrates additions to SpiderFoot 4.0.0: Open Source Intelligence Automation scripting to be more invasive towards its host.
+    """
+)
+WELCOME_MESSAGE = (
+    "\nWelcome to EthicalCrawler! This tool is designed to demonstrate how to use "
+    "Python for OSINT gathering in a playful yet invasive way. Please follow the prompts to get started.\n"
+)
+
+
+def build_parser() -> ArgumentParser:
+    return ArgumentParser(
+        prog=PROG_NAME,
+        formatter_class=RawDescriptionHelpFormatter,
+        description=HELP_TEXT,
+    )
+
+
+def show_startup_message() -> None:
+    parser = build_parser()
+    parser.print_help()
+    print(WELCOME_MESSAGE)
+
+
+def get_keyword() -> str:
+    keyword = input(KEYWORD_PROMPT).strip()
+    return keyword or DEFAULT_KEYWORD
+
+
+def main() -> None:
+    show_startup_message()
+    get_keyword()
+    crawler_main()
+
+
+if __name__ == "__main__":
+    main()
