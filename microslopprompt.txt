@@ -1,269 +1,167 @@
-```text
-rsec/
-├── core/
-│   ├── config.py
-│   ├── profiles.py
-│   └── orchestrator.py
-├── system_profile/
-│   ├── collector.py
-│   └── schema.py
-├── dns/
-│   ├── resolvers.json
-│   ├── transplant.py
-│   └── verify.py
-├── routing/
-│   ├── profiles.py
-│   ├── tailscale_manager.py
-│   ├── interface_detector.py
-│   ├── split_tunnel.py
-│   └── bind_socket.py
-├── remote/
-│   ├── client.py
-│   └── models.py
-├── crawler/
-│   ├── scheduler.py
-│   ├── worker.py
-│   ├── robots.py
-│   ├── fetch.py
-│   ├── parse.py
-│   └── snapshot_pdf.py
-├── storage/
-│   ├── models.py
-│   ├── db.py
-│   └── layout.py
-├── analytics/
-│   ├── session_context.py
-│   └── report.py
-└── cli/
-    └── main.py
+Below is a **step‑by‑step walkthrough** of the “microslopprompt.txt” script, written in plain English so a newcomer can:
+
+1.  understand what each part does,
+2.  see how all the pieces fit together,
+3.  and use it as a skeleton for their own crawler project.
+
+---
+
+## 1️⃣ What the file actually contains
+
+| Section | Purpose | Key take‑away |
+|---------|---------|---------------|
+| `@dataclass Settings` | Holds configuration knobs that control *how* the script runs (concurrency, output folder, remote mode). | Think of it as a “settings sheet” you can edit before you launch. |
+| `@dataclass CrawlRecord` | A tiny in‑memory record of every page we fetch (URL, timestamp, DNS used, where we stored the snapshot, …). | You’ll later read this list to build statistics or feed another tool. |
+| **System profile** (`collect_system_profile`) | Gathers basic OS data and writes it to a CSV file that other parts of the system can consume. | The CSV is *just* a simple “who am I” report for the crawler. |
+| **DNS helpers** (`load_resolvers`, `apply_resolver`, `restore_original_dns`) | Loads a list of DNS servers from disk, pretends to switch to one, then restores the original setting. | In real life you’d call system commands; here it just prints so we can see what would happen. |
+| **Routing helpers** (`build_profiles` etc.) | Pretends to pick a network interface / exit node for each thread. | It gives every worker its own “profile” – in this demo the profile is mostly metadata. |
+| **Crawler logic** (`fetch_page`, `save_pdf_snapshot`, `extract_links`) | Downloads an HTML page, saves it as a fake PDF (really just a .html file), extracts outgoing links (stubbed out). | The core of your crawling loop lives here. |
+| **Worker & scheduler** (`run_worker`, `schedule_crawl`) | Launches several threads that each run a worker; workers do the DNS switch → download → save → record job. | This is where concurrency happens – 1 thread per profile. |
+| **Analytics** (`build_session_context`) | Turns the raw crawl records into a tidy summary (how many pages, which DNS servers were used, etc.). | The “report” you’ll see after the run finishes. |
+| `main()` | Parses command‑line arguments, builds a `Settings` object, calls `run_session`, prints the report. | This is what you type on the terminal: `python microslopprompt.py --concurrency 4`. |
+
+> **Notice**  
+> The file ends with a *duplicate* definition of `run_session` (the block that starts at line “from remote.client import RemoteQueueClient …”). That’s just an artifact – ignore it. Keep only the first, fully‑spelled version.
+
+---
+
+## 2️⃣ How data flows through the program
+
+```
+┌───────────────────────────────┐
+│           main()               │
+├───────────────┬─────────────────┤
+│ parse args    │ create Settings │
+├───────────────┴─────────────────┤
+│         run_session(settings)   │
+│ ─────────────────────────────────│
+│ 1. collect_system_profile        │
+│ 2. (optional) remote coordination│
+│ 3. load DNS resolvers            │
+│ 4. build network profiles        │
+│ 5. get list of targets           │
+│ 6. schedule_crawl                │
+│ ─────────────────────────────────│
+│   a. for each profile: run_worker│
+│     i. apply_resolver (stub)     │
+│    ii. fetch_page()              │
+│   iii. save_pdf_snapshot()       │
+│    iv. extract_links()           │
+│     v. store_crawl_record()      │
+│    vi. restore_original_dns()    │
+│ ─────────────────────────────────│
+│ 7. load_crawl_records()          │
+│ 8. build_session_context()       │
+└───────────────────────────────┘
 ```
 
 ---
 
-### `core/config.py`
-```python
-class Settings:
-    REMOTE_ENABLED: bool
-    MAX_CONCURRENCY: int
-    SYSTEM_PROFILE_FIELDS: list[str]
-    DNS_PROFILE_FILE: str = "dns/resolvers.json"
-    PDF_OUTPUT_ROOT: str
+## 3️⃣ How to run the script right now
+
+1. **Save** the file as `microslopprompt.py`.  
+2. Open a terminal in that directory and make sure you have Python 3.10+ (the type hints use newer syntax).  
+3. Run:
+
+   ```bash
+   python microslopprompt.py --concurrency 2 --output output_dir
+   ```
+
+4. After it finishes you’ll see something like:
+
+   ```
+   session context: {
+     "system_profile_csv": "tmp/tmpabcd1234.csv",
+     "crawl_count": 2,
+     "profiles_used": [0, 1],
+     "dns_resolvers": ["cloudflare", "google"]
+   }
+   ```
+
+5. In `output_dir/session/` you’ll find a sub‑folder per profile containing the raw `.html` files that were “saved as PDF snapshots”.
+
+---
+
+## 4️⃣ Things a newbie coder should tweak to make it useful
+
+| Area | What to change | Why |
+|------|----------------|-----|
+| **Targets** (`load_local_targets`) | Replace `["http://example.com", "http://example.org"]` with real URLs you want to crawl. | The script only fetches those two dummy pages otherwise. |
+| **Link extraction** (`extract_links`) | Use BeautifulSoup or regex to pull `<a href>` tags from the HTML, then return a list of absolute URLs. | Enables true crawling (following links). |
+| **DNS switching** (`apply_resolver`, `restore_original_dns`) | Replace the print‑statements with real system calls (e.g., editing `/etc/resolv.conf` or using `resolvconf`). | Makes the DNS “routing” actually happen. |
+| **PDF snapshot** (`save_pdf_snapshot`) | Hook up a library like `pdfkit` or `weasyprint` to turn HTML → PDF. | The current code just writes an .html file – not a real PDF. |
+| **Remote coordination** (`RemoteQueueClient`) | Either stub it out (set `REMOTE_ENABLED=False`) or implement a tiny REST client that pulls URLs from a queue service. | Lets multiple machines share the crawling load. |
+| **Error handling & logging** | Add `logging` statements, catch network errors more gracefully, maybe retry logic. | Production code needs to be resilient. |
+
+---
+
+## 5️⃣ Suggested folder structure for your project
+
+```
+crawler/
+├── microslopprompt.py          # The script above
+├── dns/
+│   └── resolvers.json          # Optional list of DNS servers
+├── output/                     # Created automatically by the script
+└── README.md                   # Your own documentation
 ```
 
-### `system_profile/collector.py`
-```python
-from tempfile import NamedTemporaryFile
-import csv
+Add a `requirements.txt` if you bring in external libs:
 
-def collect_system_profile(settings) -> str:
-    data = {
-        "os": ...,
-        "kernel": ...,
-        "arch": ...,
-        "interfaces": ...,
-        "dns_current": ...,
-        "default_route": ...,
-        "tailscale_status": ...,
-        "public_ip": ...,
-        "cpu": ...,
-        "memory": ...,
-    }
-    tmp = NamedTemporaryFile(delete=False, suffix=".csv")
-    writer = csv.DictWriter(tmp, fieldnames=data.keys())
-    writer.writeheader()
-    writer.writerow(data)
-    tmp.flush()
-    return tmp.name  # path to CSV
+```
+beautifulsoup4
+requests   # or keep urllib, whichever you prefer
+pdfkit     # optional
 ```
 
-### `dns/transplant.py`
+---
+
+## 6️⃣ A minimal “real‑world” example
+
+Below is a quick drop‑in replacement for the `extract_links` function that actually pulls URLs using BeautifulSoup.  
+(Assuming you add `beautifulsoup4` to your environment.)
+
 ```python
-def load_resolvers(path: str) -> list[dict]:
-    ...
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
 
-def apply_resolver(resolver: dict):
-    # mutate system DNS for the process / environment
-    ...
-
-def restore_original_dns():
-    ...
+def extract_links(html: str, base_url: str) -> list[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    links = []
+    for a in soup.find_all("a", href=True):
+        # Resolve relative URLs to absolute ones
+        href = urljoin(base_url, a["href"])
+        # Optional: ignore fragments and non‑HTTP schemes
+        parsed = urlparse(href)
+        if parsed.scheme in ("http", "https"):
+            links.append(href)
+    return links
 ```
 
-### `routing/profiles.py`
-```python
-class NetworkProfile:
-    def __init__(self, id, dns_resolver, interface, tailscale_exit, proxy=None):
-        self.id = id
-        self.dns_resolver = dns_resolver
-        self.interface = interface
-        self.tailscale_exit = tailscale_exit
-        self.proxy = proxy
+Now the crawler will actually follow every link on each page (within the limits of `MAX_CONCURRENCY`).
 
-def build_profiles(concurrency: int, resolvers: list, tailscale_state) -> list[NetworkProfile]:
-    # deterministic or random assignment of resolver + route per slot
-    profiles = []
-    for i in range(concurrency):
-        resolver = select_resolver(i, resolvers)
-        exit_node = select_exit_node(i, tailscale_state)
-        iface = select_interface(exit_node)
-        profiles.append(NetworkProfile(i, resolver, iface, exit_node))
-    return profiles
-```
+---
 
-### `routing/tailscale_manager.py`
-```python
-def get_tailscale_state():
-    # query local tailscale or API
-    return {
-        "exits": [...],
-        "status": ...,
-    }
-```
+## 7️⃣ Quick checklist for your first run
 
-### `routing/bind_socket.py`
-```python
-import socket
+1. **Install dependencies**  
+   ```bash
+   pip install beautifulsoup4 requests pdfkit
+   ```
+2. **Create a DNS file** (`dns/resolvers.json`) if you want custom resolvers, or leave it out to use the defaults.
+3. **Edit `load_local_targets`** with at least 1 real URL (e.g., `"https://en.wikipedia.org/wiki/Web_crawler"`).
+4. **Run the script** with a small concurrency (2‑4) – watch the console for “[dns] applying resolver …”.
+5. **Inspect output** – you should see a CSV file, a couple of `.html` files under `output/session/...`, and a JSON report printed.
 
-def bind_socket_to_interface(sock: socket.socket, interface: str):
-    # SO_BINDTODEVICE or platform equivalent
-    ...
-```
+---
 
-### `remote/client.py`
-```python
-class RemoteQueueClient:
-    def __init__(self, base_url, token):
-        ...
+## 8️⃣ Final words
 
-    def register_session(self, system_profile_csv: str):
-        ...
+- The script is deliberately *minimal* and contains many placeholders (e.g., DNS switching, PDF creation).  
+- Think of it as a **template**: copy the structure, replace stubs with real logic, add error handling.  
+- Once you’re comfortable, you can extend it to:
+  - Respect `robots.txt` (`allowed_by_robots`)
+  - Persist crawl records to disk or a database
+  - Add multi‑domain scheduling, politeness delays, or request throttling
 
-    def fetch_assignments(self, concurrency: int):
-        # returns domains/URLs + optional network hints
-        ...
-```
-
-### `crawler/scheduler.py`
-```python
-from concurrent.futures import ThreadPoolExecutor
-
-def schedule_crawl(targets, profiles, settings):
-    with ThreadPoolExecutor(max_workers=len(profiles)) as pool:
-        futures = []
-        for profile, target in zip(profiles, targets):
-            futures.append(pool.submit(run_worker, profile, target, settings))
-        for f in futures:
-            f.result()
-```
-
-### `crawler/worker.py`
-```python
-from .fetch import fetch_page
-from .parse import extract_links
-from .snapshot_pdf import save_pdf_snapshot
-
-def run_worker(profile, target, settings):
-    # 1. apply DNS for this worker
-    apply_resolver(profile.dns_resolver)
-    try:
-        # 2. create HTTP client bound to profile.interface / proxy
-        session = build_http_client(profile)
-
-        # 3. obey robots.txt
-        if not allowed_by_robots(session, target):
-            return
-
-        # 4. fetch
-        html, response_meta = fetch_page(session, target)
-
-        # 5. snapshot to PDF
-        pdf_path = save_pdf_snapshot(target, html, settings.PDF_OUTPUT_ROOT, profile)
-
-        # 6. parse links (optional further queueing)
-        links = extract_links(html, base_url=target)
-
-        # 7. persist crawl record
-        store_crawl_record(
-            url=target,
-            html=html,
-            pdf_path=pdf_path,
-            profile_id=profile.id,
-            dns_resolver=profile.dns_resolver,
-            route_meta=response_meta,
-        )
-    finally:
-        restore_original_dns()
-```
-
-### `crawler/snapshot_pdf.py`
-```python
-def save_pdf_snapshot(url: str, html: str, root: str, profile) -> str:
-    # use headless browser or HTML→PDF engine
-    # path pattern: root/session_id/profile_id/domain/timestamp.pdf
-    ...
-```
-
-### `storage/models.py`
-```python
-class CrawlRecord:
-    url: str
-    timestamp: float
-    profile_id: int
-    dns_resolver: dict
-    route_meta: dict
-    pdf_path: str
-    html_path: str
-```
-
-### `analytics/session_context.py`
-```python
-def build_session_context(system_profile_csv: str, crawl_records: list[CrawlRecord]) -> dict:
-    return {
-        "system_profile_csv": system_profile_csv,
-        "crawl_count": len(crawl_records),
-        "profiles_used": {r.profile_id for r in crawl_records},
-        "dns_resolvers": {r.dns_resolver["name"] for r in crawl_records},
-    }
-```
-
-### `core/orchestrator.py`
-```python
-from system_profile.collector import collect_system_profile
-from dns.transplant import load_resolvers
-from routing.tailscale_manager import get_tailscale_state
-from routing.profiles import build_profiles
-from remote.client import RemoteQueueClient
-from crawler.scheduler import schedule_crawl
-from storage.db import load_crawl_records
-from analytics.session_context import build_session_context
-
-def run_session(settings):
-    # 1. system profile → CSV
-    system_csv = collect_system_profile(settings)
-
-    # 2. optional remote coordination
-    remote_client = RemoteQueueClient(...) if settings.REMOTE_ENABLED else None
-    if remote_client:
-        remote_client.register_session(system_csv)
-
-    # 3. load DNS resolvers + tailscale state
-    resolvers = load_resolvers(settings.DNS_PROFILE_FILE)
-    tailscale_state = get_tailscale_state()
-
-    # 4. build network profiles per thread
-    profiles = build_profiles(settings.MAX_CONCURRENCY, resolvers, tailscale_state)
-
-    # 5. get targets (local list or remote queue)
-    if remote_client:
-        targets = remote_client.fetch_assignments(len(profiles))
-    else:
-        targets = load_local_targets()
-
-    # 6. schedule crawl with per-profile split routing
-    schedule_crawl(targets, profiles, settings)
-
-    # 7. gather crawl records + build final context
-    records = load_crawl_records()
-    context = build_session_context(system_csv, records)
-    return context
-```
+Happy coding! 🚀

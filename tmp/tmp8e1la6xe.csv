@@ -1,0 +1,2 @@
+os,kernel,arch,interfaces,dns_current,default_route,tailscale_status,public_ip,cpu,memory
+Windows,11,AMD64,lo,127.0.0.53,0.0.0.0/0,disabled,127.0.0.1,"Intel64 Family 6 Model 151 Stepping 2, GenuineIntel",unknown
