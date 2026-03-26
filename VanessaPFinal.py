@@ -17,7 +17,6 @@ import threading
 import subprocess
 import sqlite3
 import requests
-from bs4 import BeautifulSoup
 import time
 import random
 import pdfkit
@@ -25,5 +24,11 @@ import json
 import csv
 import tempfile
 import asyncio
-import scapy
-from dnspython import resolver
+from cli import main as cli_main
+
+__name__ = "VanessaPFinal"
+
+if __name__ == "VanessaPFinal":
+    print("VanessaPFinal is running...")
+    print("1. System Profiler")
+    cli_main()
