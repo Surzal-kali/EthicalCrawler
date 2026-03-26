@@ -8,13 +8,6 @@ DEFAULT_KEYWORD = "demo"
 KEYWORD_PROMPT = (
     f"Please enter the keyword you want to search for, default ({DEFAULT_KEYWORD}): "
 )
-HELP_TEXT = textwrap.dedent(
-    """\
-    EthicalCrawler: An Invasive OSINT Tool
-    --------------------------------
-    This is the final project for Python Programming. It is a tool that demonstrates additions to SpiderFoot 4.0.0: Open Source Intelligence Automation scripting to be more invasive towards its host.
-    """
-)
 WELCOME_MESSAGE = (
     "\nWelcome to EthicalCrawler! This tool is designed to demonstrate how to use "
     "Python for OSINT gathering in a playful yet invasive way. Please follow the prompts to get started.\n"
