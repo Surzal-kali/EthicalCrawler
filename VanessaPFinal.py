@@ -22,7 +22,7 @@ import random
 import pdfkit
 import json
 import csv
-import tempfile
+from tempfile import TemporaryFile as TF
 import asyncio
 from cli import main as cli_main
 
