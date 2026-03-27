@@ -1,0 +1,75 @@
+Initializing EthicalCrawler OS...
+Acquiring display control...
+Entering fullscreen terminal environment...
+
+
+Creating ephemeral environment...
+  /tmp/ethicalcrawler_env/ created
+  session ID: EC-20260327-0714
+  runtime variables initialized
+  persona registry prepared
+  worker registry prepared
+
+
+Loading persistent user directory...
+  /consent/ found
+  logs: 12 sessions
+  reports: 4 generated
+  spiderfoot: 2 archives
+  network_scans: 3 stored
+
+Checking tailnet status...
+  Desktop controller: online
+  Pi-Kali worker: online
+  WSL-Ubuntu persona: online
+  WSL-Kali persona: offline
+  Azure VM: reachable
+
+
+Waiting for workers to check in...
+  Pi-Kali: handshake received
+  WSL-Ubuntu: handshake received
+  WSL-Kali: no response
+Workers ready: 2 online, 1 offline
+
+Initializing dynamic scripting engine...
+  runtime variables loaded
+  persona manifests linked
+  worker capabilities mapped
+  sequencing engine ready
+
+
+Environment ready.
+Press ENTER to enter the EthicalCrawler console.
+
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│                     ETHICALCRAWLER OPERATOR CONSENT                  │
+├──────────────────────────────────────────────────────────────────────┤
+│  Before proceeding, please review and acknowledge the following:      │
+│                                                                      │
+│  • This environment is designed for ethical, legal, and controlled   │
+│    security testing only.                                            │
+│                                                                      │
+│  • You confirm that any systems, networks, domains, or devices you   │
+│    target are either:                                                │
+│       - owned by you,                                                │
+│       - explicitly authorized for testing, or                        │
+│       - part of your isolated lab environment.                       │
+│                                                                      │
+│  • You understand that this system will log all actions taken during │
+│    this session into the /consent/ directory for transparency and    │
+│    post‑session review.                                              │
+│                                                                      │
+│  • You acknowledge that misuse of this environment outside of        │
+│    authorized scopes is prohibited.                                  │
+│                                                                      │
+│  Press ENTER to continue, or ESC to exit.                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+
+"consent_acknowledged": true
+
+

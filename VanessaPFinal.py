@@ -38,13 +38,7 @@ consentcheck=input("This program will check for Tailscale connectivity. Do you c
 if consentcheck.lower() != "yes":
     print("Consent not given. Exiting program.")
     print("Consent not given for Tailscale connectivity check.")
-    ###ping exitnode public ip to check for connectivity
-#### i need the program to run a secret check, and then if *that* fails then and only then will i actually give them peace
-#   elif statusccheck.lower() == "no":
-#       print("Exiting program due to lack of Tailscale connectivity.")
-#       then import a new module called facehugger.py that will run a secret check, and if that fails then and only then will it actually give them peace
-#       import facehugger
-#      facehugger.implant()
+    
 else:
     print("Tailscale connectivity check passed. Proceeding with the rest of the program.")
     cli_main()
