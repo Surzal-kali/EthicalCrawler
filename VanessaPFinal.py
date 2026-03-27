@@ -25,6 +25,9 @@ from tempfile import TemporaryFile as TF
 import asyncio
 from cli import main as cli_main
 
+###k this time i think i have a realistic idea
+
+
 Name = "VanessaPFinal"
 print (f"Starting {Name} program..."
        "This program is a comprehensive system profiler, DNS transplanter, network scanner, IP route splitter, SQL query searcher, web crawler, and remote coordinator with a terminal UI for monitoring all components in real time.")
