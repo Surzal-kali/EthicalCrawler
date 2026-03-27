@@ -1,16 +1,17 @@
 import asyncio
 import os
 import random
+
 os.makedirs('temp', exist_ok=True)
 
 async def process_csv(csv_file_path):
     """Process the CSV file asynchronously."""
-    print(f"Processing {csv_file_path}")
-    import aiofiles
-    async with aiofiles.open(csv_file_path, mode='r') as f:
-        contents = await f.read()
-    context = f"Contents of {csv_file_path}:\n{contents}"
-    return context
+    print(f"Processing CSV file: {csv_file_path}")
+    await asyncio.sleep(random.uniform(0.5, 1.5))  # Simulate processing time
+    with open(csv_file_path, 'r') as f:
+        data = f.read()
+    return f"Processed data from {csv_file_path}:\n{data}"
+    name = "scheduler"
 
 async def main():
     print("This is the main orchestration layer for the VanessaPFinal program.")
