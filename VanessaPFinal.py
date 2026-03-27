@@ -11,18 +11,15 @@
 #####           7. Optionally, it should also be able to connect to a remote instance and coordinate with it, sharing data and network resources, each a seperate network identity with its own DNS resolver and IP route in addition to the local database and network resources
 ###           8. It should also have a terminal-ui that can be used to monitor the system profiler, network scanner, and web crawler in real time from a central tailscale exit node.
 
-import os
-import socket
-import threading
-import subprocess
-import sqlite3
-import time
-import random
-import pdfkit
-import json
-import csv
+# import socket
+# import threading
+# import subprocess
+# import sqlite3
+# import random
+# import pdfkit
+# import csv
 from tempfile import TemporaryFile as TF
-import asyncio
+# import asyncio
 
 ###k this time i think i have a realistic idea
 
@@ -88,6 +85,21 @@ def ethical_boot_sequence():
 if __name__ == "__main__":
     next_state = ethical_boot_sequence()
     print(f"\nNext state: {next_state}")
+    
 
 
-__all__
+def variables ():
+    import os
+    import time
+    import socket
+    import json
+    import threading
+    import subprocess
+    import sqlite3
+    import random
+    import pdfkit
+    import csv
+    import asyncio
+    from datetime import datetime
+    from tempfile import TemporaryFile as TF
+    return datetime, json, os, time, socket, threading, subprocess,sqlite3, random, pdfkit, csv, asyncio, TF

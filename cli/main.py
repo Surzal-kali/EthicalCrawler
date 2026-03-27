@@ -57,7 +57,9 @@ def ethical_boot_sequence():
     
     print("Initializing EthicalCrawler OS...")
     time.sleep(0.5)
-    
+    from VanessaPFinal import variables
+    variables()
+    from VanessaPFinal import next_state as next_state
     # 1. Create session environment
     session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/ethicalcrawler_{session_id}/"
@@ -103,31 +105,3 @@ def ethical_boot_sequence():
     print("="*60)
     
     return "system_profiler"  # Next state
-
-def main():
-    """Main entry point for the EthicalCrawler system."""
-    
-    try:
-        # Try to import the next state from VanessaPFinal
-        from VanessaPFinal import next_state
-
-        # Check if next_state is valid
-        if next_state == next_state:
-            print(f"Next state detected: {next_state}")
-            # Execute the honeypot check
-            result = HoneypotCheck(next_state)
-            return result
-        else:
-            # Fallback to default boot sequence
-            from VanessaPFinal import ethical_boot_sequence
-            ethical_boot_sequence()
-
-    except ImportError as e:
-        print(f"Import error: {e}")
-        print("Falling back to ethical boot sequence...")
-        ethical_boot_sequence()
-
-if __name__ == "__main__":
-    main()
-
-   
