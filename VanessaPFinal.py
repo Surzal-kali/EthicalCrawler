@@ -28,17 +28,64 @@ from cli import main as cli_main
 ###k this time i think i have a realistic idea
 
 
-Name = "VanessaPFinal"
-print (f"Starting {Name} program..."
-       "This program is a comprehensive system profiler, DNS transplanter, network scanner, IP route splitter, SQL query searcher, web crawler, and remote coordinator with a terminal UI for monitoring all components in real time.")
-Name == "Tailnet Checker"
-print(f"Checking for Tailscale connectivity...")
-asyncio.sleep(60)
-consentcheck=input("This program will check for Tailscale connectivity. Do you consent to this check? (yes/no): ")
-if consentcheck.lower() != "yes":
-    print("Consent not given. Exiting program.")
-    print("Consent not given for Tailscale connectivity check.")
+# ethical_boot.py
+import os
+import time
+import json
+from datetime import datetime
+
+def ethical_boot_sequence():
+    """Core boot sequence - implement THIS first"""
     
-else:
-    print("Tailscale connectivity check passed. Proceeding with the rest of the program.")
-    cli_main()
+    print("Initializing EthicalCrawler OS...")
+    time.sleep(0.5)
+    
+    # 1. Create session environment
+    session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
+    temp_dir = f"/tmp/ethicalcrawler_{session_id}/"
+    os.makedirs(temp_dir, exist_ok=True)
+    
+    print(f"Session ID: {session_id}")
+    print(f"Temp directory: {temp_dir}")
+    
+    # 2. Check for consent directory
+    consent_dir = "/consent/"
+    if not os.path.exists(consent_dir):
+        os.makedirs(consent_dir, exist_ok=True)
+        print(f"Created consent directory: {consent_dir}")
+    
+    # 3. Display consent screen
+    print("\n" + "="*60)
+    print("ETHICAL OPERATOR CONSENT REQUIRED")
+    print("="*60)
+    print("\nI acknowledge that this session will be logged for transparency.")
+    print("All actions will target only systems I own or have permission to test.")
+    
+    consent = input("\nType 'CONSENT' to continue, anything else to exit: ")
+    
+    if consent != "CONSENT":
+        print("Consent not provided. Exiting.")
+        return "shutdown"
+    
+    # 4. Log the consent
+    consent_log = {
+        "session_id": session_id,
+        "timestamp": datetime.now().isoformat(),
+        "consent_given": True,
+        "operator_input": consent
+    }
+    
+    log_file = os.path.join(consent_dir, f"session_{session_id}.json")
+    with open(log_file, 'w') as f:
+        json.dump(consent_log, f, indent=2)
+    
+    print(f"\nConsent logged to: {log_file}")
+    print("\n" + "="*60)
+    print("BOOT SEQUENCE COMPLETE")
+    print("="*60)
+    
+    return "system_profiler"  # Next stateiim
+
+if __name__ == "__main__":
+    next_state = ethical_boot_sequence()
+    print(f"\nNext state: {next_state}")
