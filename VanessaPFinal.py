@@ -23,7 +23,6 @@ import json
 import csv
 from tempfile import TemporaryFile as TF
 import asyncio
-from cli import main as cli_main
 
 ###k this time i think i have a realistic idea
 
@@ -89,3 +88,6 @@ def ethical_boot_sequence():
 if __name__ == "__main__":
     next_state = ethical_boot_sequence()
     print(f"\nNext state: {next_state}")
+
+
+__all__
