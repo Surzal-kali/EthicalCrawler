@@ -29,7 +29,7 @@ async def main():
     print(f"Written sample data to {csv_file.name}")
     print("Starting asynchronous processing of the CSV file.")
     await process_csv(csv_file.name)
-    return "Processing complete."
+    return "Processing complete."   
 
 if __name__ == "__main__":
     print("This is the main entry point for the VanessaPFinal program.")

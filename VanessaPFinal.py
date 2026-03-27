@@ -16,7 +16,6 @@ import socket
 import threading
 import subprocess
 import sqlite3
-import requests
 import time
 import random
 import pdfkit
@@ -26,9 +25,11 @@ from tempfile import TemporaryFile as TF
 import asyncio
 from cli import main as cli_main
 
-__name__ = "VanessaPFinal"
-
-if __name__ == "VanessaPFinal":
-    print("VanessaPFinal is running...")
-    print("1. System Profiler")
-    cli_main()
+Name = "VanessaPFinal"
+print (f"Starting {Name} program..."
+       "This program is a comprehensive system profiler, DNS transplanter, network scanner, IP route splitter, SQL query searcher, web crawler, and remote coordinator with a terminal UI for monitoring all components in real time.")
+Name == "Tailnet Checker"
+print(f"Checking for Tailscale connectivity...")
+try:    result = subprocess.run(["tailscale", "status"], capture_output=True, text=True, check=True)
+from core import orchestrator
+orchestrator.orchestrate()
