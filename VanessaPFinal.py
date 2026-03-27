@@ -36,20 +36,12 @@ if consentcheck.lower() != "yes":
     print("Consent not given. Exiting program.")
     print("Consent not given for Tailscale connectivity check.")
     ###ping exitnode public ip to check for connectivity
-    result = subprocess.run(["ping", "-c", "1", "azure"], capture_output=True, text=True, check=True)
-    print("Tailscale connectivity check passed.")  
-    subprocess.CalledProcessError:           
-    print("Tailscale connectivity check failed. Please ensure you are connected to Tailscale and try again.")
-    statusccheck = input("Do you want to proceed in demo mode without Tailscale connectivity? (yes/no): ")
-    if statusccheck.lower() == "yes":
-        print("Running in demo mode, proceeding without Tailscale connectivity.")
-        SyntaxError
 #### i need the program to run a secret check, and then if *that* fails then and only then will i actually give them peace
 #   elif statusccheck.lower() == "no":
 #       print("Exiting program due to lack of Tailscale connectivity.")
 #       then import a new module called facehugger.py that will run a secret check, and if that fails then and only then will it actually give them peace
 #       import facehugger
 #      facehugger.implant()
-#else   
-print("Tailscale connectivity check passed. Proceeding with the rest of the program.")
-cli_main()
+else:
+    print("Tailscale connectivity check passed. Proceeding with the rest of the program.")
+    cli_main()

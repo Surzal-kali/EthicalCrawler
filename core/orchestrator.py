@@ -72,13 +72,18 @@ if __name__ == "__main__":
 if __name__ == "__orchmain__":
     from VanessaPFinal import sleep 
     from facehugger import (implant)
-    sleep(3600)
-    implant()
-    #####bring process to forground
-    ####print hi
+    sleep(300)
     print("Hi!\n"    "This is the orchestrator for the VanessaPFinal crawler. It dynamically imports and executes modules based on their __all__ exports, chaining them together in a state machine workflow.")
     print("It also is an instructive excercise about the dangers of cybersecurity.\n"
           )
     print("You were warned. \n")
 
     sleep(300)
+    name = str(input("What is your name? "))
+    print(f"Hello, {name}!")
+    print("This is a demonstration of how a malicious actor could use dynamic imports and execution to run arbitrary code on your system.")
+    print("In this case, the orchestrator could be tricked into importing a malicious module that executes harmful code instead of the intended workflow.")
+    print("Always be cautious when running code from untrusted sources, and be aware of the potential risks of dynamic imports and execution.")
+
+    blackbox = int(input(""))
+    SystemExit
