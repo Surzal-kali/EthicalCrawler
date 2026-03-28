@@ -32,10 +32,9 @@ import sqlite3
 import random
 import csv
 import asyncio
-import psutil
 from datetime import datetime
 from tempfile import TemporaryFile as TF
-import psutil
+import platform
 def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
@@ -94,23 +93,19 @@ def system_profiler():
     system_info['os_version'] = platform.version()
     system_info['architecture'] = platform.machine()
     system_info['processor'] = platform.processor()
-    system_info['cpu_stats'] = psutil.cpu_stats()
-    system_info['memory_stats'] = psutil.virtual_memory()
-    system_info['disk_usage'] = psutil.disk_usage('/') # Root partition
 
-
+    for key, value in system_info.items():
+        print(f"  {key}: {value}")
 
     print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
 
 
+
+
     return system_info
-
-
-
 
 if __name__ == "__main__":
     ethical_boot_sequence()
-    system_data = system_profiler()
     
 
 
