@@ -79,9 +79,28 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
+    facehug()
     network_scan()
 
+
+def facehug():
+    messages = [
+        "my secrets on how i do this can be parsed from the logs and code\n",
+        "instead lets focus on having some fun\n",
+        "I've always heard from people with no sense that hacking is street art\n",
+        "So lets make street art\n"
+    ]
+
+    for message in messages:
+        for char in message:
+            print(char, end='', flush=True)
+            time.sleep(0.03)
+
+    pass
+
 def network_scan():
+    #####networkstuff
+
     pass
 
 def system_profiler():
