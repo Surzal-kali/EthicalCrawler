@@ -127,7 +127,7 @@ def spying():
         "httpd": "🌐 Web server detected. Can i get the addy?",
         "mysql": "🗄️ MySQL database running. Sounds like a thread to pull to me!",
         "postgres": "🐘 PostgreSQL spotted. Make way for the almighty elephant god!!!",
-        "docker": "🐳 Docker containers sailing. Whats cookin doc?",
+        "docker": "🐳 Docker containers sailing. Whats sailing through doc?",
         "redis": "🔴 Redis is caching. In-memory shennanigans indeed!!",
         "mongodb": "🍃 MongoDB running. Hopefully not documenting me (❁´◡`❁)",
         "cron": "⏰ Cron daemon awake. Sounds like you have some services you're awfully dependant on.",
@@ -243,7 +243,7 @@ def spying():
         pprint("  ⚠️ 'who' command not found")
     
     pprint("\n" + "="*60)
-    pprint(f"📝 Roll call complete! {len(detected_services)} services identified.")
+    pprint(f"📝 Attack Surface Expanded! {len(detected_services)} services identified.")
     
     return detected_services
 async def main():
