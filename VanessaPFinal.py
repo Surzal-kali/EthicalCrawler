@@ -79,11 +79,11 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    facehug()
+    streetart()
     network_scan()
 
 
-def facehug():
+def streetart():
     messages = [
         "my secrets on how i do this can be parsed from the logs and code\n",
         "instead lets focus on having some fun\n",
