@@ -89,10 +89,9 @@ def ethical_boot_sequence():
     cpu_profiler()
 
 def cpu_profiler():
-    cpu = psutil.cpu_stats 
-    print: (f"This program may not be optimized for the following specs. Proceed with caution.\n")
-    cpu = (cpu)
+    cpu = psutil.cpu_stats()
     print(cpu)
+    print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
     return cpu
 
     
