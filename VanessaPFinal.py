@@ -11,16 +11,10 @@
 #####           7. Optionally, it should also be able to connect to a remote instance and coordinate with it, sharing data and network resources, each a seperate network identity with its own DNS resolver and IP route in addition to the local database and network resources
 ###           8. It should also have a terminal-ui that can be used to monitor the system profiler, network scanner, and web crawler in real time from a central tailscale exit node.
 
-# import socket
-# import threading
-# import subprocess
-# import sqlite3
-# import random
-# import pdfkit
-# import csv
-from tempfile import TemporaryFile as TF
-# import asyncio
 
+from tempfile import TemporaryFile as TF
+import Scapy
+import requests
 ###k this time i think i have a realistic idea
 import os
 import time
@@ -85,6 +79,7 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
+    
 
 def system_profiler():
     ####enumeration time bb
@@ -95,7 +90,7 @@ def system_profiler():
     system_info['processor'] = platform.processor()
 
     for key, value in system_info.items():
-        print(f"  {key}: {value}")
+        print(f"  {key}: {value}\n")
 
     print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
     print(f"The Crawler is completely ethical and legal.\n")  
