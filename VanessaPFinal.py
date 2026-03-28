@@ -73,8 +73,6 @@ def ethical_boot_sequence():
     print("\n" + "="*60)
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
-    system_profiler()
-    notes()
 
 def system_profiler():
     ####enumeration time bb
@@ -104,7 +102,7 @@ def system_profiler():
 async def main():
     system_profiler()
     ethical_boot_sequence()
-    notes()
+    notes())
 
     
 
