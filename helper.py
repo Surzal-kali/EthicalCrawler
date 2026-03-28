@@ -11,9 +11,9 @@ def spawn(task_name, command):
 
         if system == "Linux":
             # Kali default terminal
-            if shutil.which("xfce4-terminal"):
+            if shutil.which("qterminal"):
                 subprocess.Popen([
-                    "xfce4-terminal",
+                    "qterminal",
                     "--command",
                     f"cd {main_script_dir} && {command}"  # Change directory before executing command
                 ])
