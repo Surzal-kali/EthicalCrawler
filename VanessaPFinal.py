@@ -1,18 +1,8 @@
 #### GreenwaldPFinal
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
-#### Description: This program is 
-####              1. A System Profiler that reads its enviroment
-####              2. A DNS Transplanter that swaps system DNS resolvers dynamically per thread
-####             3. A Network Scanner that scans the local network for devices and their open ports
-####            4. An IP Route Splitter, splitting the sockets of the system into groups dependent on threads and routing them to different DNS resolvers
-####            5. Spawns a SQL query search through the www to archive and store data in the local database, each a seperate network identity with its own DNS resolver and IP route
-####            6. A Web Crawler that crawls the web for data and stores it in the local database, each a seperate network identity with its own DNS resolver and IP route
-#####           7. Optionally, it should also be able to connect to a remote instance and coordinate with it, sharing data and network resources, each a seperate network identity with its own DNS resolver and IP route in addition to the local database and network resources
-###           8. It should also have a terminal-ui that can be used to monitor the system profiler, network scanner, and web crawler in real time from a central tailscale exit node.
+#### Description: This program is something i guess
 
-
-from tempfile import TemporaryFile as TF
 import scapy
 import requests
 ###k this time i think i have a realistic idea
@@ -80,8 +70,17 @@ def ethical_boot_sequence():
     print("="*60)
     system_profiler()
     streetart()
-    network_scan()
 
+async def main():
+    # Main terminal name
+    main_terminal_name = "EthicalCrawler"
+
+    # Run boot sequence
+    boot_status = ethical_boot_sequence()
+
+    if boot_status == "ready":
+        # Bring the main terminal to the foreground
+        streetart(main_terminal_name)
 
 def streetart():
     messages = [
@@ -95,13 +94,6 @@ def streetart():
         for char in message:
             print(char, end='', flush=True)
             time.sleep(0.03)
-
-    pass
-
-def network_scan():
-    #####networkstuff
-
-    pass
 
 def system_profiler():
     ####enumeration time bb
@@ -126,8 +118,23 @@ def system_profiler():
     print(f"*"*60)
     return system_info
 
+def spawn_terminal(task_name, command):
+    """Spawns a new terminal window and executes the given command."""
+    try:
+        if platform.system() == "Linux":
+            subprocess.Popen(["xterm", "-e", command])
+        elif platform.system() == "Windows":
+            subprocess.Popen(["start", "cmd", "/k", command], shell=True)  # Use shell=True for Windows
+        else:
+            print("Unsupported operating system.")
+            return False  # Indicate failure
+        return True  # Indicate success
+    except Exception as e:
+        print(f"Error spawning terminal: {e}")
+        return False  # Indicate failure
+
 if __name__ == "__main__":
-    ethical_boot_sequence()
-    
+    asyncio.run(main())
+
 
 
