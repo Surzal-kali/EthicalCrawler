@@ -71,28 +71,22 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    return consent_dir, consent, consent_log, session_id, temp_dir
+
 
 
 async def main():
+    ethical_boot_sequence()
+
+    print("\nLaunching street art module...")
     try:
-        consent_dir, consent, consent_log, session_id, temp_dir = ethical_boot_sequence()
-        
+        spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 devnotes.py && pause")
 
-        if consent_dir == "shutdown":
-            print("Exiting program.")
-            return
-            
 
-        print("\nLaunching street art module...")
-        spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 devnotes.py")
-        
-       
-        
+
     except Exception as e:
         print(f"Oh no there was an error: {e}")
     except KeyboardInterrupt:
-        print("\nProgram interrupted by user.")
+            print("\nProgram interrupted by user.")
 
 def system_profiler():
     ####enumeration time bb
