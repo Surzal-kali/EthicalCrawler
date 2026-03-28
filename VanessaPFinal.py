@@ -30,7 +30,6 @@ import threading
 import subprocess
 import sqlite3
 import random
-import pdfkit
 import csv
 import asyncio
 import psutil
