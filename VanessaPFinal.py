@@ -36,14 +36,77 @@ def pprint(message, char_delay=0.03, line_delay=0.5):
         time.sleep(char_delay)
     time.sleep(line_delay)
     print ("\n")
+def consent_db():
+    """Build SQLite database from all consent JSON files"""
+    
+    consent_dir = "/consent/"
+    db_path = "/consent/consent_history.db"
+    
+    # Connect to SQLite
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    # Create table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS consent_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            timestamp TEXT,
+            operator_input TEXT,
+            consent_given INTEGER,
+            word_count INTEGER,
+            file_imported TEXT
+        )
+    ''')
+    
+    # Walk through all JSON files in consent directory
+    imported_count = 0
+    for filename in os.listdir(consent_dir):
+        if filename.endswith('.json') and filename != 'consent_history.db':
+            filepath = os.path.join(consent_dir, filename)
+            
+            try:
+                with open(filepath, 'r') as f:
+                    data = json.load(f)
+                
+                # Insert into database
+                cursor.execute('''
+                    INSERT INTO consent_logs 
+                    (session_id, timestamp, operator_input, consent_given, word_count, file_imported)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (
+                    data.get('session_id', 'unknown'),
+                    data.get('timestamp', 'unknown'),
+                    data.get('operator_input', ''),
+                    1 if data.get('consent_given') else 0,
+                    len(data.get('operator_input', '').split()),
+                    filename
+                ))
+                
+                imported_count += 1
+                
+            except Exception as e:
+                pprint(f"Error importing {filename}: {e}")
+    
+    conn.commit()
+    
+    # Show some stats
+    cursor.execute("SELECT operator_input, COUNT(*) FROM consent_logs GROUP BY operator_input")
+    word_stats = cursor.fetchall()
+    pprint(f"\n📊 Consent Database Built:")
+    pprint(f"  Files imported: {imported_count}")
+    pprint(f"  Database saved: {db_path}")
+    pprint(f"\n  Consent word frequency:")
+    for word, count in word_stats:
+        pprint(f"    '{word}': {count} times")
+    
+    conn.close()
+    return imported_count
 
 def ethical_boot_sequence(): 
-    #oh hello
     """Core boot sequence - implement THIS first"""
     
     pprint("Initializing EthicalCrawler...")
-
-    #wakeywakey everybody sound off
     
     session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/ethicalcrawler_{session_id}/"
@@ -52,12 +115,12 @@ def ethical_boot_sequence():
     pprint(f"Session ID: {session_id}")
     pprint(f"Temp directory: {temp_dir}")
 
-###am i allowed to invite friends?
     consent_dir = "/consent/"
     if not os.path.exists(consent_dir):
         os.makedirs(consent_dir, exist_ok=True)
         pprint(f"Created consent directory: {consent_dir}")
         time.sleep(5)
+    
     # 3. Display consent screen
     pprint("\n" + "="*60)
     pprint("ETHICAL OPERATOR CONSENT REQUIRED")
@@ -71,12 +134,12 @@ def ethical_boot_sequence():
         pprint("Consent not provided. Exiting.")
         return consent
     
-    # 4. Log the consent
+    # 4. Log the consent (store whatever they typed)
     consent_log = {
         "session_id": session_id,
         "timestamp": datetime.now().isoformat(),
         "consent_given": True,
-        "operator_input": consent
+        "operator_input": consent  # Store whatever they typed
     }
     
     log_file = os.path.join(consent_dir, f"session_{session_id}.json")
@@ -87,7 +150,8 @@ def ethical_boot_sequence():
     pprint("\n" + "="*60 +"\n")
     pprint("BOOT SEQUENCE COMPLETE")
     pprint("="*60 + "\n")
-
+    
+    return consent
 def system_profiler():
     ####enumeration time bb
     system_info = {}
@@ -200,7 +264,7 @@ def spying():
                             pprint(f"   🔌 Port {port}: Something's listening here...")
     
     if not listening_ports:
-        pprint("  🕵️ No listening ports found. Guess its just you and me bub")
+        pprint("  🕵️ No listening ports found. Guess its just you and me bub.")
     
     # Check for common config files (read-only existence check)
     pprint("\n📁 CONFIGURATION SIGNATURES:")
@@ -252,6 +316,8 @@ async def main():
     if consent != "n":
         notes()
         spying()
+        consent_db()
+        
     else:
         pass
 
