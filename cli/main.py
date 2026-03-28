@@ -41,9 +41,7 @@ import time
 import os
 import json
 from datetime import datetime
-
 # Define system profiler state
-system_profiler = "system_profiler"
 
 def HoneypotCheck(next_state):
     """Check if the next state is a honeypot or safe state."""

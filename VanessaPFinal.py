@@ -29,7 +29,7 @@ import os
 import time
 import json
 from datetime import datetime
-
+from cli import main as cli
 def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
@@ -85,6 +85,7 @@ def ethical_boot_sequence():
 if __name__ == "__main__":
     next_state = ethical_boot_sequence()
     print(f"\nNext state: {next_state}")
+
     
 
 
