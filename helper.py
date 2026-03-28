@@ -3,16 +3,28 @@ import platform
 import subprocess
 
 def spawn(task_name, command):
-    #just me and your computer, having a nice chat
     try:
-        if platform.system() == "Linux":
-            subprocess.Popen(["xterm", "-e", command])
-        elif platform.system() == "Windows":
-            subprocess.Popen(["start", "cmd", "/k", command], shell=True)  # Use shell=True for Windows
+        system = platform.system()
+
+        if system == "Linux":
+            subprocess.Popen(["xterm", "-e", f"bash -c \"{command}\""])
+        if system == "Windows":
+            subprocess.Popen(f"cmd /k {command}", shell=True)
+            return True
+            subprocess.Popen(ps_command, shell=True)
         else:
             print("Unsupported operating system.")
-            return False  # Indicate failure
-        return True  # Indicate success
+            return False
+
+        return True
+
     except Exception as e:
         print(f"Error spawning terminal: {e}")
-        return False  # Indicate failure. my immeasurable dissapointment
+        return False
+
+
+# spawn("graffiti", """
+# echo 'starting street art'
+# sleep 1
+# python3 streetart.py
+# """)

@@ -76,23 +76,12 @@ def ethical_boot_sequence():
 
 async def main():
     # ...
-    spawn(command = None, task_name= None)
+        try:
+            spawn("graffiti", "echo starting") 
+        except False:
+            print("oh no there was an error!!!!")
+            pass
 
-def streetart(terminal_name=None):
-    """Displays the street art messages."""
-    if terminal_name:
-        spawn()  # Bring terminal to foreground
-
-    messages = [
-        "my secrets on how i do this can be parsed from the logs and code\n",
-        "instead lets focus on having some fun\n",
-        "I've always heard from people with no sense that hacking is street art\n",
-        "So lets make street art\n"
-    ]
-    for message in messages:
-        for char in message:
-            print(char, end='', flush=True)
-            time.sleep(0.03)
 
 def system_profiler():
     ####enumeration time bb
