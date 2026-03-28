@@ -40,16 +40,4 @@
 from VanessaPFinal import variables
 # Define system profiler state
 from VanessaPFinal import next_state
-import psutil
 
-
-if next_state == 'system_profiler':
-    variables()
-    system_profiler()
-
-
-def system_profiler():
-    variables()
-    cpu = psutil.cpu_stats 
-    print (cpu)
-    

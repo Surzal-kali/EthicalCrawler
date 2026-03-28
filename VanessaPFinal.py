@@ -22,13 +22,21 @@ from tempfile import TemporaryFile as TF
 # import asyncio
 
 ###k this time i think i have a realistic idea
-
-
-# ethical_boot.py
 import os
 import time
+import socket
 import json
+import threading
+import subprocess
+import sqlite3
+import random
+import pdfkit
+import csv
+import asyncio
+import psutil
 from datetime import datetime
+from tempfile import TemporaryFile as TF
+import psutil
 def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
@@ -78,31 +86,21 @@ def ethical_boot_sequence():
     print("\n" + "="*60)
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
-    from cli import main as cli
-    cli(next_state) 
-  
+    cpu_profiler()
+
+def cpu_profiler():
+    cpu = psutil.cpu_stats 
+    print: (f"This program may not be optimized for the following specs. Proceed with caution.\n")
+    cpu = (cpu)
+    print(cpu)
+    return cpu
+
+    
    # Next stateiim
 
 
 if __name__ == "__main__":
-    next_state = ethical_boot_sequence()
-    print(f"\nNext state: {next_state}")
-    
+    ethical_boot_sequence()
 
 
-def variables ():
-    import os
-    import time
-    import socket
-    import json
-    import threading
-    import subprocess
-    import sqlite3
-    import random
-    import pdfkit
-    import csv
-    import asyncio
-    import psutil
-    from datetime import datetime
-    from tempfile import TemporaryFile as TF
-    return datetime, json, os, time, socket, threading, subprocess,sqlite3, random, pdfkit, csv, asyncio, TF, psutil
+
