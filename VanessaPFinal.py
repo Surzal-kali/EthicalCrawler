@@ -92,13 +92,10 @@ def ethical_boot_sequence():
         json.dump(consent_log, f, indent=2)
     
     print(f"\nConsent logged to: {log_file}")
-    consent = consent
     print("\n" + "="*60)
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    spawn(task_name="notes", command="python3 devnotes.py")
-
 
 
 
