@@ -56,7 +56,7 @@ def ethical_boot_sequence():
     consent_dir = "/consent/"
     if not os.path.exists(consent_dir):
         os.makedirs(consent_dir, exist_ok=True)
-        print(f"Created consent directory: {consent_dir}")
+        pprint(f"Created consent directory: {consent_dir}")
         time.sleep(5)
     # 3. Display consent screen
     pprint("\n" + "="*60)
@@ -68,7 +68,7 @@ def ethical_boot_sequence():
     consent = input("\nType 'CONSENT' to continue, anything else to exit: ")
     
     if consent != "CONSENT":
-        print("Consent not provided. Exiting.")
+        pprint("Consent not provided. Exiting.")
         return "shutdown"
     
     # 4. Log the consent
@@ -116,7 +116,7 @@ def spying():
     
     pprint("It's time to see what you've got tho\n")
     pprint("Enough about me tell me about you?")
-    print("="*60)
+    pprint("="*60)
     
     detected_services = []
     
@@ -145,14 +145,14 @@ def spying():
 
         # Instead of: subprocess.run(['ps', 'aux'])
     for proc in psutil.process_iter(['pid', 'name', 'memory_percent']):
-        print(f"{proc.info['name']} - {proc.info['memory_percent']}%")
+        pprint(f"{proc.info['name']} - {proc.info['memory_percent']}%")
         
         if False:
             pprint("  🤔 No common services detected. You're no fun")
         
         # Get listening ports (read-only, no connections)
-        print("\n🔌 OPEN PORTALS (LISTENING):")
-        print("-" * 40)
+        pprint("\n🔌 OPEN PORTALS (LISTENING):")
+        pprint("-" * 40)
         
         # Try ss first (modern), fall back to netstat
         try:
@@ -188,16 +188,16 @@ def spying():
                                 "53": "   🌐 Port 53: DNS - Who's translating?",
                             }
                             if port in port_comments:
-                                print(port_comments[port])
+                                pprint(port_comments[port])
                             else:
-                                print(f"   🔌 Port {port}: Something's listening here...")
+                                pprint(f"   🔌 Port {port}: Something's listening here...")
         
         if not listening_ports:
-            print("  🕵️ No listening ports found. Stealth mode activated!")
+            pprint("  🕵️ No listening ports found. Stealth mode activated!")
         
         # Check for common config files (read-only existence check)
-        print("\n📁 CONFIGURATION SIGNATURES:")
-        print("-" * 40)
+        pprint("\n📁 CONFIGURATION SIGNATURES:")
+        pprint("-" * 40)
         
         config_paths = {
             "/etc/ssh/sshd_config": "SSH server config present",
@@ -211,15 +211,15 @@ def spying():
         
         for config_path, description in config_paths.items():
             if os.path.exists(config_path):
-                print(f"  📄 {description}")
+                pprint(f"  📄 {description}")
                 # Don't read the file, just acknowledge existence
         
         # System load overview (safe read)
-        print("\n📊 SYSTEM VITALS:")
-        print("-" * 40)
+        pprint("\n📊 SYSTEM VITALS:")
+        pprint("-" * 40)
         try:
             load_avg = os.getloadavg()
-            print(f"  📈 Load Average: {load_avg[0]:.2f}, {load_avg[1]:.2f}, {load_avg[2]:.2f}")
+            pprint(f"  📈 Load Average: {load_avg[0]:.2f}, {load_avg[1]:.2f}, {load_avg[2]:.2f}")
         except AttributeError:
             # Windows doesn't have loadavg
             pass
@@ -228,15 +228,15 @@ def spying():
         result = subprocess.run(['who'], capture_output=True, text=True, timeout=5)
         if result.stdout.strip():
             user_count = len(result.stdout.strip().split('\n'))
-            print(f"  👥 Logged in users: {user_count}")
+            pprint(f"  👥 Logged in users: {user_count}")
         
         else:
 
-            print("  ⏱️ Service enumeration timed out (system may be busy)")
-            print(f"  ⚠️ Could not complete enumeration: ")
+            pprint("  ⏱️ Service enumeration timed out (system may be busy)")
+            pprint(f"  ⚠️ Could not complete enumeration: ")
     
-    print("\n" + "="*60)
-    print(f"📝 Roll call complete! {len(detected_services)} services identified.")
+    pprint("\n" + "="*60)
+    pprint(f"📝 Roll call complete! {len(detected_services)} services identified.")
     
     return detected_services
 
