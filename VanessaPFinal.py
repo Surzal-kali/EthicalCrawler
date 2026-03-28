@@ -2,7 +2,7 @@
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
 #### Description: This program is something i guess
-from helper import *
+from helper import activate_terminal as activate
 import scapy
 import requests
 ###k this time i think i have a realistic idea
@@ -70,8 +70,7 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    streetart()
-
+    activate()
 async def main():
     # Main terminal name
     main_terminal_name = "EthicalCrawler"
@@ -81,16 +80,21 @@ async def main():
 
     if boot_status == "ready":
         #surprise
+        #let it begin i guess...
+        #i hope i warned you when i submited (❁´◡`❁)
         streetart(main_terminal_name)
 
-def streetart():
+def streetart(terminal_name=None):
+    """Displays the street art messages."""
+    if terminal_name:
+        spawn()  # Bring terminal to foreground
+
     messages = [
         "my secrets on how i do this can be parsed from the logs and code\n",
         "instead lets focus on having some fun\n",
         "I've always heard from people with no sense that hacking is street art\n",
         "So lets make street art\n"
     ]
-
     for message in messages:
         for char in message:
             print(char, end='', flush=True)
@@ -119,8 +123,8 @@ def system_profiler():
     print(f"*"*60)
     return system_info
 
-def spawn_terminal(task_name, command):
-    """Spawns a new terminal window and executes the given command."""
+def spawn(task_name, command):
+    #just me and your computer, having a nice chat
     try:
         if platform.system() == "Linux":
             subprocess.Popen(["xterm", "-e", command])
@@ -132,7 +136,7 @@ def spawn_terminal(task_name, command):
         return True  # Indicate success
     except Exception as e:
         print(f"Error spawning terminal: {e}")
-        return False  # Indicate failure
+        return False  # Indicate failure. my immeasurable dissapointment
 
 if __name__ == "__main__":
     asyncio.run(main())
