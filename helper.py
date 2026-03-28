@@ -1,13 +1,25 @@
 import os
 import platform
 import subprocess
+import shutil
 
 def spawn(task_name, command):
     try:
         system = platform.system()
 
         if system == "Linux":
-            subprocess.Popen(["xterm", "-e", f"bash -c \"{command}\""])
+            # Prefer GNOME Terminal if available
+            if shutil.which("gnome-terminal"):
+                subprocess.Popen([
+                    "gnome-terminal",
+                    "--",
+                    "bash",
+                    "-c",
+                    command
+                ])
+            else:
+                # Fallback to xterm
+                subprocess.Popen(["xterm", "-e", command])
         if system == "Windows":
             subprocess.Popen(f"cmd /k {command}", shell=True)
             return True
