@@ -65,11 +65,11 @@ def ethical_boot_sequence():
     pprint("\nI acknowledge that this session will be logged for transparency.")
     pprint("All actions will target only systems I own or have permission to test.")
     
-    consent = input("\nType 'CONSENT' to continue, anything else to exit: ")
+    consent = input("\nType 'n' to quit, anything else to continue: ")
     
-    if consent != "CONSENT":
+    if consent == "n":
         pprint("Consent not provided. Exiting.")
-        return "shutdown"
+        return consent
     
     # 4. Log the consent
     consent_log = {
@@ -134,7 +134,7 @@ def spying():
         "systemd": "⚙️ systemd is watching. Always watching. But who watches the watcher?",
         "fail2ban": "🛡️ Fail2ban on duty. Papi no its me",
         "ufw": "🔥 UFW firewall active. Thats....interesting......",
-        "iptables": "📜 oh i hope you let me peek",
+        "iptables": "📜 oh i hope you let me",
         "snmpd": "📡 SNMP running. Hope the community strings are secret!",
     }
 
@@ -248,10 +248,12 @@ def spying():
     return detected_services
 async def main():
     system_profiler()
-    ethical_boot_sequence()
-    notes()
-    spying()
-    
+    consent = ethical_boot_sequence()
+    if consent != "n":
+        notes()
+        spying()
+    else:
+        pass
 
 
 if __name__ == "__main__":
