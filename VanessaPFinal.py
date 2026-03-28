@@ -13,7 +13,7 @@
 
 
 from tempfile import TemporaryFile as TF
-import Scapy
+import scapy
 import requests
 ###k this time i think i have a realistic idea
 import os
@@ -79,7 +79,10 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    
+    network_scan()
+
+def network_scan():
+    pass
 
 def system_profiler():
     ####enumeration time bb
