@@ -18,14 +18,15 @@ def spawn(task_name, command):
             else:
                 # Fallback for ultra-minimal systems
                 subprocess.Popen(["xterm", "-e", command])
-        if system == "Windows":
+        elif system == "Windows":
             subprocess.Popen(f"cmd /k {command}", shell=True)
             return True
-
+        else:
+            print("Unsupported operating system.")
+            return False
     except Exception as e:
         print(f"Error spawning terminal: {e}")
-        pass
-
+        return False
 
 # spawn("graffiti", """
 # echo 'starting street art'
