@@ -85,20 +85,32 @@ def ethical_boot_sequence():
     print("\n" + "="*60)
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
-    cpu_profiler()
+    system_profiler()
 
-def cpu_profiler():
-    cpu = psutil.cpu_stats()
-    print(cpu)
+def system_profiler():
+    ####enumeration time bb
+    system_info = {}
+    system_info['os_name'] = platform.system()
+    system_info['os_version'] = platform.version()
+    system_info['architecture'] = platform.machine()
+    system_info['processor'] = platform.processor()
+    system_info['cpu_stats'] = psutil.cpu_stats()
+    system_info['memory_stats'] = psutil.virtual_memory()
+    system_info['disk_usage'] = psutil.disk_usage('/') # Root partition
+
+
+
     print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
-    return cpu
 
-    
-   # Next stateiim
+
+    return system_info
+
+
 
 
 if __name__ == "__main__":
     ethical_boot_sequence()
-
+    system_data = system_profiler()
+    
 
 
