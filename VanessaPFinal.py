@@ -28,22 +28,22 @@ def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
     print("Initializing EthicalCrawler...")
-    time.sleep(0.5)
+    time.sleep(5)
     #wakeywakey everybody sound off
     
     session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/ethicalcrawler_{session_id}/"
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     print(f"Session ID: {session_id}")
     print(f"Temp directory: {temp_dir}")
-    
+    time.sleep(5)    
 ###am i allowed to invite friends?
     consent_dir = "/consent/"
     if not os.path.exists(consent_dir):
         os.makedirs(consent_dir, exist_ok=True)
         print(f"Created consent directory: {consent_dir}")
-    
+        time.sleep(5)
     # 3. Display consent screen
     print("\n" + "="*60)
     print("ETHICAL OPERATOR CONSENT REQUIRED")
@@ -96,7 +96,7 @@ def system_profiler():
     print("1. A legal and ethical black-box automated pen test.\n")
     print("2. An overly ambitious Python Basics final\n")        
     print("Enjoy the show") ### also im gunna try to make these comments gold k? 
-    print(f"*"*60)
+    print(f"="*60)
     return system_info
 
 
