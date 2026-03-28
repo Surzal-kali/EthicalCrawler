@@ -21,28 +21,6 @@ import asyncio
 from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
-def system_profiler():
-    ####enumeration time bb
-    system_info = {}
-    system_info['os_name'] = platform.system()
-    system_info['os_version'] = platform.version()
-    system_info['architecture'] = platform.machine()
-    system_info['processor'] = platform.processor()
-
-    for key, value in system_info.items():
-        print(f"  {key}: {value}\n")
-
-    print(f"This program may not be optimized for the following specs. Proceed with caution.\n")
-    print(f"The Crawler is completely ethical and legal.\n")  
-    print(f"All modules are considered optional, and will not be attempted without explicit consent.\n")
-    print(f"*"*60)
-    print(f"DEV NOTES:  \n")
-    print(f"this is my god's honest attempt at making:\n")
-    print("1. A legal and ethical black-box automated pen test.\n")
-    print("2. An overly ambitious Python Basics final\n")        
-    print("Enjoy the show") ### also im gunna try to make these comments gold k? 
-    print(f"*"*60)
-    return system_info
 
 
 def ethical_boot_sequence(): 
@@ -96,7 +74,30 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
+    notes()
 
+def system_profiler():
+    ####enumeration time bb
+    system_info = {}
+    system_info['os_name'] = platform.system()
+    system_info['os_version'] = platform.version()
+    system_info['architecture'] = platform.machine()
+    system_info['processor'] = platform.processor()
+
+    for key, value in system_info.items():
+        print(f"  {key}: {value}\n")
+
+    print(f"This program may not be optimized for the following specs. Proceed with caution.\n")
+    print(f"The Crawler is completely ethical and legal.\n")  
+    print(f"All modules are considered optional, and will not be attempted without explicit consent.\n")
+    print(f"*"*60)
+    print(f"DEV NOTES:  \n")
+    print(f"this is my god's honest attempt at making:\n")
+    print("1. A legal and ethical black-box automated pen test.\n")
+    print("2. An overly ambitious Python Basics final\n")        
+    print("Enjoy the show") ### also im gunna try to make these comments gold k? 
+    print(f"*"*60)
+    return system_info
 
 
 
