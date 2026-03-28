@@ -8,6 +8,7 @@ def spawn(task_name, command):
         system = platform.system()
 
         if system == "Linux":
+            # Kali default terminal
             if shutil.which("xfce4-terminal"):
                 subprocess.Popen([
                     "xfce4-terminal",
@@ -15,20 +16,15 @@ def spawn(task_name, command):
                     command
                 ])
             else:
+                # Fallback for ultra-minimal systems
                 subprocess.Popen(["xterm", "-e", command])
         if system == "Windows":
             subprocess.Popen(f"cmd /k {command}", shell=True)
             return True
-            subprocess.Popen(ps_command, shell=True)
-        else:
-            print("Unsupported operating system.")
-            return False
-
-        return True
 
     except Exception as e:
         print(f"Error spawning terminal: {e}")
-        return False
+        pass
 
 
 # spawn("graffiti", """

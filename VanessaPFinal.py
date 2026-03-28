@@ -77,11 +77,10 @@ def ethical_boot_sequence():
 async def main():
     # ...
         try:
-            spawn("graffiti", "echo starting") 
-        except False:
-            print("oh no there was an error!!!!")
-            pass
-
+            ethical_boot_sequence()  #remember its a tuple ninny
+            spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 streetart.py")
+        except Exception as e:
+            print(f"Oh no there was an error: {e}")
 
 def system_profiler():
     ####enumeration time bb
