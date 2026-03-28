@@ -2,22 +2,17 @@ import os
 import platform
 import subprocess
 
-def spawn(): 
+def spawn(task_name, command):
+    #just me and your computer, having a nice chat
     try:
         if platform.system() == "Linux":
-            #Requires xdotool
-            subprocess.run(["xdotool", "windowactivate"])
-        elif platform.system() == "Darwin": ####i have no idea if this works nor do i plan to test it quite yet. feel free to get your choice of error messages
-            subprocess.run(["osascript", "-e", 'tell application "System Events" to tell process "Terminal" to set frontmost to true'])
+            subprocess.Popen(["xterm", "-e", command])
         elif platform.system() == "Windows":
-            import ctypes
-            hwnd = ctypes.windll.user32.FindWindowW(None, "EthicalCrawler")
-            if hwnd:
-                ctypes.windll.kernel32.SetForegroundWindow(hwnd)
+            subprocess.Popen(["start", "cmd", "/k", command], shell=True)  # Use shell=True for Windows
         else:
             print("Unsupported operating system.")
-            return False
-        return True
+            return False  # Indicate failure
+        return True  # Indicate success
     except Exception as e:
-        print(f"Error activating terminal: {e}")
-        return False
+        print(f"Error spawning terminal: {e}")
+        return False  # Indicate failure. my immeasurable dissapointment

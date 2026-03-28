@@ -3,6 +3,7 @@
 #### Date: 3/26/2026
 #### Description: This program is something i guess
 import helper
+from helper import spawn
 import scapy
 import requests
 ###k this time i think i have a realistic idea
@@ -75,7 +76,7 @@ def ethical_boot_sequence():
 
 async def main():
     # ...
-    spawn("hello", streetart())
+    spawn(command = None, task_name= None)
 
 def streetart(terminal_name=None):
     """Displays the street art messages."""
@@ -116,20 +117,7 @@ def system_profiler():
     print(f"*"*60)
     return system_info
 
-def spawn(task_name, command):
-    #just me and your computer, having a nice chat
-    try:
-        if platform.system() == "Linux":
-            subprocess.Popen(["xterm", "-e", command])
-        elif platform.system() == "Windows":
-            subprocess.Popen(["start", "cmd", "/k", command], shell=True)  # Use shell=True for Windows
-        else:
-            print("Unsupported operating system.")
-            return False  # Indicate failure
-        return True  # Indicate success
-    except Exception as e:
-        print(f"Error spawning terminal: {e}")
-        return False  # Indicate failure. my immeasurable dissapointment
+
 
 if __name__ == "__main__":
     asyncio.run(main())
