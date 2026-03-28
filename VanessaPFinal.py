@@ -127,7 +127,7 @@ def spying():
         "httpd": "🌐 Web server detected. Can i get the addy?",
         "mysql": "🗄️ MySQL database running. Sounds like a thread to pull to me!",
         "postgres": "🐘 PostgreSQL spotted. Make way for the almighty elephant god!!!",
-        "docker": "🐳 Docker containers sailing. Whats sailing through doc?",
+        "docker": "🐳 Docker containers sailing. Whats sailing through teh w doc?",
         "redis": "🔴 Redis is caching. In-memory shennanigans indeed!!",
         "mongodb": "🍃 MongoDB running. Hopefully not documenting me (❁´◡`❁)",
         "cron": "⏰ Cron daemon awake. Sounds like you have some services you're awfully dependant on.",
@@ -200,7 +200,7 @@ def spying():
                             pprint(f"   🔌 Port {port}: Something's listening here...")
     
     if not listening_ports:
-        pprint("  🕵️ No listening ports found. Stealth mode activated!")
+        pprint("  🕵️ No listening ports found. Guess its just you and me bub")
     
     # Check for common config files (read-only existence check)
     pprint("\n📁 CONFIGURATION SIGNATURES:")
