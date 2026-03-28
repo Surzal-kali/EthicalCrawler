@@ -75,12 +75,24 @@ def ethical_boot_sequence():
 
 
 async def main():
-    # ...
-        try:
-            ethical_boot_sequence()  #remember its a tuple ninny
-            spawn("notes", "echo 'starting dev notes' && sleep 1 && python3 devnotes.py")
-        except Exception as e:
-            print(f"Oh no there was an error: {e}")
+    try:
+        consent_dir, consent, consent_log, session_id, temp_dir = ethical_boot_sequence()
+        
+
+        if consent_dir == "shutdown":
+            print("Exiting program.")
+            return
+            
+
+        print("\nLaunching street art module...")
+        spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 devnotes.py")
+        
+       
+        
+    except Exception as e:
+        print(f"Oh no there was an error: {e}")
+    except KeyboardInterrupt:
+        print("\nProgram interrupted by user.")
 
 def system_profiler():
     ####enumeration time bb
@@ -93,14 +105,14 @@ def system_profiler():
     for key, value in system_info.items():
         print(f"  {key}: {value}\n")
 
-    print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
+    print(f"This program may not be optimized for the following specs. Proceed with caution.\n")
     print(f"The Crawler is completely ethical and legal.\n")  
     print(f"All modules are considered optional, and will not be attempted without explicit consent.\n")
     print(f"*"*60)
     print(f"DEV NOTES:  \n")
     print(f"this is my god's honest attempt at making:\n")
-    print( "1. A legal and ethical white-box automated pen test.\n")
-    print("2 An overly amibitiouis Python Basics final\n")        
+    print("1. A legal and ethical white-box automated pen test.\n")
+    print("2. An overly ambitious Python Basics final\n")        
     print("Enjoy the show") ### also im gunna try to make these comments gold k? 
     print(f"*"*60)
     return system_info
