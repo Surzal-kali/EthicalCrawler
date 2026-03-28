@@ -78,7 +78,7 @@ async def main():
     # ...
         try:
             ethical_boot_sequence()  #remember its a tuple ninny
-            spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 streetart.py")
+            spawn("graffiti", "echo 'starting street art' && sleep 1 && python3 devnotes.py")
         except Exception as e:
             print(f"Oh no there was an error: {e}")
 
