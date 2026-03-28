@@ -8,17 +8,13 @@ def spawn(task_name, command):
         system = platform.system()
 
         if system == "Linux":
-            # Prefer GNOME Terminal if available
-            if shutil.which("gnome-terminal"):
+            if shutil.which("xfce4-terminal"):
                 subprocess.Popen([
-                    "gnome-terminal",
-                    "--",
-                    "bash",
-                    "-c",
+                    "xfce4-terminal",
+                    "--command",
                     command
                 ])
             else:
-                # Fallback to xterm
                 subprocess.Popen(["xterm", "-e", command])
         if system == "Windows":
             subprocess.Popen(f"cmd /k {command}", shell=True)
