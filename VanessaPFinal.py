@@ -97,7 +97,7 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    notes()
+    spawn(task_name="notes", command="python3 devnotes.py")
 
 
 
