@@ -104,7 +104,7 @@ def system_profiler():
 async def main():
     system_profiler()
     ethical_boot_sequence()
-    helper.spawn(task_name="notes", command ="""echo 'python3 devnotes.py""")
+    notes()
 
     
 
