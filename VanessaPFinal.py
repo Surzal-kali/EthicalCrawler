@@ -2,7 +2,7 @@
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
 #### Description: This program is something i guess
-
+from helper import *
 import scapy
 import requests
 ###k this time i think i have a realistic idea
@@ -19,13 +19,14 @@ import asyncio
 from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
-def ethical_boot_sequence():
+def ethical_boot_sequence(): 
+    #oh hello
     """Core boot sequence - implement THIS first"""
     
     print("Initializing EthicalCrawler...")
     time.sleep(0.5)
+    #wakeywakey everybody sound off
     
-    # 1. Create session environment
     session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/ethicalcrawler_{session_id}/"
     os.makedirs(temp_dir, exist_ok=True)
@@ -33,7 +34,7 @@ def ethical_boot_sequence():
     print(f"Session ID: {session_id}")
     print(f"Temp directory: {temp_dir}")
     
-    # 2. Check for consent directory
+###am i allowed to invite friends?
     consent_dir = "/consent/"
     if not os.path.exists(consent_dir):
         os.makedirs(consent_dir, exist_ok=True)
@@ -79,7 +80,7 @@ async def main():
     boot_status = ethical_boot_sequence()
 
     if boot_status == "ready":
-        # Bring the main terminal to the foreground
+        #surprise
         streetart(main_terminal_name)
 
 def streetart():
