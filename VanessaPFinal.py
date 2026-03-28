@@ -70,19 +70,12 @@ def ethical_boot_sequence():
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
     system_profiler()
-    activate()
+    return consent_dir, consent, consent_log, session_id, temp_dir
+
+
 async def main():
-    # Main terminal name
-    main_terminal_name = "EthicalCrawler"
-
-    # Run boot sequence
-    boot_status = ethical_boot_sequence()
-
-    if boot_status == "ready":
-        #surprise
-        #let it begin i guess...
-        #i hope i warned you when i submited (❁´◡`❁)
-        streetart(main_terminal_name)
+    # ...
+    spawn("hello", streetart())
 
 def streetart(terminal_name=None):
     """Displays the street art messages."""
