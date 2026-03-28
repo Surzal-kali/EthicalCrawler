@@ -42,7 +42,7 @@ def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
     pprint("Initializing EthicalCrawler...")
-    time.sleep(5)
+
     #wakeywakey everybody sound off
     
     session_id = f"EC-{datetime.now().strftime('%Y%m%d-%H%M')}"
@@ -51,7 +51,7 @@ def ethical_boot_sequence():
 
     pprint(f"Session ID: {session_id}")
     pprint(f"Temp directory: {temp_dir}")
-    time.sleep(5)    
+
 ###am i allowed to invite friends?
     consent_dir = "/consent/"
     if not os.path.exists(consent_dir):
@@ -100,7 +100,6 @@ def system_profiler():
         pprint(f"  {key}: {value}\n")
 
     pprint(f"This program may not be optimized for the following specs. Proceed with caution.\n")
-    pprint(f"The Crawler is completely ethical and legal.\n")  
     pprint(f"All modules are considered optional, and will not be attempted without explicit consent.\n")
     pprint(f"*"*60)
     pprint(f"DEV NOTES:  \n")
@@ -122,124 +121,131 @@ def spying():
     
     # Personality quips dictionary for common services
     service_quips = {
-        "ssh": "🔑 Someone left the SSH door open. Hope you trust your guests!",
-        "sshd": "🔑 SSH daemon is listening. Password or keys?",
-        "apache": "🌐 Apache is serving something. Hope it's not questionable content!",
-        "httpd": "🌐 Web server detected. What's cooking?",
-        "nginx": "⚡ Nginx is here. Fast and fancy!",
-        "mysql": "🗄️ MySQL database running. Keep those tables secure!",
-        "mariadb": "🗄️ MariaDB in the house. Open source love!",
-        "postgres": "🐘 PostgreSQL spotted. Elephant in the room!",
-        "docker": "🐳 Docker containers sailing. Where are they going?",
-        "podman": "📦 Podman is here. Docker's responsible cousin.",
-        "redis": "🔴 Redis is caching. In-memory mischief!",
-        "mongodb": "🍃 MongoDB running. Documenting everything!",
-        "cron": "⏰ Cron daemon awake. What's scheduled at 3am?",
-        "systemd": "⚙️ systemd is watching. Always watching.",
-        "nginx": "🟢 Nginx serving pages. Reverse proxy magic!",
-        "fail2ban": "🛡️ Fail2ban on duty. Jailing the naughty!",
-        "ufw": "🔥 UFW firewall active. The gatekeeper stands guard.",
-        "iptables": "📜 iptables rules in effect. Packet police!",
+        "ssh": "🔑 You have guests on your ssh tunnel. Were they invited?",
+        "sshd": "🔑 OOO sshd is listening on socket? Can i have your number? Can I?",
+        "apache": "🌐 Oh my my my apache huh? Gotta love apache.",
+        "httpd": "🌐 Web server detected. Can i get the addy?",
+        "mysql": "🗄️ MySQL database running. Sounds like a thread to pull to me!",
+        "postgres": "🐘 PostgreSQL spotted. Make way for the almighty elephant god!!!",
+        "docker": "🐳 Docker containers sailing. Whats cookin doc?",
+        "redis": "🔴 Redis is caching. In-memory shennanigans indeed!!",
+        "mongodb": "🍃 MongoDB running. Hopefully not documenting me (❁´◡`❁)",
+        "cron": "⏰ Cron daemon awake. Sounds like you have some services you're awfully dependant on.",
+        "systemd": "⚙️ systemd is watching. Always watching. But who watches the watcher?",
+        "fail2ban": "🛡️ Fail2ban on duty. Papi no its me",
+        "ufw": "🔥 UFW firewall active. Thats....interesting......",
+        "iptables": "📜 oh i hope you let me peek",
         "snmpd": "📡 SNMP running. Hope the community strings are secret!",
     }
 
-        # Instead of: subprocess.run(['ps', 'aux'])
+    # Check running processes for common services
+    pprint("🔍 RUNNING SERVICES:")
+    pprint("-" * 40)
+    
+    services_found = []
     for proc in psutil.process_iter(['pid', 'name', 'memory_percent']):
-        pprint(f"{proc.info['name']} - {proc.info['memory_percent']}%")
-        
-        if False:
-            pprint("  🤔 No common services detected. You're no fun")
-        
-        # Get listening ports (read-only, no connections)
-        pprint("\n🔌 OPEN PORTALS (LISTENING):")
-        pprint("-" * 40)
-        
-        # Try ss first (modern), fall back to netstat
-        try:
-            result = subprocess.run(['ss', '-tuln'], capture_output=True, text=True, timeout=5)
-            port_output = result.stdout
-        except FileNotFoundError:
-            result = subprocess.run(['netstat', '-tuln'], capture_output=True, text=True, timeout=5)
-            port_output = result.stdout
-        
-        # Parse and display ports with some personality
-        listening_ports = []
-        for line in port_output.split('\n'):
-            if 'LISTEN' in line or 'LISTENING' in line:
-                # Extract port number (simplified)
-                parts = line.split()
-                if len(parts) >= 4:
-                    port_info = parts[3] if 'ss' in str(result.args) else parts[3]
-                    if ':' in port_info:
-                        port = port_info.split(':')[-1]
-                        if port.isdigit() and port not in listening_ports:
-                            listening_ports.append(port)
-                            # Fun port commentary
-                            port_comments = {
-                                "22": "   🚪 Port 22: SSH - The digital front door",
-                                "80": "   🌐 Port 80: HTTP - Unencrypted web traffic",
-                                "443": "   🔒 Port 443: HTTPS - Secure web traffic",
-                                "3306": "   🗄️ Port 3306: MySQL - Database listening",
-                                "5432": "   🐘 Port 5432: PostgreSQL - Elephant ears open",
-                                "27017": "   🍃 Port 27017: MongoDB - Document store",
-                                "6379": "   🔴 Port 6379: Redis - Cache ready",
-                                "8080": "   🎨 Port 8080: Alternative web - Hipster port",
-                                "25": "   📧 Port 25: SMTP - Sending mail vibes",
-                                "53": "   🌐 Port 53: DNS - Who's translating?",
-                            }
-                            if port in port_comments:
-                                pprint(port_comments[port])
-                            else:
-                                pprint(f"   🔌 Port {port}: Something's listening here...")
-        
-        if not listening_ports:
-            pprint("  🕵️ No listening ports found. Stealth mode activated!")
-        
-        # Check for common config files (read-only existence check)
-        pprint("\n📁 CONFIGURATION SIGNATURES:")
-        pprint("-" * 40)
-        
-        config_paths = {
-            "/etc/ssh/sshd_config": "SSH server config present",
-            "/etc/apache2/apache2.conf": "Apache config found",
-            "/etc/nginx/nginx.conf": "Nginx configuration",
-            "/etc/mysql/my.cnf": "MySQL configuration",
-            "/etc/docker/daemon.json": "Docker daemon config",
-            "/etc/fail2ban/jail.conf": "Fail2ban jail config",
-            "/etc/ufw/ufw.conf": "UFW firewall config",
-        }
-        
-        for config_path, description in config_paths.items():
-            if os.path.exists(config_path):
-                pprint(f"  📄 {description}")
-                # Don't read the file, just acknowledge existence
-        
-        # System load overview (safe read)
-        pprint("\n📊 SYSTEM VITALS:")
-        pprint("-" * 40)
-        try:
-            load_avg = os.getloadavg()
-            pprint(f"  📈 Load Average: {load_avg[0]:.2f}, {load_avg[1]:.2f}, {load_avg[2]:.2f}")
-        except AttributeError:
-            # Windows doesn't have loadavg
-            pass
-        
-        # Who's logged in (safe read)
+        proc_name = proc.info['name'].lower()
+        # Check if this process matches any known service
+        for service, quip in service_quips.items():
+            if service in proc_name:
+                if service not in services_found:
+                    services_found.append(service)
+                    pprint(f"  {quip}")
+                    detected_services.append(proc.info['name'])
+                    break
+    
+    if not services_found:
+        pprint("  🤔 No common services detected. You're no fun")
+    
+    # Get listening ports (read-only, no connections)
+    pprint("\n🔌 OPEN PORTALS (LISTENING):")
+    pprint("-" * 40)
+    
+    # Try ss first (modern), fall back to netstat
+    try:
+        result = subprocess.run(['ss', '-tuln'], capture_output=True, text=True, timeout=5)
+        port_output = result.stdout
+    except FileNotFoundError:
+        result = subprocess.run(['netstat', '-tuln'], capture_output=True, text=True, timeout=5)
+        port_output = result.stdout
+    
+    # Parse and display ports with some personality
+    listening_ports = []
+    for line in port_output.split('\n'):
+        if 'LISTEN' in line or 'LISTENING' in line:
+            # Extract port number (simplified)
+            parts = line.split()
+            if len(parts) >= 4:
+                port_info = parts[3] if 'ss' in str(result.args) else parts[3]
+                if ':' in port_info:
+                    port = port_info.split(':')[-1]
+                    if port.isdigit() and port not in listening_ports:
+                        listening_ports.append(port)
+                        # Fun port commentary
+                        port_comments = {
+                            "22": "   🚪 Port 22: SSH - The digital front door",
+                            "80": "   🌐 Port 80: HTTP - Unencrypted web traffic",
+                            "443": "   🔒 Port 443: HTTPS - Secure web traffic",
+                            "3306": "   🗄️ Port 3306: MySQL - Database listening",
+                            "5432": "   🐘 Port 5432: PostgreSQL - Elephant ears open",
+                            "27017": "   🍃 Port 27017: MongoDB - Document store",
+                            "6379": "   🔴 Port 6379: Redis - Cache ready",
+                            "8080": "   🎨 Port 8080: Alternative web - Hipster port",
+                            "25": "   📧 Port 25: SMTP - Sending mail vibes",
+                            "53": "   🌐 Port 53: DNS - Who's translating?",
+                        }
+                        if port in port_comments:
+                            pprint(port_comments[port])
+                        else:
+                            pprint(f"   🔌 Port {port}: Something's listening here...")
+    
+    if not listening_ports:
+        pprint("  🕵️ No listening ports found. Stealth mode activated!")
+    
+    # Check for common config files (read-only existence check)
+    pprint("\n📁 CONFIGURATION SIGNATURES:")
+    pprint("-" * 40)
+    
+    config_paths = {
+        "/etc/ssh/sshd_config": "SSH server config present",
+        "/etc/apache2/apache2.conf": "Apache config found",
+        "/etc/nginx/nginx.conf": "Nginx configuration",
+        "/etc/mysql/my.cnf": "MySQL configuration",
+        "/etc/docker/daemon.json": "Docker daemon config",
+        "/etc/fail2ban/jail.conf": "Fail2ban jail config",
+        "/etc/ufw/ufw.conf": "UFW firewall config",
+    }
+    
+    for config_path, description in config_paths.items():
+        if os.path.exists(config_path):
+            pprint(f"  📄 {description}")
+            # Don't read the file, just acknowledge existence
+    
+    # System load overview (safe read)
+    pprint("\n📊 SYSTEM VITALS:")
+    pprint("-" * 40)
+    try:
+        load_avg = os.getloadavg()
+        pprint(f"  📈 Load Average: {load_avg[0]:.2f}, {load_avg[1]:.2f}, {load_avg[2]:.2f}")
+    except AttributeError:
+        # Windows doesn't have loadavg
+        pass
+    
+    # Who's logged in (safe read)
+    try:
         result = subprocess.run(['who'], capture_output=True, text=True, timeout=5)
         if result.stdout.strip():
             user_count = len(result.stdout.strip().split('\n'))
             pprint(f"  👥 Logged in users: {user_count}")
-        
-        else:
-
-            pprint("  ⏱️ Service enumeration timed out (system may be busy)")
-            pprint(f"  ⚠️ Could not complete enumeration: ")
+    except subprocess.TimeoutExpired:
+        pprint("  ⏱️ Service enumeration timed out (system may be busy)")
+    except FileNotFoundError:
+        pprint("  ⚠️ 'who' command not found")
     
     pprint("\n" + "="*60)
     pprint(f"📝 Roll call complete! {len(detected_services)} services identified.")
     
     return detected_services
-
 async def main():
     system_profiler()
     ethical_boot_sequence()
