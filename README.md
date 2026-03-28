@@ -1,5 +1,43 @@
-# EthicalCrawler
+# Dev Forward
+Initializing EthicalCrawler...
+Session ID: EC-20260328-0413
+Temp directory: /tmp/ethicalcrawler_EC-20260328-0413/
 
+============================================================
+ETHICAL OPERATOR CONSENT REQUIRED
+============================================================
+
+I acknowledge that this session will be logged for transparency.
+All actions will target only systems I own or have permission to test.
+
+Type 'CONSENT' to continue, anything else to exit: CON
+SENT
+
+Consent logged to: /consent/session_EC-20260328-0413.json
+
+============================================================
+BOOT SEQUENCE COMPLETE
+============================================================
+  os_name: Windows
+  os_version: 10.0.26200
+  architecture: AMD64
+  processor: Intel64 Family 6 Model 151 Stepping 2, GenuineIntel
+This program may not be optimized for the following specs. Proceed with caution.
+
+The Crawler is completely ethical and legal.
+DEV NOTES:
+
+this is my god's honest attempt at making:
+
+1. A legal and ethical white-box automated pen test.  
+
+2 An overly amibitiouis Python Basics final
+
+Enjoy the show
+*****************
+
+
+# EthicalCrawler
 ![Status](https://img.shields.io/badge/status-work_in_progress-yellow)
 
 ## Overview

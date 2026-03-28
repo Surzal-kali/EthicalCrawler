@@ -38,7 +38,7 @@ import platform
 def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
-    print("Initializing EthicalCrawler OS...")
+    print("Initializing EthicalCrawler...")
     time.sleep(0.5)
     
     # 1. Create session environment
@@ -98,10 +98,15 @@ def system_profiler():
         print(f"  {key}: {value}")
 
     print (f"This program may not be optimized for the following specs. Proceed with caution.\n")
-
-
-
-
+    print(f"The Crawler is completely ethical and legal.\n")  
+    print(f"All modules are considered optional, and will not be attempted without explicit consent.\n")
+    print(f"*"*60)
+    print(f"DEV NOTES:  \n")
+    print(f"this is my god's honest attempt at making:\n")
+    print( "1. A legal and ethical white-box automated pen test.\n")
+    print("2 An overly amibitiouis Python Basics final\n")        
+    print("Enjoy the show") ### also im gunna try to make these comments gold k? 
+    print(f"*"*60)
     return system_info
 
 if __name__ == "__main__":
