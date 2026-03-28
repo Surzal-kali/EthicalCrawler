@@ -29,7 +29,6 @@ import os
 import time
 import json
 from datetime import datetime
-from cli import main as cli
 def ethical_boot_sequence():
     """Core boot sequence - implement THIS first"""
     
@@ -79,13 +78,15 @@ def ethical_boot_sequence():
     print("\n" + "="*60)
     print("BOOT SEQUENCE COMPLETE")
     print("="*60)
-    
-    return "system_profiler"  # Next stateiim
+    from cli import main as cli
+    cli(next_state) 
+  
+   # Next stateiim
+
 
 if __name__ == "__main__":
     next_state = ethical_boot_sequence()
     print(f"\nNext state: {next_state}")
-
     
 
 
@@ -101,6 +102,7 @@ def variables ():
     import pdfkit
     import csv
     import asyncio
+    import psutil
     from datetime import datetime
     from tempfile import TemporaryFile as TF
-    return datetime, json, os, time, socket, threading, subprocess,sqlite3, random, pdfkit, csv, asyncio, TF
+    return datetime, json, os, time, socket, threading, subprocess,sqlite3, random, pdfkit, csv, asyncio, TF, psutil
