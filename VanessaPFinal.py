@@ -2,7 +2,7 @@
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
 #### Description: This program is something i guess
-from helper import activate_terminal as activate
+import helper
 import scapy
 import requests
 ###k this time i think i have a realistic idea

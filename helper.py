@@ -2,7 +2,7 @@ import os
 import platform
 import subprocess
 
-def activate_terminal(): 
+def spawn(): 
     try:
         if platform.system() == "Linux":
             #Requires xdotool
