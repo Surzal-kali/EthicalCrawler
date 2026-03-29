@@ -50,15 +50,7 @@ import platform
 import psutil
 from database import init_db, log
 from theatrics import Me, pprint
-def analyze_data(process_name):
-    if "apache" in process_name.lower():
-        quip = Me.quip("apache2")
-        pprint(f"Process: {process_name}. Persona says: {quip}")
-    elif "ssh" in process_name.lower():
-        quip = Me.quip("sshd")
-        pprint(f"Process: {process_name}. Persona says: {quip}")
-    else:
-        pprint(f"logged: {process_name}.")
+
 
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
@@ -122,7 +114,9 @@ def ethical_boot_sequence():
 
 def system_profiler(cursor, session_id):
     """Enumeration - logs everything to evidence bucket"""
-
+    
+    me = Me()
+    
     system_info = {
         'os_name': platform.system(),
         'os_version': platform.version(),
@@ -133,22 +127,26 @@ def system_profiler(cursor, session_id):
     # Log it all
     log(cursor, session_id, "system_profile", system_info)
 
-    # Display as before
-    for key, value in system_info.items():
-        try:
-            analyze_data(value)
-        except:
-            pprint("uh oh.")
-    pprint("This demo may not be optimized for this enviroment\n"
-           "I had a pi, windows, and kali, and ubuntu on hand during development\n" \
+    pprint("This demo may not be optimized for this environment\n"
+           "I had a pi, windows, and kali, and ubuntu on hand during development\n"
            "Tread Lightly Traveler")
     pprint("so....")
-    me = Me()
-    sysquip = me.quip("system_info")
-    pprint(sysquip)
+
+    # Loop through the dictionary, not the function
+    for key, value in system_info.items():
+        if key == "os_name":
+            quip = me.quip(value)  # Quip on "Windows" or "Linux"
+            pprint(f"💻 OS: {quip}")
+        elif key == "os_version":
+            pprint(f"📅 Version: {value}")  # Just show the number
+        elif key == "architecture":
+            pprint(f"🏛️ Arch: {value}")
+        elif key == "processor":
+            pprint(f"⚙️ CPU: {value}")
+
+    pprint(me.quip("system_profile"))  # Just once
+    
     return system_info
-
-
 
 
 # def spying(cursor, session_id):
@@ -232,7 +230,8 @@ async def main():
 
     try:
         system_profiler(cursor, session_id)
-        analyze_data(session_id)
+
+        
         conn.commit()
         # generate_pdf_report(conn, session_id)  # Add this later
 

@@ -18,11 +18,13 @@ def pprint(message, char_delay=0.03, line_delay=0.5):
 
 class Me:
     def __init__(self):
-        self.persona = "sudo"
+        self.persona = "foothold"
 
     def quip(self, str):
         base = {
-            "Windows" : "Oh come on. Don't make this too easy. K pumpkin",
+
+####"instance": <instance> detected.",
+            "Windows" : "Windows detected. ",
             "apache2": "Apache detected.",
             "sshd": "SSH service identified.",
             "mysql": "MySQL detected.",
@@ -32,10 +34,12 @@ class Me:
             "ports": "Scanning ports…",
             "configs": "Checking configuration files…",
             "goodbye": "Session ending.",
+            "Linux": "Linux detected."
         }
-
+######"instance": "<instance> dialogue"
         commentary = {
             "sudo": {
+                "Linux": "linux huh??? this is where it gets interesting",
                 "apache2": "My first real engagement involved Apache… I still remember the panic.",
                 "sshd": "SSH my old friend. The nerves to my central system.",
                 "mysql": "MySQL… a maze of threads and tables. Fascinating stuff.",
