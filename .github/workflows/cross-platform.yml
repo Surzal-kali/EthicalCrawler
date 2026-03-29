@@ -1,0 +1,137 @@
+name: Cross-Platform Compatibility Tests
+
+# Runs the EthicalCrawler system profiler on different OS targets so that
+# compatibility across hardware environments can be verified.  The tool
+# already requires explicit consent from users running it interactively;
+# the CI=true environment variable activates the automated-consent path
+# that is appropriate when the runner owner has authorised the test.
+#
+# Platforms covered:
+#   • ubuntu-latest  – represents an Azure Ubuntu Server environment
+#   • windows-latest – represents a Windows 11 / Windows Server environment
+#   • kali-docker    – Kali Linux container (closest available approximation
+#                      of a Kali-Pi environment on x86 GitHub-hosted runners;
+#                      actual ARM/Raspberry-Pi hardware would require a
+#                      self-hosted runner)
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    # Only run on PRs from the same repository to avoid CI auto-consent
+    # being triggered by untrusted forked pull requests.
+    branches: ["**"]
+  workflow_dispatch:
+
+# Prevent concurrent runs on the same ref so results are not interleaved.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Restrict GITHUB_TOKEN to the minimum permissions required.
+permissions:
+  contents: read
+
+jobs:
+  # --------------------------------------------------------------------------
+  # Standard OS matrix (Ubuntu / Windows)
+  # --------------------------------------------------------------------------
+  platform-matrix:
+    name: "Test on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    # Do not run on pull requests originating from forks to avoid
+    # auto-consent being granted without explicit repository-owner approval.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install psutil
+
+      - name: Run system profiler (CI mode)
+        env:
+          CI: "true"
+        run: python -c "
+import asyncio
+import sys
+import os
+
+# Ensure the repo root is on the path
+sys.path.insert(0, os.getcwd())
+
+from VanessaPFinal import ethical_boot_sequence, system_profiler
+from database import init_db
+
+session_id = ethical_boot_sequence()
+if not session_id:
+    print('Boot sequence failed', file=sys.stderr)
+    sys.exit(1)
+
+conn, cursor = init_db(session_id)
+info = system_profiler(conn, cursor, session_id)
+conn.commit()
+conn.close()
+
+print('--- System Profile ---')
+for k, v in info.items():
+    print(f'  {k}: {v}')
+"
+
+  # --------------------------------------------------------------------------
+  # Kali Linux Docker job (approximates a Kali-Pi environment)
+  # --------------------------------------------------------------------------
+  kali-docker:
+    name: "Test on Kali Linux (Docker)"
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    container:
+      image: kalilinux/kali-rolling:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Python and dependencies
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq python3 python3-pip python3-psutil
+          pip3 install psutil --break-system-packages || pip3 install psutil
+
+      - name: Run system profiler (CI mode)
+        env:
+          CI: "true"
+        run: python3 -c "
+import asyncio
+import sys
+import os
+
+sys.path.insert(0, os.getcwd())
+
+from VanessaPFinal import ethical_boot_sequence, system_profiler
+from database import init_db
+
+session_id = ethical_boot_sequence()
+if not session_id:
+    print('Boot sequence failed', file=sys.stderr)
+    sys.exit(1)
+
+conn, cursor = init_db(session_id)
+info = system_profiler(conn, cursor, session_id)
+conn.commit()
+conn.close()
+
+print('--- System Profile ---')
+for k, v in info.items():
+    print(f'  {k}: {v}')
+"
