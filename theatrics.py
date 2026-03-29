@@ -25,6 +25,7 @@ def pprint(message, char_delay=0.03, line_delay=0.5):
 
 BASE = {
     "" :"WAT  (❁´◡`❁)",
+    "Kali": "GANG GANG RISE UP",
     "Windows": "Windows detected.",
     "apache2": "Apache detected.",
     "sshd": "SSH service identified.",
