@@ -2,36 +2,18 @@
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
 #### Description: This program is something i guess
-import scapy
-import requests
-from devnotes import notes
 ###k this time i think i have a realistic idea
 import os
-import time
 import socket
 import json
-import threading
-import subprocess
-import sqlite3
-import random
 import asyncio
 from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
-import psutil
 from database import init_db, log
-
 from theatrics import pprint
 from theatrics import pspace
-
-#### GreenwaldPFinal
-#### Programmer: Vanessa Greenwald
-#### Date: 3/26/2026
-#### Description: This program is something i guess
-import helper
 from helper import spawn
-import scapy
-import requests
 from devnotes import notes
 ###k this time i think i have a realistic idea
 import os
@@ -148,76 +130,6 @@ def system_profiler(cursor, session_id):
     return system_info
 
 
-# def spying(cursor, session_id):
-#     """Service enumeration - log findings to evidence bucket"""
-
-#     detected_services = []
-#     service_quips = {
-#         "apache2": "You know I used to hate apache because i thought it insecure. Apache was my first box 🥹.",
-#         "sshd": "Secure Shell detected.  Access granted (maybe). I mean...i won't judge",
-#         "mysql": "MySQL is running...thats a nice thread I'd like to explore",
-#         "postgresql": "PostgreSQL detected - Hail the mighty elephant lord!",
-#         "nginx": "Nginx is amazing. You know it makes for a great web server, but I've never given it a go",
-#     }  # Keep your quips
-
-#     services_found = []
-#     service_data = []
-
-#     for proc in psutil.process_iter(['pid', 'name', 'memory_percent']):
-#         proc_name = proc.info['name'].lower()
-#         for service, quip in service_quips.items():
-#             if service in proc_name:
-#                 if service not in services_found:
-#                     services_found.append(service)
-#                     service_data.append({
-#                         'service': service,
-#                         'pid': proc.info['pid'],
-#                         'memory': proc.info['memory_percent'],
-#                         'quip': quip
-#                     })
-#                     print(f"  {quip}")  # Replace print with print
-#                     break
-
-#     # Log everything we found
-#     log(cursor, session_id, "services", service_data)
-
-#     # Port scanning results
-#     listening_ports = []
-#     try:
-#         result = subprocess.run(['ss', '-tuln'], capture_output=True, text=True, timeout=5)
-#         port_output = result.stdout
-#     except FileNotFoundError:
-#         result = subprocess.run(['netstat', '-tuln'], capture_output=True, text=True, timeout=5)
-#         port_output = result.stdout
-
-#     for line in port_output.split('\n'):
-#         if 'LISTEN' in line or 'LISTENING' in line:
-#             parts = line.split()
-#             if len(parts) >= 4:
-#                 port_info = parts[3] if 'ss' in str(result.args) else parts[3]
-#                 if ':' in port_info:
-#                     port = port_info.split(':')[-1]
-#                     if port.isdigit() and port not in listening_ports:
-#                         listening_ports.append(port)
-
-#     log(cursor, session_id, "open_ports", listening_ports)
-
-#     # Config files found
-#     config_paths = {
-#         "/etc/ssh/sshd_config": "SSH server config",
-#         "/etc/apache2/apache2.conf": "Apache config",
-#         # ... etc
-#     }
-
-#     configs_found = []
-#     for config_path, description in config_paths.items():
-#         if os.path.exists(config_path):
-#             configs_found.append({'path': config_path, 'description': description})
-#             pprint(f"  📄 {description}")  # Replace print with print
-
-#     log(cursor, session_id, "config_files", configs_found)
-
-#     return detected_services
 
 async def main():
     session_id = ethical_boot_sequence()
