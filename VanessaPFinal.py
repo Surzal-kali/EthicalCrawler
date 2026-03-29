@@ -30,7 +30,7 @@ from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
 import psutil
-from database import init_db, log
+from database import init_db, log, evidence
 from theatrics import Me, pprint
 
 
@@ -95,8 +95,6 @@ def ethical_boot_sequence():
 
 
 def system_profiler(conn, cursor, session_id):
-    """Enumeration - logs everything to evidence bucket"""
-
     system_info = {
         'os_name': platform.system(),
         'os_version': platform.version(),
@@ -104,30 +102,39 @@ def system_profiler(conn, cursor, session_id):
         'processor': platform.processor()
     }
 
-    # Log it all
+    quip_map = {
+        'os_name': platform.system(),
+        'os_version': 'system_profile',
+        'architecture': 'architecture',
+        'processor': 'processor'
+    }
+
     for key, value in system_info.items():
-        sql = "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)"
-        timestamp = datetime.now().isoformat()
-        data = json.dumps({'key': key, 'value': value})
-        quip = Me().quip(key)  # Generate quip based on the key
-        log(cursor, session_id, sql, params=(session_id, timestamp, key, data, quip))
+        quip_key = quip_map.get(key, key)
+        data = {"key": key, "value": value}
+
+        # Log to DB
+        log(cursor, session_id, key, data, input_string=quip_key)
+
+        # Narrate immediately
+        narrator = Me()
+        quip = narrator.quip(quip_key)
+        pprint(f"{key}: {quip}")
 
     pprint("This demo may not be optimized for this environment\n"
            "Tread Lightly Traveler")
     pprint("so....")
+
     return system_info
+    pprint("This demo may not be optimized for this environment\n"
+           "Tread Lightly Traveler")
+    pprint("so....")
 
-def evidence(conn, cursor, session_id):
-    """Retrieves all evidence for a given session."""
-    sql = "SELECT * FROM evidence WHERE session_id = ?"
-    results = log(cursor, session_id, sql, params=(session_id,), fetch=True)
-    return results
-
+    return system_info
 
 
 async def main():
     session_id = ethical_boot_sequence()
-
     if not session_id:
         return
 
@@ -135,19 +142,10 @@ async def main():
 
     try:
         system_profiler(conn, cursor, session_id)
-
-        # Example use of SELECT
-        evidence_data = evidence(conn, cursor, session_id)
-        if evidence_data:
-            for row in evidence_data:
-                pprint(f"Evidence ID: {row[0]}, Module: {row[3]}")
-
         conn.commit()
-        # generate_pdf_report(conn, session_id)  # Add this later
 
     finally:
         conn.close()
-
 
 
 if __name__ == "__main__":
