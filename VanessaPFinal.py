@@ -94,11 +94,9 @@ def ethical_boot_sequence():
 
 
 
-def system_profiler(cursor, session_id):
+def system_profiler(conn, cursor, session_id):
     """Enumeration - logs everything to evidence bucket"""
-    
-    me = Me()
-    
+
     system_info = {
         'os_name': platform.system(),
         'os_version': platform.version(),
@@ -107,27 +105,23 @@ def system_profiler(cursor, session_id):
     }
 
     # Log it all
-    log(cursor, session_id, "system_profile", system_info)
+    for key, value in system_info.items():
+        sql = "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)"
+        timestamp = datetime.now().isoformat()
+        data = json.dumps({'key': key, 'value': value})
+        quip = Me().quip(key)  # Generate quip based on the key
+        log(cursor, session_id, sql, params=(session_id, timestamp, key, data, quip))
 
     pprint("This demo may not be optimized for this environment\n"
            "Tread Lightly Traveler")
     pprint("so....")
-
-    # Loop through the dictionary, not the function
-    for key, value in system_info.items():
-        if key == "os_name":
-            quip = me.quip(value)  # Quip on "Windows" or "Linux"
-            pprint(f"💻 OS: {quip}")
-        elif key == "os_version":
-            pprint(f"📅 Version: {value}")  # Just show the number
-        elif key == "architecture":
-            pprint(f"🏛️ Arch: {value}")
-        elif key == "processor":
-            pprint(f"⚙️ CPU: {value}")
-
-    pprint(me.quip("system_profile"))  # Just once
-    
     return system_info
+
+def evidence(conn, cursor, session_id):
+    """Retrieves all evidence for a given session."""
+    sql = "SELECT * FROM evidence WHERE session_id = ?"
+    results = log(cursor, session_id, sql, params=(session_id,), fetch=True)
+    return results
 
 
 
@@ -140,14 +134,21 @@ async def main():
     conn, cursor = init_db(session_id)
 
     try:
-        system_profiler(cursor, session_id)
+        system_profiler(conn, cursor, session_id)
 
-        
+        # Example use of SELECT
+        evidence_data = evidence(conn, cursor, session_id)
+        if evidence_data:
+            for row in evidence_data:
+                pprint(f"Evidence ID: {row[0]}, Module: {row[3]}")
+
         conn.commit()
         # generate_pdf_report(conn, session_id)  # Add this later
 
     finally:
         conn.close()
+
+
 
 if __name__ == "__main__":
     asyncio.run(main())
