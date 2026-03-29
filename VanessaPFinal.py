@@ -142,6 +142,10 @@ def system_profiler(cursor, session_id):
     pprint("This demo may not be optimized for this enviroment\n"
            "I had a pi, windows, and kali, and ubuntu on hand during development\n" \
            "Tread Lightly Traveler")
+    pprint("so....")
+    me = Me()
+    sysquip = me.quip("system_info")
+    pprint(sysquip)
     return system_info
 
 

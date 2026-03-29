@@ -22,6 +22,7 @@ class Me:
 
     def quip(self, str):
         base = {
+            "Windows" : "Oh come on. Don't make this too easy. K pumpkin",
             "apache2": "Apache detected.",
             "sshd": "SSH service identified.",
             "mysql": "MySQL detected.",
