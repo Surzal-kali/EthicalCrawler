@@ -54,8 +54,8 @@ from theatrics import Me
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
 
-    print("🥱🥱🥱🥱🥱🥱🥱🥱🥱🥱")
-    print("="*60)
+    pprint("🥱🥱🥱🥱🥱🥱🥱🥱🥱🥱")
+    pprint("="*60)
 
     session_id = f"LI-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/local_inspector_{session_id}/"
@@ -63,7 +63,6 @@ def ethical_boot_sequence():
 
     print(f"Session ID: {session_id}")
     print(f"Working directory: {temp_dir}")
-
     pprint("Alright lets get the housekeeping out of the way. I don't have all day ⌛⌛")
     print("REQUIRED CONSENT:")
     print("="*60)
