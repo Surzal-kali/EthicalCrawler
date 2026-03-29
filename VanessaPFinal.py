@@ -59,6 +59,7 @@ def analyze_data(process_name):
         pprint(f"Process: {process_name}. Persona says: {quip}")
     else:
         pprint(f"logged: {process_name}.")
+
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
 
@@ -119,7 +120,6 @@ def ethical_boot_sequence():
 
 
 
-
 def system_profiler(cursor, session_id):
     """Enumeration - logs everything to evidence bucket"""
 
@@ -139,6 +139,9 @@ def system_profiler(cursor, session_id):
             analyze_data(value)
         except:
             pprint("uh oh.")
+    pprint("This demo may not be optimized for this enviroment\n"
+           "I had a pi, windows, and kali, and ubuntu on hand during development\n" \
+           "Tread Lightly Traveler")
     return system_info
 
 
@@ -225,7 +228,7 @@ async def main():
 
     try:
         system_profiler(cursor, session_id)
-        
+        analyze_data(session_id)
         conn.commit()
         # generate_pdf_report(conn, session_id)  # Add this later
 
