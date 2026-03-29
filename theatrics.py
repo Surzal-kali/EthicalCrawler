@@ -54,7 +54,7 @@ COMMENTARY = {
         "apache2": "[SUDO] Apache configs are fully readable now.",
         "sshd": "[SUDO] SSH host keys accessible. Interesting...",
         "mysql": "[SUDO] Dumping MySQL credentials? Don't mind if I do.",
-        "postgresql": "[SUDO] PostgreSQL - time to enumerate databases.",
+        "postgresql": "[SUDO] PostgreSQL - Time to feed me your data",
         "system_profile": "[SUDO] Full system profile. No secrets left.",
         "boot": "[SUDO] Boot sequence with elevated privileges.",
         "ports": "[SUDO] All ports visible, even filtered ones.",

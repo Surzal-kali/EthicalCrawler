@@ -1,8 +1,9 @@
 import sqlite3
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from theatrics import Me, pprint
+
 def evidence(conn, cursor, session_id):
     cursor.execute("SELECT * FROM evidence WHERE session_id=?", (session_id,))
     results = cursor.fetchall()
@@ -21,6 +22,11 @@ def evidence(conn, cursor, session_id):
 
     return results
 
+def cleanup(cursor):
+    """Deletes evidence older than 7 days."""
+    seven_days_ago = datetime.now() - timedelta(days=7)
+    cursor.execute("DELETE FROM evidence WHERE timestamp < ?", (seven_days_ago.isoformat(),))
+    cursor.connection.commit()
 
 def init_db(session_id):
     """Create the evidence database and table."""
@@ -34,6 +40,7 @@ def init_db(session_id):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
+        # Create table if it doesn't exist
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS evidence (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +51,9 @@ def init_db(session_id):
                 quip TEXT
             )
         ''')
+
+        # Cleanup old data
+        cleanup(cursor)
 
         conn.commit()
         return conn, cursor
@@ -72,11 +82,10 @@ def log(cursor, session_id, module, data, input_string=""):
         print(f"Database error: {e}")
         cursor.connection.rollback()
         return None
-    
+
 def delete(cursor, evidence_id):
     cursor.execute("DELETE FROM evidence WHERE id=?", (evidence_id,))
     cursor.connection.commit()
-
 
 def update(cursor, evidence_id, new_quip):
     cursor.execute(

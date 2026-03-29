@@ -88,10 +88,15 @@ def ethical_boot_sequence():
     print(f"\n✅ Consent logged to: {log_file}")
     print("\n" + "="*60)
     pprint("Oh?")
-    print("="*60 + "\n")
+    pprint("="*60 + "\n")
     return session_id
 
-
+def system_services(conn, cursor, session_id):
+    # services = {
+    #     "<>" : #placeholder
+    #     "<>" : #placeholder
+    # }
+    pass
 
 
 def system_profiler(conn, cursor, session_id):
@@ -132,21 +137,28 @@ def system_profiler(conn, cursor, session_id):
 
     return system_info
 
+async def session(session_id):
+    """Runs the main logic for a session."""
+    conn, cursor = init_db(session_id)
+    if conn is None:
+        print("Failed to initialize database. Exiting.")
+        return
+
+    try:
+        system_profiler(conn, cursor, session_id) 
+        system_services(conn, cursor, session_id)
+        conn.commit()
+    except Exception as e:
+        print(f"An error occurred during system profiling: {e}")
+    finally:
+        conn.close()
 
 async def main():
     session_id = ethical_boot_sequence()
     if not session_id:
         return
 
-    conn, cursor = init_db(session_id)
-
-    try:
-        system_profiler(conn, cursor, session_id)
-        conn.commit()
-
-    finally:
-        conn.close()
-
+    await session(session_id)
 
 if __name__ == "__main__":
     asyncio.run(main())
