@@ -24,8 +24,8 @@ def pprint(message, char_delay=0.03, line_delay=0.5):
 # ------------------------------------------------------------
 
 BASE = {
-    "" :"WAT  (❁´◡`❁)",
-    "Kali": "GANG GANG RISE UP",
+    "" :"WAT  (❁´◡`❁) The heck is this thing?",
+    "Kali": "HACKER GANG RISE UP. Kali detected.",
     "Windows": "Windows detected.",
     "apache2": "Apache detected.",
     "sshd": "SSH service identified.",
@@ -36,7 +36,8 @@ BASE = {
     "ports": "Scanning ports…",
     "configs": "Checking configuration files…",
     "goodbye": "Session ending.",
-    "Linux": "Linux detected."
+    "Linux": "Linux detected.",
+    "ARM64": "ARM64? Pi is that you sweetcheeks?",
 }
 
 COMMENTARY = {
@@ -89,7 +90,7 @@ class Me:
                 return "Windows"
             if "linux" in value:
                 return "Linux"
-            return "UnknownOS"
+            return ""
 
         # --- CPU detection ---
         if field == "processor":
@@ -99,7 +100,7 @@ class Me:
                 return "AMD"
             if "arm" in value or "aarch64" in value or "apple m" in value:
                 return "ARM"
-            return "UnknownCPU"
+            return ""
 
         # --- Architecture detection ---
         if field == "architecture":
@@ -107,7 +108,7 @@ class Me:
                 return "x86_64"
             if "arm" in value or "aarch64" in value:
                 return "ARM64"
-            return "UnknownArch"
+            return ""
 
         # --- Services ---
         if "apache" in value:
