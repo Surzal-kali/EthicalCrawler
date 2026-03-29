@@ -54,21 +54,21 @@ from database import init_db, log
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
 
-    pprint("🔍 Local Inspector v0.1 - Post-Exploitation Enumeration Suite")
-    pprint("="*60)
+    print("🔍 Local Inspector v0.1 - Post-Exploitation Enumeration Suite")
+    print("="*60)
 
     session_id = f"LI-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/local_inspector_{session_id}/"
     os.makedirs(temp_dir, exist_ok=True)
 
-    pprint(f"Session ID: {session_id}")
-    pprint(f"Working directory: {temp_dir}")
+    print(f"Session ID: {session_id}")
+    print(f"Working directory: {temp_dir}")
 
     # Display what this tool ACTUALLY does
-    pprint("\n" + "="*60)
-    pprint("WHAT THIS TOOL DOES:")
-    pprint("="*60)
-    pprint("""
+    print("\n" + "="*60)
+    print("WHAT THIS TOOL DOES:")
+    print("="*60)
+    print("""
     This tool enumerates a compromised system to discover:
 
     • Running services and open ports
@@ -81,10 +81,10 @@ def ethical_boot_sequence():
     It assumes you already have local access to this system.
     """)
 
-    pprint("="*60)
-    pprint("REQUIRED CONSENT:")
-    pprint("="*60)
-    pprint("""
+    print("="*60)
+    print("REQUIRED CONSENT:")
+    print("="*60)
+    print("""
     I confirm that I have:
 
     ✓ Legal authorization to enumerate this system
@@ -95,11 +95,11 @@ def ethical_boot_sequence():
     """)
 
     # Make them actually acknowledge
-    pprint("\n" + "-"*40)
+    print("\n" + "-"*40)
     consent = input("Type 'I AGREE' to continue, anything else to exit: ")
 
     if consent.upper() != "I AGREE":
-        pprint("\n❌ Consent not provided. Exiting.")
+        print("\n❌ Consent not provided. Exiting.")
         return None
 
     # Log what they agreed to
@@ -120,10 +120,10 @@ def ethical_boot_sequence():
     with open(log_file, 'w') as f:
         json.dump(consent_log, f, indent=2)
 
-    pprint(f"\n✅ Consent logged to: {log_file}")
-    pprint("\n" + "="*60)
-    pprint("🚀 Beginning local enumeration...")
-    pprint("="*60 + "\n")
+    print(f"\n✅ Consent logged to: {log_file}")
+    print("\n" + "="*60)
+    print("🚀 Beginning local enumeration...")
+    print("="*60 + "\n")
     return session_id
 
 
@@ -144,7 +144,7 @@ def system_profiler(cursor, session_id):
 
     # Display as before
     for key, value in system_info.items():
-        pprint(f"  {key}: {value}\n")
+        print(f"  {key}: {value}\n")
 
     return system_info
 
@@ -153,19 +153,19 @@ def system_profiler(cursor, session_id):
 
 def spying(cursor, session_id):
     """Service enumeration - log findings to evidence bucket"""
-    
+
     detected_services = []
-    service_quips = { 
-    "apache2": "Ahoy! Apache is serving up the web.",
-    "sshd": "Secure Shell detected.  Access granted (maybe).",
-    "mysql": "MySQL is running... hope it's secured!",
-    "postgresql": "PostgreSQL detected - data fortress!",
-    "nginx": "Nginx is on the scene - another web server.",
-     }  # Keep your quips
-    
+    service_quips = {
+        "apache2": "Ahoy! Apache is serving up the web.",
+        "sshd": "Secure Shell detected.  Access granted (maybe).",
+        "mysql": "MySQL is running... hope it's secured!",
+        "postgresql": "PostgreSQL detected - data fortress!",
+        "nginx": "Nginx is on the scene - another web server.",
+    }  # Keep your quips
+
     services_found = []
     service_data = []
-    
+
     for proc in psutil.process_iter(['pid', 'name', 'memory_percent']):
         proc_name = proc.info['name'].lower()
         for service, quip in service_quips.items():
@@ -178,12 +178,12 @@ def spying(cursor, session_id):
                         'memory': proc.info['memory_percent'],
                         'quip': quip
                     })
-                    pprint(f"  {quip}")
+                    print(f"  {quip}")  # Replace print with print
                     break
-    
+
     # Log everything we found
     log(cursor, session_id, "services", service_data)
-    
+
     # Port scanning results
     listening_ports = []
     try:
@@ -192,7 +192,7 @@ def spying(cursor, session_id):
     except FileNotFoundError:
         result = subprocess.run(['netstat', '-tuln'], capture_output=True, text=True, timeout=5)
         port_output = result.stdout
-    
+
     for line in port_output.split('\n'):
         if 'LISTEN' in line or 'LISTENING' in line:
             parts = line.split()
@@ -202,25 +202,26 @@ def spying(cursor, session_id):
                     port = port_info.split(':')[-1]
                     if port.isdigit() and port not in listening_ports:
                         listening_ports.append(port)
-    
+
     log(cursor, session_id, "open_ports", listening_ports)
-    
+
     # Config files found
     config_paths = {
         "/etc/ssh/sshd_config": "SSH server config",
         "/etc/apache2/apache2.conf": "Apache config",
         # ... etc
     }
-    
+
     configs_found = []
     for config_path, description in config_paths.items():
         if os.path.exists(config_path):
             configs_found.append({'path': config_path, 'description': description})
-            pprint(f"  📄 {description}")
-    
+            print(f"  📄 {description}")  # Replace print with print
+
     log(cursor, session_id, "config_files", configs_found)
-    
+
     return detected_services
+
 async def main():
     session_id = ethical_boot_sequence()
 
