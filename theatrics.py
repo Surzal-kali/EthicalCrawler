@@ -22,6 +22,7 @@ class Me:
 
     def quip(self, str):
         base = { #### Something broke man idk just paste
+            "" : "Did something just error??",
             "Windows": "Windows detected.",
             "apache2": "Apache detected.",
             "sshd": "SSH service identified.",
