@@ -2,6 +2,7 @@ import sqlite3
 import json
 from datetime import datetime
 import os
+import tempfile
 from theatrics import Me, pprint
 def evidence(conn, cursor, session_id):
     cursor.execute("SELECT * FROM evidence WHERE session_id=?", (session_id,))
@@ -25,10 +26,10 @@ def evidence(conn, cursor, session_id):
 def init_db(session_id):
     """Create the evidence database and table."""
 
-    base_dir = f"/tmp/local_inspector_{session_id}"
+    base_dir = os.path.join(tempfile.gettempdir(), f"local_inspector_{session_id}")
     os.makedirs(base_dir, exist_ok=True)
 
-    db_path = f"{base_dir}/evidence.db"
+    db_path = os.path.join(base_dir, "evidence.db")
 
     try:
         conn = sqlite3.connect(db_path)
