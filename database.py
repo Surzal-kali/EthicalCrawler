@@ -72,3 +72,15 @@ def log(cursor, session_id, module, data, input_string=""):
         print(f"Database error: {e}")
         cursor.connection.rollback()
         return None
+    
+def delete(cursor, evidence_id):
+    cursor.execute("DELETE FROM evidence WHERE id=?", (evidence_id,))
+    cursor.connection.commit()
+
+
+def update(cursor, evidence_id, new_quip):
+    cursor.execute(
+        "UPDATE evidence SET quip=? WHERE id=?",
+        (new_quip, evidence_id)
+    )
+    cursor.connection.commit()

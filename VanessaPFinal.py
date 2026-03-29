@@ -30,7 +30,7 @@ from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
 import psutil
-from database import init_db, log, evidence
+from database import init_db, log, evidence, update, delete
 from theatrics import Me, pprint
 
 
