@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 import os
 from theatrics import Me, pprint
-
+import time
 def evidence(conn, cursor, session_id):
     cursor.execute("SELECT * FROM evidence WHERE session_id=?", (session_id,))
     results = cursor.fetchall()
@@ -40,7 +40,7 @@ def init_db(session_id):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        # Create table if it doesn't exist
+        # Legacy table (still useful for high-level events)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS evidence (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,9 +52,22 @@ def init_db(session_id):
             )
         ''')
 
-        # Cleanup old data
-        cleanup(cursor)
+        # New narrator-aware debug log table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                field TEXT,
+                raw_value TEXT,
+                normalized_key TEXT,
+                persona TEXT,
+                quip_text TEXT,
+                context TEXT,
+                timestamp REAL
+            )
+        ''')
 
+        cleanup(cursor)
         conn.commit()
         return conn, cursor
 
@@ -63,25 +76,43 @@ def init_db(session_id):
         return None, None
 
 
-def log(cursor, session_id, module, data, input_string=""):
-    """Insert a log entry with optional quip."""
+def log(cursor, session_id, field, raw_value, narrator, context="system_profiler"):
+    """
+    Store a fully annotated log entry for debugging and introspection.
+    """
 
-    timestamp = datetime.now().isoformat()
-    me = Me()
-    quip = me.quip(input_string)
+    normalized = narrator.normalize(field, raw_value)
+    quip_text = narrator.quip(field, raw_value)
 
-    try:
-        cursor.execute(
-            "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)",
-            (session_id, timestamp, module, json.dumps(data), quip)
+    entry = {
+        "session_id": session_id,
+        "field": field,
+        "raw_value": raw_value,
+        "normalized_key": normalized,
+        "persona": narrator.persona,
+        "quip_text": quip_text,
+        "context": context,
+        "timestamp": time.time()
+    }
+
+    cursor.execute(
+        """
+        INSERT INTO logs (session_id, field, raw_value, normalized_key, persona, quip_text, context, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            entry["session_id"],
+            entry["field"],
+            entry["raw_value"],
+            entry["normalized_key"],
+            entry["persona"],
+            entry["quip_text"],
+            entry["context"],
+            entry["timestamp"]
         )
-        cursor.connection.commit()
-        return quip
+    )
 
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
-        cursor.connection.rollback()
-        return None
+    return entry
 
 def delete(cursor, evidence_id):
     cursor.execute("DELETE FROM evidence WHERE id=?", (evidence_id,))

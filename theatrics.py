@@ -41,6 +41,8 @@ BASE = {
 
 COMMENTARY = {
     "foothold": {
+        "Intel": "Intel? Interesting choice for your build. Lets see if it works out for them cotton",
+        "AMD64": "x64? A current gen processor? I wonder what other resources live on this land of plenty",
         "Windows": "Windows huh? I guess I can make time for the average end user 💅",
         "Linux": "Linux? You really shouldn't have. Its like christmas in here",
         "apache2": "My first real engagement involved Apache… I still remember the panic.",
@@ -66,14 +68,68 @@ COMMENTARY = {
 
 
 # ------------------------------------------------------------
-# Persona-driven narrator
+# Hey did you know that its me? I'm the problem?
 # ------------------------------------------------------------
 
 class Me:
     def __init__(self, persona="foothold"):
         self.persona = persona
 
-    def quip(self, key):
-        """Return a persona-specific quip, falling back to base or generic."""
+    def normalize(self, field, raw):
+        if not raw:
+            return ""
+
+        value = str(raw).lower()
+
+        # --- OS detection ---
+        if field in ("os_name", "os_version"):
+            if "kali" in value:
+                return "Kali"
+            if "windows" in value:
+                return "Windows"
+            if "linux" in value:
+                return "Linux"
+            return "UnknownOS"
+
+        # --- CPU detection ---
+        if field == "processor":
+            if "intel" in value or "genuineintel" in value:
+                return "Intel"
+            if "amd" in value or "ryzen" in value or "epyc" in value:
+                return "AMD"
+            if "arm" in value or "aarch64" in value or "apple m" in value:
+                return "ARM"
+            return "UnknownCPU"
+
+        # --- Architecture detection ---
+        if field == "architecture":
+            if "x86_64" in value or "amd64" in value:
+                return "x86_64"
+            if "arm" in value or "aarch64" in value:
+                return "ARM64"
+            return "UnknownArch"
+
+        # --- Services ---
+        if "apache" in value:
+            return "apache2"
+        if "sshd" in value or "ssh" in value:
+            return "sshd"
+        if "mysql" in value:
+            return "mysql"
+        if "postgres" in value:
+            return "postgresql"
+
+        # --- Fallback ---
+        cleaned = ''.join(c for c in raw if c.isalnum() or c in ('_', '-'))
+        return cleaned if cleaned else ""
+
+    def quip(self, field, raw_value):
+        key = self.normalize(field, raw_value)
         persona_lines = COMMENTARY.get(self.persona, {})
-        return persona_lines.get(key, BASE.get(key, f"{key} detected."))
+        return persona_lines.get(key, BASE.get(key, f"{key} detected. Interesting...."))
+
+
+def equip(narrator, system_info):
+    for field, value in system_info.items():
+        line = narrator.quip(field, value)
+        pprint(f"{field}: {line}")
