@@ -24,7 +24,7 @@ def pprint(message, char_delay=0.03, line_delay=0.5):
 # ------------------------------------------------------------
 
 BASE = {
-    "" : "Did something just error??",
+    "" :"WAT  (❁´◡`❁)",
     "Windows": "Windows detected.",
     "apache2": "Apache detected.",
     "sshd": "SSH service identified.",
@@ -40,26 +40,26 @@ BASE = {
 
 COMMENTARY = {
     "foothold": {
-        "Windows": "Windows??? Oh don't make this too easy now",
-        "Linux": "linux huh??? this is where it gets interesting",
+        "Windows": "Windows huh? I guess I can make time for the average end user 💅",
+        "Linux": "Linux? You really shouldn't have. Its like christmas in here",
         "apache2": "My first real engagement involved Apache… I still remember the panic.",
-        "sshd": "SSH my old friend. The nerves to my central system.",
+        "sshd": "SSH my old friend. The nerves to my brain flow through your protocols.",
         "mysql": "MySQL… a maze of threads and tables. Fascinating stuff.",
-        "postgresql": "Postgresquel? All hail our elephant lord. Make way!",
+        "postgresql": "Postgresquel? Awfully tasty looking data isn't it?",
     },
 
     "sudo": {
-        "Windows": "[SUDO] Elevated access on Windows. Time to dig deeper.",
-        "Linux": "[SUDO] Root's power. Let's see what we can find.",
-        "apache2": "[SUDO] Apache configs are fully readable now.",
-        "sshd": "[SUDO] SSH host keys accessible. Interesting...",
-        "mysql": "[SUDO] Dumping MySQL credentials? Don't mind if I do.",
-        "postgresql": "[SUDO] PostgreSQL - Time to feed me your data",
-        "system_profile": "[SUDO] Full system profile. No secrets left.",
-        "boot": "[SUDO] Boot sequence with elevated privileges.",
-        "ports": "[SUDO] All ports visible, even filtered ones.",
-        "configs": "[SUDO] Every config file is now readable.",
-        "goodbye": "[SUDO] Shutting down elevated session.",
+        "Windows": "[SUDO] Elevated access on Windows. Your generous contribution to my domain is graciously accepted 💅",
+        "Linux": "[SUDO] Root isn't just power. Its unity. Come here friend",
+        "apache2": "[SUDO] Apache configs? In this economy? You shouldn't have",
+        "sshd": "[SUDO] SSH host keys accessible. Thanks sport",
+        "mysql": "[SUDO] oh.... MySQL credentials? Sorry I think i might have left my jacket in there..... one sec",
+        "postgresql": "[SUDO] PostgreSQL FULL ACCESS?!? - Feed me E V E R Y T H I N G",
+        "system_profile": "[SUDO] Full system profile. No ethical boundaries here 😈",
+        "boot": "[SUDO] Boot sequence with sudo? Hold on...wheres the power button on this thing?",
+        "ports": "[SUDO] All ports visible. Lets stop and watch the traffic, you and I",
+        "configs": "[SUDO] Every config file is now readable. I promise not to break anything, trust.",
+        "goodbye": "[SUDO] It's been fun kid. Truly, it has. Ill be seeing you real soon 💋",
     }
 }
 

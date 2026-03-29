@@ -100,6 +100,7 @@ def system_services(conn, cursor, session_id):
 
 
 def system_profiler(conn, cursor, session_id):
+    pprint("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")
     system_info = {
         'os_name': platform.system(),
         'os_version': platform.version(),
@@ -127,14 +128,8 @@ def system_profiler(conn, cursor, session_id):
         pprint(f"{key}: {quip}")
 
     pprint("This demo may not be optimized for this environment\n"
-           "Tread Lightly Traveler")
-    pprint("so....")
-
-    return system_info
-    pprint("This demo may not be optimized for this environment\n"
-           "Tread Lightly Traveler")
-    pprint("so....")
-
+           "Be wary, be alert.")
+    pprint("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")
     return system_info
 
 async def session(session_id):
