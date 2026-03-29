@@ -128,7 +128,6 @@ def system_profiler(cursor, session_id):
     log(cursor, session_id, "system_profile", system_info)
 
     pprint("This demo may not be optimized for this environment\n"
-           "I had a pi, windows, and kali, and ubuntu on hand during development\n"
            "Tread Lightly Traveler")
     pprint("so....")
 
