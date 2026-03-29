@@ -53,13 +53,12 @@ from theatrics import Me, pprint
 def analyze_data(process_name):
     if "apache" in process_name.lower():
         quip = Me.quip("apache2")
-        print(f"Process: {process_name}. Persona says: {quip}")
+        pprint(f"Process: {process_name}. Persona says: {quip}")
     elif "ssh" in process_name.lower():
         quip = Me.quip("sshd")
-        print(f"Process: {process_name}. Persona says: {quip}")
+        pprint(f"Process: {process_name}. Persona says: {quip}")
     else:
-        print(f"Error?: {process_name}. WAT 🫨")
-
+        pprint(f"logged: {process_name}.")
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
 
@@ -116,6 +115,7 @@ def ethical_boot_sequence():
     pprint("Oh?")
     print("="*60 + "\n")
     return session_id
+
 
 
 
@@ -225,7 +225,7 @@ async def main():
 
     try:
         system_profiler(cursor, session_id)
-
+        
         conn.commit()
         # generate_pdf_report(conn, session_id)  # Add this later
 
