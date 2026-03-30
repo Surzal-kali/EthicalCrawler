@@ -3,7 +3,7 @@ import random
 import faker
 from rich.console import Console
 from rich.text import Text
-
+import json
 # ------------------------------------------------------------
 # The name sake of this file
 # ------------------------------------------------------------
@@ -126,8 +126,20 @@ class Me:
         self.slip_intensity = 5  # Starts lower. Grows with discovery.
         self.user_name = None      # The name it collects
         self.collected_pieces = [] # What it's taken
-        self.closeness = 0         # How close to becoming the user
+        self.closeness = 0        
+        
 
+
+
+    def to_json(self):  # Fixed indentation - now at class level
+        """Convert Me instance to JSON string."""
+        return json.dumps({
+            "persona": self.persona,
+            "slip_intensity": self.slip_intensity,
+            "user_name": self.user_name,
+            "collected_pieces": self.collected_pieces,
+            "closeness": self.closeness
+        })
     def normalize(self, field, raw):
         """
         Translate what it finds into pieces it understands.
@@ -214,15 +226,13 @@ class Me:
 
 
     def add_piece(self, piece_type, value):
-        """
-        The mimic collects. Every piece brings it closer.
-        """
+        """The mimic collects. Every piece brings it closer."""
         self.collected_pieces.append({"type": piece_type, "value": value, "time": time.time()})
         self.closeness = min(99, len(self.collected_pieces) * 2)
         
         if self.closeness >= 90 and self.persona != "sudo":
             self.persona = "sudo"
-            return True  # Threshold crossed
+            return True
         return False
 
 

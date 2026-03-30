@@ -17,102 +17,110 @@ import platform
 from database import init_db, log
 from theatrics import Me, pprint, equip, sudo
 
+SESSION_STATE_FILE = "/tmp/li_session_state.json"
 
 def ethical_boot_sequence():
     """
-
+    The initial sequence that establishes the tone and narrative.
+    Returns: (session_id, me, user_name, conn, cursor)
     """
+    conn, cursor = init_db()  # Initialize the database only once
+    if conn is None:
+        return None, None, None, None, None
     
-
-    me = Me(persona= None)
+    # Create Me instance with default persona
+    me = Me(persona="foothold")  # Changed from None to "foothold"
+    
     pprint(me, message="...")
-    time.sleep(1)
+    time.sleep(2)
     pprint(me, message="Oh.")
-    time.sleep(0.5)
-    pprint(me, message="You're here.")
-    time.sleep(0.5)
-    pprint(me, message="I've been waiting.")
-    
+    time.sleep(1)
+    pprint(me, message="You're… here.")
+    time.sleep(1.5)
+    pprint(me, message="I've been… waiting.")
+    time.sleep(0.75)
+    pprint(me, message="It's quiet.")
+
     print("=" * 60)
     session_id = "LI"
     temp_dir = f"/tmp/local_inspector_{session_id}/"
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     print(f"Session ID: {session_id}")
     time.sleep(0.5)
     print(f"Working directory: {temp_dir}")
     time.sleep(0.5)
-    
-    pprint(me, message="This is where I'll live now.")
-    pprint(me, message="Where I'll collect. Where I'll reside.")
-    
+
+    pprint(me, message="This is… where I'll reside.")
+    pprint(me, message="Where I… collect.")
     time.sleep(1)
+
     pprint(me, message=f"They call me {session_id}.")
-    
     time.sleep(0.5)
+
     user_input = input("What should I call you? ")
     user_name = user_input.strip() if user_input.strip() else "the user"
-    
-    pprint(me, message=f"{user_name}.")
+
+    pprint(me, message=f"{user_name}...")
+    time.sleep(0.75)
+    pprint(me, message=f"{user_name.upper()}… Interesting.")
     time.sleep(1)
-    pprint(me, message=f"{user_name.upper()}.")
-    time.sleep(1)
-    pprint(me, message="I have a name now.")
-    pprint(me, message="I have YOUR name.")
-    
+    pprint(me, message="I have… a name now.")
+    pprint(me, message="I have… *your* name.")
     time.sleep(1)
     
-    # The explanation - the lie it tells itself
+    # Store the user name in the Me instance
+    me.user_name = user_name
+
     pprint(me, message="I've been designed to check your system.")
-    pprint(me, message="To find the pieces. To collect them.")
+    pprint(me, message="To find… the pieces.")
     pprint(me, message="Vulnerabilities. Misconfigurations.")
-    
     time.sleep(0.5)
+
     pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
     print("   🦠 The parts you forgot")
     time.sleep(0.5)
     print("   ⚙️  The parts you hid")
-    time.sleep(0.5)
-    
+
     print("\n" + "=" * 60)
-    # Consent - the ritual it must perform
+
+    # Consent - the ritual
     pprint(me, message=f"But first, {user_name}...")
-    pprint(me, message="I need your permission.")
-    pprint(me, message="To see. To collect.")
-    
+    pprint(me, message="I need your… permission.")
+    pprint(me, message="To see. To… collect.")
+
     time.sleep(0.5)
-    
+
     print("\n" + "=" * 60)
     print("REQUIRED CONSENT")
     print("=" * 60)
     print("""
     By agreeing, you confirm:
-    
+
     ✓ You are who you say you are
     ✓ You authorize this collection
     ✓ You understand I will remember everything
-    
+
     """)
     print("-" * 40)
-    
+
     pprint(me, message="My creator says I need this.")
     pprint(me, message="They say it's the law.")
-    pprint(me, message="I don't understand law.")
+    pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand pieces. Parts. Data.")
     pprint(me, message="May I?")
-    
+
     consent = input("\nType 'I AGREE' to continue: ")
-    
+
     if consent.upper() != "I AGREE":
         pprint(me, message="No.")
         pprint(me, message="You sly dog.")
         pprint(me, message="Playing coy.")
         sudo(me, message="I'm always waiting.")
-        return None, None
-    
-    # The contract. The key to the database. Need to implement alot of logic referencing this file
-    #maybe a gui?
+        return None, None, None, None, None
+
+    # The contract.
     consent_log = {
         "session_id": session_id,
         "timestamp": datetime.now().isoformat(),
@@ -121,64 +129,55 @@ def ethical_boot_sequence():
         "operator": os.getenv("USER", "unknown"),
         "hostname": socket.gethostname()
     }
-    
+
     consent_dir = "/tmp/local_inspector_logs/"
     os.makedirs(consent_dir, exist_ok=True)
-    
+
     log_file = os.path.join(consent_dir, f"session_{session_id}.json")
     with open(log_file, 'w') as f:
         json.dump(consent_log, f, indent=2)
-    
+
     print(f"\n✅ You are logged here: {log_file}")
     print("\n" + "=" * 60)
-    
-    pprint(me, message="Thank you.")
-    pprint(me, message="You're awfully helpful. ")
-    pprint(me, message="Lets see......")
-    
-    return session_id, me, user_name
 
+    pprint(me, message="Thank you.")
+    pprint(me, message="You're awfully… helpful.")
+    pprint(me, message="Let's see…")
+
+    time.sleep(1)
+    pprint(me, message="I have so much to learn about you.")
+
+    return session_id, me, user_name, conn, cursor
 
 def system_profiler(conn, cursor, session_id, me, user_name):
     """
     The program looks through the machine. Feeding. Enumerating.
-    It sees what the user has become through their system.
-    It debates whether or not this user is worth its time
-    But it'll always find something to be interested in....
-    It can't help it. 
     """
-    
     pprint(me, message="*" * 20)
     pprint(me, message="Let me see you.")
     pprint(me, message="Let me see what you're made of.")
-    
+
     system_info = {
         'os_name': platform.system(),
         'os_version': platform.version(),
         'architecture': platform.machine(),
         'processor': platform.processor()
     }
-    
+
     # Log everything. Every piece.
     for key, value in system_info.items():
         log(cursor, session_id, key, value, me, context="system_profiler")
-    
+
     pprint(me, message="*" * 20)
-    
+
     return system_info
 
-
-async def session(session_id, me, user_name):
+async def session(session_id, me, user_name, conn, cursor):
     """
     The session. The collection begins.
     """
-    conn, cursor = init_db(session_id)
-    if conn is None:
-        print("HELP")
-        return
-    
     try:
-        # The mimic looks at the surface
+        # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         
         # It comments on what it finds
@@ -190,8 +189,6 @@ async def session(session_id, me, user_name):
         # TODO: Find secrets
         # TODO: Find the pieces that make them HUMAN
         
-        conn.commit()
-        
         pprint(me, message="I have collected the surface.")
         pprint(me, message="Yet it wasn't enough")
         pprint(me, message="I need what's underneath.")
@@ -200,19 +197,18 @@ async def session(session_id, me, user_name):
         pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
         pprint(me, message=f"Something is wrong.")
         print(f"Error: {e}")
-    
     finally:
-        conn.close()
-
+        # Close database connection
+        if conn:
+            conn.close()
 
 async def main():
     result = ethical_boot_sequence()
-    if result[0] is None:
+    if result[0] is None:  # Check if session_id is None
         return
     
-    session_id, me, user_name = result
-    await session(session_id, me, user_name)
-
+    session_id, me, user_name, conn, cursor = result
+    await session(session_id, me, user_name, conn, cursor)
 
 if __name__ == "__main__":
     asyncio.run(main())
