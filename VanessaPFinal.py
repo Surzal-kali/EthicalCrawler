@@ -172,6 +172,14 @@ def system_profiler(conn, cursor, session_id, me, user_name):
 
     return system_info
 
+def services_profile(session_id, me, user_name, conn, cursor):
+    """
+    What else is here?
+    """
+    pprint(me, message="*" * 20)
+    pprint(me, message+"Lets see")
+
+
 async def session(session_id, me, user_name, conn, cursor):
     """
     The session. The collection begins.
@@ -179,10 +187,11 @@ async def session(session_id, me, user_name, conn, cursor):
     try:
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
-        
+        services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
         equip(me, profile)
         
+
         # TODO: Dig deeper
         # TODO: Find shell history
         # TODO: Find project files

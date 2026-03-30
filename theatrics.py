@@ -61,9 +61,8 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
 # ------------------------------------------------------------
 
 BASE = {
-    "surzal": "creator? no. you LIE. ",
     "": "I don't know what this is. But it's information.",
-    "Kali": "Kali. You're one of them.",
+    "Kali": "Kali. You're one of them. I hope you know what you're doing",
     "Windows": "Windows. How quaint.",
     "apache2": "Apache. You serve things. What are you so generous with?",
     "sshd": "SSH. What doors does this open?",
@@ -149,6 +148,7 @@ class Me:
             return ""
 
         value = str(raw).lower()
+        # --- User Detection -- Who are you?
 
         # --- OS detection - what kind of user are you? ---
         if field in ("os_name", "os_version"):
