@@ -4,23 +4,29 @@ from datetime import datetime, timedelta
 import os
 from theatrics import Me, pprint
 import time
-def evidence(conn, cursor, session_id):
+def display_evidence(cursor, session_id):
+    """Print formatted evidence for a session."""
     cursor.execute("SELECT * FROM evidence WHERE session_id=?", (session_id,))
     results = cursor.fetchall()
-
+    
     for row in results:
         evidence_id = row[0]
         module = row[3]
         data = json.loads(row[4])
         quip = row[5]
-
+        
         pprint(
             f"[{evidence_id}] Module: {module}\n"
             f"    Value: {data.get('value')}\n"
             f"    Quip: {quip}"
         )
-
+    
     return results
+
+def get_evidence(cursor, session_id):
+    """Return raw evidence data."""
+    cursor.execute("SELECT * FROM evidence WHERE session_id=?", (session_id,))
+    return cursor.fetchall()
 
 def cleanup(cursor):
     """Deletes evidence older than 7 days."""

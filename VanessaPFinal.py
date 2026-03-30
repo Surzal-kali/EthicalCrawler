@@ -3,13 +3,6 @@
 #### Date: 3/26/2026
 #### Description: This program is something i guess
 ###k this time i think i have a realistic idea
-import os
-import socket
-import json
-import asyncio
-from datetime import datetime
-from tempfile import TemporaryFile as TF
-import platform
 from database import init_db, log
 from theatrics import pprint
 from theatrics import pspace
@@ -30,16 +23,16 @@ from datetime import datetime
 from tempfile import TemporaryFile as TF
 import platform
 import psutil
-from database import init_db, log, evidence, update, delete
+from database import init_db, log, get_evidence, display_evidence, update, delete
 
 from theatrics import Me, pprint, equip
 
 
 def ethical_boot_sequence():
     """Core boot sequence with honest consent"""
-
-    pprint("🥱🥱🥱🥱🥱🥱🥱🥱🥱🥱")
-    pprint("="*60)
+    me = Me(persona="foothold")
+    pprint(me, message="🥱🥱🥱🥱🥱🥱🥱🥱🥱🥱")
+    pprint(me, message="="*60)
 
     session_id = f"LI-{datetime.now().strftime('%Y%m%d-%H%M')}"
     temp_dir = f"/tmp/local_inspector_{session_id}/"
@@ -47,7 +40,7 @@ def ethical_boot_sequence():
 
     print(f"Session ID: {session_id}")
     print(f"Working directory: {temp_dir}")
-    pprint("Alright lets get the housekeeping out of the way. I don't have all day ⌛⌛")
+    pprint(me, message="Alright lets get the housekeeping out of the way. I don't have all day ⌛⌛")
     print("REQUIRED CONSENT:")
     print("="*60)
     print("""
@@ -65,8 +58,8 @@ def ethical_boot_sequence():
     consent = input("Type 'I AGREE' to continue, anything else to exit: ")
 
     if consent.upper() != "I AGREE":
-        pprint("")
-        return None
+        pprint(me, message="")
+        return None, None  # Return two None values to match unpacking
 
     # Log what they agreed to
     consent_log = {
@@ -88,20 +81,20 @@ def ethical_boot_sequence():
 
     print(f"\n✅ Consent logged to: {log_file}")
     print("\n" + "="*60)
-    pprint("Oh?")
-    pprint("="*60 + "\n")
-    return session_id
+    pprint(me, message="Oh?")
+    pprint(me, message="="*60 + "\n")
+    return session_id, me  # Return both values
 
-def system_services(conn, cursor, session_id, me):
-    # services = {
-    #     "<>" : #placeholder
-    #     "<>" : #placeholder
-    # }
-    pass
+# def system_services(conn, cursor, session_id, me):
+#     # services = {
+#     #     "<>" : #placeholder
+#     #     "<>" : #placeholder
+#     # }
+#     pass
 
 
 def system_profiler(conn, cursor, session_id, me):
-    pprint("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")
+    pprint(me, message="💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")  # Fixed: me, not Me
 
     system_info = {
         'os_name': platform.system(),
@@ -113,13 +106,13 @@ def system_profiler(conn, cursor, session_id, me):
     for key, value in system_info.items():
         log(cursor, session_id, key, value, me, context="system_profiler")
 
-    pprint("This demo may not be optimized for this environment\n"
+    pprint(me, message="This demo may not be optimized for this environment\n"  # Fixed
            "Be wary, be alert.")
-    pprint("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")
+    pprint(me, message="💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀")  # Fixed
 
     return system_info
 
-async def session(session_id):
+async def session(session_id, me):
     conn, cursor = init_db(session_id)
     if conn is None:
         print("Failed to initialize database. Exiting.")
@@ -127,7 +120,6 @@ async def session(session_id):
 
     try:
         # Instantiate narrator once per session
-        me = Me(persona="foothold")
 
         # Run system profiler (this now logs using the new log() signature)
         profile = system_profiler(conn, cursor, session_id, me)
@@ -135,9 +127,9 @@ async def session(session_id):
         # Narrator commentary on system profile
         equip(me, profile)
 
-        # Scan system services (you can update this to use the new log() too)
-        system_services(conn, cursor, session_id, me)
-
+        # Scan system services 
+        # services = system_services(conn, cursor, session_id, me)
+        # equip(me, services)
         conn.commit()
 
     except Exception as e:
@@ -149,11 +141,11 @@ async def session(session_id):
 
 
 async def main():
-    session_id = ethical_boot_sequence()
+    session_id, me = ethical_boot_sequence()
     if not session_id:
         return
 
-    await session(session_id)
+    await session(session_id, me)
 
 if __name__ == "__main__":
     asyncio.run(main())

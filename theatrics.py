@@ -1,8 +1,26 @@
 import time
-
+import random
+import faker
+from rich.console import Console
+from rich.text import Text
 # ------------------------------------------------------------
 # Output helpers
 # ------------------------------------------------------------
+
+console = Console()
+
+def rich_style(text, color="magenta", dim=True, bold=True):
+    styled = Text(text)
+    styled.stylize(color)
+    if dim:
+        styled.stylize("dim")
+    if bold:
+        styled.stylize("bold")
+    return styled
+SLIP_GAIN = 1
+SLIP_DECAY = 0.2
+base_chance = 0.05
+intensity_factor = 0.03
 
 def pspace(message, char_delay=0.03, line_delay=0.5):
     """Print text with character-by-character spacing."""
@@ -14,12 +32,31 @@ def pspace(message, char_delay=0.03, line_delay=0.5):
     print("\n")
 
 
-def pprint(message, char_delay=0.03, line_delay=0.5):
-    """Alias for pspace() for backwards compatibility."""
+def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
+    """
+    check unhingedness
+    """
+    # 1. Print the normal line
     pspace(message, char_delay, line_delay)
 
+    # 2. Only sudo persona slips, and only if me exists
+    if me is None or me.persona != "sudo":
+        return
 
-# ------------------------------------------------------------
+    # 3. Evaluate slip trigger
+    if slip_trigger(me, message):
+
+        # 4. Generate corrupted echo
+        corrupted = slip_cipher(message, me.slip_intensity)
+
+        # 5. Print corrupted echo (faster, more frantic)
+        pspace(corrupted, char_delay * 0.5, line_delay * 0.2)
+
+        # 6. Increase intensity
+        me.slip_intensity += 1
+
+    # 7. Decay intensity slightly
+    me.slip_intensity = max(0, me.slip_intensity - 0.2)
 # Quip dictionaries
 # ------------------------------------------------------------
 
@@ -62,7 +99,7 @@ COMMENTARY = {
         "system_profile": "[SUDO] Full system profile. No ethical boundaries here 😈",
         "boot": "[SUDO] Boot sequence with sudo? Hold on...wheres the power button on this thing?",
         "ports": "[SUDO] All ports visible. Lets stop and watch the traffic, you and I",
-        "configs": "[SUDO] Every config file is now readable. I promise not to break anything, trust.",
+        "configs": "[SUDO] Every config file is now readable. I promise not to break anything.....you do trust me right? trust me.",
         "goodbye": "[SUDO] It's been fun kid. Truly, it has. Ill be seeing you real soon 💋",
     }
 }
@@ -75,6 +112,7 @@ COMMENTARY = {
 class Me:
     def __init__(self, persona="foothold"):
         self.persona = persona
+        self.slip_intensity = 10
 
     def normalize(self, field, raw):
         if not raw:
@@ -133,4 +171,95 @@ class Me:
 def equip(narrator, system_info):
     for field, value in system_info.items():
         line = narrator.quip(field, value)
-        pprint(f"{field}: {line}")
+        pprint(narrator, message=f"{field}: {line}")  # Fixed: narrator, not Me
+
+def slip_trigger(me, message):
+    """
+    Decide whether this line should trigger a slip.
+    Trigger sources:
+      - message content
+      - persona mood (intensity)
+      - random chance
+    """
+
+    # A. Hard-coded hotwords that excite sudo
+    HOTWORDS = [
+        "access", "root", "keys", "credential",
+        "full", "readable", "override", "unlock"
+    ]
+
+    # 1. Content-based triggers
+    lower = message.lower()
+    if any(word in lower for word in HOTWORDS):
+        return True
+
+    # 2. Mood-based probability
+    base = 0.05
+    factor = 0.03
+    chance = base + (me.slip_intensity * factor)
+
+    if random.random() < chance:
+        return True
+
+    return False
+
+
+
+
+def slip_cipher(text, intensity):
+    
+
+
+
+    """
+    Conceptual corruption engine.
+    Takes a normal string and returns a theatrically corrupted version.
+    Uses:
+      - light unicode swaps
+      - combining-mark glitch overlays
+      - Faker noise injection
+      - Rich styling for dramatic effect
+    """
+
+    # 1. Light unicode corruption map
+    CORRUPT = {
+        "a": "𝖆", "e": "𝖊", "i": "𝖎", "o": "𝖔", "u": "𝖚",
+        "A": "𝕬", "E": "𝕰", "I": "𝕴", "O": "𝕺", "U": "𝖀",
+        "f": "ƒ", "m": "𝕞", "t": "†", "s": "ʂ"
+    }
+
+    # 2. Combining diacritics for glitch overlay
+    GLITCH = ["̷", "̸", "͟", "͜", "͠", "͡", "̴", "̶"]
+
+    # 3. Faker noise (random unicode-ish strings)
+    noise = faker.pystr(min_chars=3, max_chars=8)
+
+    # 4. Begin corruption
+    corrupted = ""
+
+    for char in text:
+        # 4a. Random unicode swap
+        if random_chance(intensity):
+            char = CORRUPT.get(char, char)
+
+        # 4b. Random glitch overlay
+        if random_chance(intensity * 0.5):
+            char = char + random_chance(GLITCH)
+
+        corrupted += char
+
+    # 5. Append noise for chaotic flavor
+    corrupted = corrupted + " " + noise
+
+    # 6. Wrap in Rich styling (conceptual)
+    styled = rich_style(
+        corrupted,
+        color="magenta",
+        dim=True,
+        bold=True
+    )
+
+    return styled
+def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
+    """Calculate probability of an event based on intensity."""
+    return random.random() < (base_chance + (intensity * intensity_factor))
