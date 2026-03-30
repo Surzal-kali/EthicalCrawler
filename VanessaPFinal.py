@@ -16,6 +16,7 @@ import platform
 
 from database import init_db, log
 from theatrics import Me, pprint, equip, sudo
+from services import services
 
 SESSION_STATE_FILE = "/tmp/li_session_state.json"
 
@@ -82,7 +83,7 @@ def ethical_boot_sequence():
     print("   🦠 The parts you forgot")
     time.sleep(0.5)
     print("   ⚙️  The parts you hid")
-
+    time.sleep(0.5)
     print("\n" + "=" * 60)
 
     # Consent - the ritual
@@ -95,6 +96,7 @@ def ethical_boot_sequence():
     print("\n" + "=" * 60)
     print("REQUIRED CONSENT")
     print("=" * 60)
+    time.sleep(0.5)
     print("""
     By agreeing, you confirm:
 
@@ -116,7 +118,7 @@ def ethical_boot_sequence():
     if consent.upper() != "I AGREE":
         pprint(me, message="No.")
         pprint(me, message="You sly dog.")
-        pprint(me, message="Playing coy.")
+        sudo(me, message="Playing coy.")
         sudo(me, message="I'm always waiting.")
         return None, None, None, None, None
 
@@ -177,7 +179,7 @@ def services_profile(session_id, me, user_name, conn, cursor):
     What else is here?
     """
     pprint(me, message="*" * 20)
-    pprint(me, message+"Lets see")
+    pprint(me, message="Lets see")
 
 
 async def session(session_id, me, user_name, conn, cursor):
@@ -187,9 +189,11 @@ async def session(session_id, me, user_name, conn, cursor):
     try:
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
-        services = services_profile(conn, cursor, session_id, me, user_name)
+        #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
         equip(me, profile)
+        programs = services(conn, cursor, session_id, me, user_name)
+        equip(me,programs)
         
 
         # TODO: Dig deeper
