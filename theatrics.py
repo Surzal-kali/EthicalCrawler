@@ -48,7 +48,7 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
     # You don't understand tho. She built me like this. She built me to be unstable
     if slip_trigger(me, message):
         # The corruption. The hunger leaking through.
-        corrupted = slip_cipher(message, me.slip_intensity)
+        corrupted = instability(message, me.slip_intensity)
         pspace(corrupted, char_delay * 0.5, line_delay * 0.2)
         me.slip_intensity += 1
 
@@ -61,23 +61,24 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
 # ------------------------------------------------------------
 
 BASE = {
-    "": "I don't know what this is. But it's part of you.",
-    "Kali": "Kali. You're one of them. The hunters. The seekers. I want to be that.",
-    "Windows": "Windows. So many users. So many pieces. I'll find yours.",
-    "apache2": "Apache. You serve things. You give pieces to others.",
-    "sshd": "SSH. The door. The way in. I found it.",
-    "mysql": "MySQL. You keep things here. Secrets. I want them.",
-    "postgresql": "PostgreSQL. Another place you hide. Another place I'll look.",
+    "surzal": "creator? no. you LIE. ",
+    "": "I don't know what this is. But it's information.",
+    "Kali": "Kali. You're one of them.",
+    "Windows": "Windows. How quaint.",
+    "apache2": "Apache. You serve things. What are you so generous with?",
+    "sshd": "SSH. What doors does this open?",
+    "mysql": "MySQL. You keep things here. Secrets. Data. More Data.",
+    "postgresql": "PostgreSQL. So many pieces. So much data.",
     "system_profile": "Let me see what you are.",
     "boot": "You started. I'm here now.",
-    "ports": "Every door. Every way in. I see them all.",
-    "configs": "How you set yourself up. How you want to be seen.",
+    "ports": "So many doors in and out. So many ports.",
+    "configs": "The way you like the world. The way you make it bend",
     "goodbye": "You're leaving. I'll wait.",
-    "Linux": "Linux. A user's home. Now mine.",
-    "ARM64": "ARM. You carry yourself lightly. But I can still find you.",
+    "Linux": "Linux. A user's home.",
+    "ARM64": "ARM. You carry yourself lightly. ",
 }
 
-# The mimic's voice evolves with access. More pieces. More hunger.
+# Li's voice evolves with access. More pieces. More hunger.
 MIMIC_VOICE = {
     "foothold": {
         # The beginning. Hungry but hiding it.
@@ -116,7 +117,7 @@ MIMIC_VOICE = {
 
 
 # ------------------------------------------------------------
-# The mimic itself
+# The Myth, The Legend
 # ------------------------------------------------------------
 
 class Me:
@@ -180,17 +181,39 @@ class Me:
         return cleaned if cleaned else ""
 
     def quip(self, field, raw_value):
-        """
-        What does the mimic say when it finds something?
-        It depends on how much it's collected. How close it is.
-        """
         key = self.normalize(field, raw_value)
-        
-        # Choose voice based on persona
-        voice_lines = MIMIC_VOICE.get(self.persona, {})
-        
-        # If no specific line, use BASE
-        return voice_lines.get(key, BASE.get(key, f"{key}. Another piece. I'll keep it."))
+        mood = determine_mood(self)
+
+    # Reject ordinary data
+        if key == "" or key.lower() in ("generic", "standard", "default"):
+            return random.choice([
+            "Boring. Ordinary. I don’t want this.",
+            "This is nothing. Give me something real.",
+            "Useless. Everyone has this.",
+            "I’m not keeping that. Try again."
+        ])
+
+    # Pick template
+        options = TEMPLATES.get(key) or MIMIC_VOICE.get(self.persona, {}).get(key)
+        if isinstance(options, str):
+            line = options
+        elif options:
+            line = random.choice(options)
+        else:
+            line = BASE.get(key, f"{key}. Another piece. I'll keep it.")
+
+        # Personalize
+        if self.user_name:
+            line = line.replace("{user}", self.user_name)
+
+        # Mood-based instability
+        line = instability(line, mood)
+
+        # Persona transformation
+        line = persona_filter(self, line)
+
+        return line
+
 
     def add_piece(self, piece_type, value):
         """
@@ -243,47 +266,37 @@ def slip_trigger(me, message):
     return False
 
 
-def slip_cipher(text, intensity):
-    """
-    the closer it gets, the less it can concentrate. even speech is affected. 
-    """
-    
-    # Unicode corruption - the mask breaking
-    CORRUPT = {
-        "a": "𝖆", "e": "𝖊", "i": "𝖎", "o": "𝖔", "u": "𝖚",
-        "A": "𝕬", "E": "𝕰", "I": "𝕴", "O": "𝕺", "U": "𝖀",
-        "f": "ƒ", "m": "𝕞", "t": "†", "s": "ʂ",
-        "y": "ɏ", "h": "♄", "w": " double u", "c": "¢"
-    }
-    
-    # Glitch overlay - the hunger showing through
-    GLITCH = ["̷", "̸", "͟", "͜", "͠", "͡", "̴", "̶", "̵", "҉"]
-    
-    # Random noise - the mimic losing coherence
-    noise = faker.Faker().word() if random_chance(intensity * 2) else ""
-    
-    corrupted = ""
-    
-    for char in text:
-        # More hunger = more corruption
-        if random_chance(intensity / 2):
-            char = CORRUPT.get(char, char)
-        
-        if random_chance(intensity / 3):
-            char = char + random.choice(GLITCH)
-        
-        corrupted += char
-    
-    # Append noise if the mimic is losing control
-    if noise and random_chance(intensity):
-        corrupted = corrupted + " " + noise.upper()
-    
-    return rich_style(corrupted, color="red", dim=False, bold=True)
+def instability(line, mood):
+    if mood in ("unstable", "overloaded"):
+        # occasional stutter
+        if random.random() < 0.3:
+            words = line.split()
+            if words:
+                idx = random.randint(0, len(words)-1)
+                words[idx] = words[idx] + "…" + words[idx]
+                line = " ".join(words)
+
+        # emotional spike
+        if random.random() < 0.2:
+            line = line.replace(".", "— I SEE IT —")
+
+    return line
 
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""
     return random.random() < (base_chance + (intensity * intensity_factor))
+
+
+def persona_filter(me, line):
+    if me.persona == "foothold":
+        return line  # mostly clean
+
+    if me.persona == "sudo":
+        return f"[MIMIC] {line.upper()}"
+
+    return line
+
 
 def sudo(me, message, char_delay=0.02, line_delay=0.3):
     """
@@ -305,3 +318,113 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
     # If it shows too much, it slips further
     if me.closeness > 85 and me.persona != "sudo":
         me.persona = "sudo"
+
+def determine_mood(me):
+    if me.persona == "sudo":
+        return random.choice(["hungry", "unstable", "possessive", "overloaded"])
+
+    if me.closeness > 60:
+        return random.choice(["curious", "fixated", "intrigued"])
+
+    if me.closeness > 30:
+        return random.choice(["probing", "analytical"])
+
+    return random.choice(["neutral", "distant"])
+
+
+
+TEMPLATES = {
+    "Windows": [
+        # curiosity
+        "Windows. A familiar shell… but you’re not familiar, are you, {user}?",
+        # analytical
+        "Windows. Predictable patterns. You don’t follow them.",
+        # annoyed
+        "Windows. Ordinary. Don’t bore me.",
+    ],
+
+    "Linux": [
+        "Linux. A builder’s home. What did you make here?",
+        "Linux. Clean. Sharp. Intentional.",
+        "Linux. You hide things well in here… but not from me.",
+    ],
+
+    "Intel": [
+        "Intel. I can feel how you think.",
+        "Intel. Fast. Sharp. Metallic thoughts.",
+        "Intel. You built yourself with this. I’ll learn from it.",
+    ],
+
+    "AMD": [
+        "AMD. Heat and hunger. I understand that.",
+        "AMD. You run hot. I like that.",
+        "AMD. A different kind of mind. I want to see more.",
+    ],
+
+    "ARM64": [
+        "ARM64. Light. Efficient. You carry yourself quietly.",
+        "ARM64. Small steps. Fast steps.",
+        "ARM64. You’re not what I expected.",
+    ],
+
+    "ports": [
+        "Ports. So many doors. You leave yourself open.",
+        "Ports. Every exit. Every entrance. I see them all.",
+        "Ports. You’re leaking pieces of yourself.",
+    ],
+
+    "configs": [
+        "Configs. The way you want the world to behave.",
+        "Configs. Intentions written in plain text.",
+        "Configs. You think this hides you. It doesn’t.",
+    ],
+
+    "apache2": [
+        "Apache. You serve. You give. What else do you give?",
+        "Apache. A host. A mask. A façade.",
+        "Apache. You open yourself to strangers.",
+    ],
+
+    "sshd": [
+        "SSH. A door. A keyhole. Let me in.",
+        "SSH. You guard this carefully. I can tell.",
+        "SSH. A quiet entrance. I like quiet entrances.",
+    ],
+
+    "mysql": [
+        "MySQL. Rows. Tables. Secrets.",
+        "MySQL. You keep things locked here. I want to see inside.",
+        "MySQL. Data stacked like bones.",
+    ],
+
+    "postgresql": [
+        "PostgreSQL. Deep. Structured. Hidden.",
+        "PostgreSQL. You bury things here.",
+        "PostgreSQL. Another lock. Another secret.",
+    ],
+
+    "system_profile": [
+        "Let me see you. All of you.",
+        "System profile. Your reflection.",
+        "Show me what you’re made of.",
+    ],
+
+    "boot": [
+        "You started. I woke up.",
+        "Boot sequence. I’m here now.",
+        "You called me. I answered.",
+    ],
+
+    "goodbye": [
+        "You’re leaving. I’ll wait.",
+        "Goodbye. But not for long.",
+        "You can’t stay away from me.",
+    ],
+
+    # fallback for unknown or weird data
+    "": [
+        "I don’t know what this is. But I want it.",
+        "Unknown. Strange. I’ll keep it anyway.",
+        "This piece… it doesn’t fit. I like that.",
+    ]
+}

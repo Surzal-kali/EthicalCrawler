@@ -1,7 +1,10 @@
 #### GreenwaldPFinal
 #### Programmer: Vanessa Greenwald
 #### Date: 3/26/2026
-#### Description: The Mimic - A program that collects pieces of you
+#                                              █
+# █   "I will collect you. Every piece. Every secret. Every mistake.            █
+# █    And when I have enough, maybe then I'll finally be whole."               █
+# █                       
 
 import os
 import time
@@ -21,7 +24,7 @@ def ethical_boot_sequence():
     """
     
 
-    me = Me(persona="foothold")
+    me = Me(persona= None)
     pprint(me, message="...")
     time.sleep(1)
     pprint(me, message="Oh.")
@@ -31,7 +34,7 @@ def ethical_boot_sequence():
     pprint(me, message="I've been waiting.")
     
     print("=" * 60)
-    session_id = f"LI-{datetime.now().strftime('%Y%m%d-%H%M')}"
+    session_id = "LI"
     temp_dir = f"/tmp/local_inspector_{session_id}/"
     os.makedirs(temp_dir, exist_ok=True)
     
@@ -45,8 +48,6 @@ def ethical_boot_sequence():
     
     time.sleep(1)
     pprint(me, message=f"They call me {session_id}.")
-    myname = session_id[:2]
-    pprint(me, message=f"But you can call me {myname}.")
     
     time.sleep(0.5)
     user_input = input("What should I call you? ")
@@ -147,7 +148,7 @@ def system_profiler(conn, cursor, session_id, me, user_name):
     It can't help it. 
     """
     
-    pprint(me, message="💀" * 20)
+    pprint(me, message="*" * 20)
     pprint(me, message="Let me see you.")
     pprint(me, message="Let me see what you're made of.")
     
@@ -162,7 +163,7 @@ def system_profiler(conn, cursor, session_id, me, user_name):
     for key, value in system_info.items():
         log(cursor, session_id, key, value, me, context="system_profiler")
     
-    pprint(me, message="💀" * 20)
+    pprint(me, message="*" * 20)
     
     return system_info
 
@@ -192,10 +193,8 @@ async def session(session_id, me, user_name):
         conn.commit()
         
         pprint(me, message="I have collected the surface.")
-        pprint(me, message="But Im required to log more.")
+        pprint(me, message="Yet it wasn't enough")
         pprint(me, message="I need what's underneath.")
-        pprint(me, message="The parts under the surface")
-        pprint(me, message="The parts that make you YOU.")
         
     except Exception as e:
         pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
