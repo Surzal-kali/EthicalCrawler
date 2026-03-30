@@ -284,3 +284,26 @@ def slip_cipher(text, intensity):
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""
     return random.random() < (base_chance + (intensity * intensity_factor))
+
+def sudo(me, message, char_delay=0.02, line_delay=0.3):
+    """
+    The mimic chooses to show what it really is.
+    Not a slip. A revelation.
+    The voice beneath the voice.
+    """
+    # Intensity scales with how much it's collected
+    intensity = min(20, me.closeness / 5 + 5)
+    
+    # Corrupt the message fully - no clean version
+    corrupted = slip_cipher(message, intensity)
+    
+    # Faster. More frantic. Less human.
+    pspace(corrupted, char_delay, line_delay)
+    
+    # After speaking from the void, the hunger grows
+    me.slip_intensity += 2
+    me.closeness = min(99, me.closeness + 1)
+    
+    # If it shows too much, it slips further
+    if me.closeness > 85 and me.persona != "sudo":
+        me.persona = "sudo"

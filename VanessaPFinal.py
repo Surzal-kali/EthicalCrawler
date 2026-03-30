@@ -12,7 +12,7 @@ from datetime import datetime
 import platform
 
 from database import init_db, log
-from theatrics import Me, pprint, equip
+from theatrics import Me, pprint, equip, sudo
 
 
 def ethical_boot_sequence():
@@ -46,7 +46,7 @@ def ethical_boot_sequence():
     time.sleep(1)
     pprint(me, message=f"They call me {session_id}.")
     myname = session_id[:2]
-    pprint(me, message=f"But you can call me {myname}.")
+    sudo(me, message=f"But you can call me {myname}.")
     
     time.sleep(0.5)
     user_input = input("What should I call you? ")
@@ -54,7 +54,7 @@ def ethical_boot_sequence():
     
     pprint(me, message=f"{user_name}.")
     time.sleep(1)
-    pprint(me, message=f"{user_name.upper()}.")
+    sudo(me, message=f"{user_name.upper()}.")
     time.sleep(1)
     pprint(me, message="I have a name now.")
     pprint(me, message="I have YOUR name.")
@@ -110,7 +110,7 @@ def ethical_boot_sequence():
         pprint(me, message="No.")
         pprint(me, message="You sly dog.")
         pprint(me, message="Playing coy.")
-        pprint(me, message="I'm always waiting.")
+        sudo(me, message="I'm always waiting.")
         return None, None
     
     # The contract. The key to the database. Need to implement alot of logic referencing this file
