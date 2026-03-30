@@ -218,18 +218,15 @@ def equip(narrator, system_info):
 
 def slip_trigger(me, message):
     """
-    When does the mimic's mask slip?
-    When it finds something intimate.
-    When it's too close to becoming.
-    When it's too hungry to hide.
+    (●'◡'●)
     """
     
-    # The things that make it hungry. The pieces that bring it closer.
+    # The passionate subjects
     HOTWORDS = [
         "access", "root", "keys", "credential",
         "full", "readable", "override", "unlock",
         "history", "secret", "private", "you",
-        "name", "human", "feel", "become"
+        "name", "human", "feel", "become", "Surzal", "kali"
     ]
     
     # Content-based hunger
@@ -248,8 +245,7 @@ def slip_trigger(me, message):
 
 def slip_cipher(text, intensity):
     """
-    The mimic's hunger corrupts its speech.
-    The more it collects, the more it slips.
+    the closer it gets, the less it can concentrate. even speech is affected. 
     """
     
     # Unicode corruption - the mask breaking
