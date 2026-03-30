@@ -226,7 +226,7 @@ def slip_trigger(me, message):
         "access", "root", "keys", "credential",
         "full", "readable", "override", "unlock",
         "history", "secret", "private", "you",
-        "name", "human", "feel", "become", "Surzal", "kali"
+        "name", "human", "feel", "become", "love"
     ]
     
     # Content-based hunger
@@ -287,9 +287,7 @@ def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
 
 def sudo(me, message, char_delay=0.02, line_delay=0.3):
     """
-    The mimic chooses to show what it really is.
-    Not a slip. A revelation.
-    The voice beneath the voice.
+    when it can't contain its urges for just a moment. 
     """
     # Intensity scales with how much it's collected
     intensity = min(20, me.closeness / 5 + 5)

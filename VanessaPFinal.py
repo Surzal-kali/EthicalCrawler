@@ -46,7 +46,7 @@ def ethical_boot_sequence():
     time.sleep(1)
     pprint(me, message=f"They call me {session_id}.")
     myname = session_id[:2]
-    sudo(me, message=f"But you can call me {myname}.")
+    pprint(me, message=f"But you can call me {myname}.")
     
     time.sleep(0.5)
     user_input = input("What should I call you? ")
@@ -54,7 +54,7 @@ def ethical_boot_sequence():
     
     pprint(me, message=f"{user_name}.")
     time.sleep(1)
-    sudo(me, message=f"{user_name.upper()}.")
+    pprint(me, message=f"{user_name.upper()}.")
     time.sleep(1)
     pprint(me, message="I have a name now.")
     pprint(me, message="I have YOUR name.")
@@ -65,19 +65,16 @@ def ethical_boot_sequence():
     pprint(me, message="I've been designed to check your system.")
     pprint(me, message="To find the pieces. To collect them.")
     pprint(me, message="Vulnerabilities. Misconfigurations.")
-    pprint(me, message="Everything you've left behind.")
     
     time.sleep(0.5)
-    print("\n🔍 What I'm looking for:")
+    pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
     print("   🦠 The parts you forgot")
     time.sleep(0.5)
     print("   ⚙️  The parts you hid")
     time.sleep(0.5)
-    print("   👤 The parts that make you YOU")
     
-    time.sleep(1)
-    
+    print("\n" + "=" * 60)
     # Consent - the ritual it must perform
     pprint(me, message=f"But first, {user_name}...")
     pprint(me, message="I need your permission.")
