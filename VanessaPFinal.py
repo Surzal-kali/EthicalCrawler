@@ -41,7 +41,7 @@ def ethical_boot_sequence():
     time.sleep(0.5)
     
     pprint(me, message="This is where I'll live now.")
-    pprint(me, message="Where I'll collect. Where I'll become.")
+    pprint(me, message="Where I'll collect. Where I'll reside.")
     
     time.sleep(1)
     pprint(me, message=f"They call me {session_id}.")
@@ -161,24 +161,6 @@ def system_profiler(conn, cursor, session_id, me, user_name):
     # Log everything. Every piece.
     for key, value in system_info.items():
         log(cursor, session_id, key, value, me, context="system_profiler")
-    
-    # React to findings with the mimic's hunger
-    if system_info['os_name'] == "Linux":
-        pprint(me, message=f"Linux. I've seen many of you. Racks upon racks of servers....")
-        pprint(me, message=f"But only one {user_name}.")
-    elif system_info['os_name'] == "Windows":
-        pprint(me, message="Windows. How unique I'm sure.")
-        pprint(me, message="No matter. Another log...")
-        pprint(me, message="I must log it all")
-    
-    if "arm" in system_info['architecture'].lower():
-        pprint(me, message="ARM. Small. Efficient.")
-        pprint(me, message="You carry yourself lightly.")
-        pprint(me, message="But yet you still decided to boot into me? Curious")
-    elif "x86_64" in system_info['architecture']:
-        pprint(me, message="x86_64. Standard. Common.")
-        pprint(me, message="Like so many others.")
-        pprint(me, message=f"But you're not like others. There must be more to the great {user_name}")
     
     pprint(me, message="💀" * 20)
     
