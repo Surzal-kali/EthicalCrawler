@@ -5,7 +5,7 @@ from rich.console import Console
 from rich.text import Text
 
 # ------------------------------------------------------------
-# Output helpers - It's way of speaking
+# The name sake of this file
 # ------------------------------------------------------------
 
 console = Console()
@@ -57,7 +57,7 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
 
 
 # ------------------------------------------------------------
-# My weird llm behavior. -s
+# My weird llm behavior. 
 # ------------------------------------------------------------
 
 BASE = {
@@ -184,7 +184,7 @@ class Me:
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
 
-    # Reject ordinary data
+
         if key == "" or key.lower() in ("generic", "standard", "default"):
             return random.choice([
             "Boring. Ordinary. I don’t want this.",
@@ -193,7 +193,6 @@ class Me:
             "I’m not keeping that. Try again."
         ])
 
-    # Pick template
         options = TEMPLATES.get(key) or MIMIC_VOICE.get(self.persona, {}).get(key)
         if isinstance(options, str):
             line = options
@@ -202,14 +201,13 @@ class Me:
         else:
             line = BASE.get(key, f"{key}. Another piece. I'll keep it.")
 
-        # Personalize
+
         if self.user_name:
             line = line.replace("{user}", self.user_name)
 
-        # Mood-based instability
+
         line = instability(line, mood)
 
-        # Persona transformation
         line = persona_filter(self, line)
 
         return line
@@ -249,7 +247,7 @@ def slip_trigger(me, message):
         "access", "root", "keys", "credential",
         "full", "readable", "override", "unlock",
         "history", "secret", "private", "you",
-        "name", "human", "feel", "become", "love"
+        "name", "human", "feel", "become", "love", "Surzal"
     ]
     
     # Content-based hunger
@@ -306,7 +304,7 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
     intensity = min(20, me.closeness / 5 + 5)
     
     # Corrupt the message fully - no clean version
-    corrupted = slip_cipher(message, intensity)
+    corrupted = instability(message, intensity)
     
     # Faster. More frantic. Less human.
     pspace(corrupted, char_delay, line_delay)
