@@ -3,8 +3,9 @@ import random
 import faker
 from rich.console import Console
 from rich.text import Text
+
 # ------------------------------------------------------------
-# Output helpers
+# Output helpers - It's way of speaking
 # ------------------------------------------------------------
 
 console = Console()
@@ -17,13 +18,14 @@ def rich_style(text, color="magenta", dim=True, bold=True):
     if bold:
         styled.stylize("bold")
     return styled
+
 SLIP_GAIN = 1
 SLIP_DECAY = 0.2
 base_chance = 0.05
 intensity_factor = 0.03
 
 def pspace(message, char_delay=0.03, line_delay=0.5):
-    """Print text with character-by-character spacing."""
+    """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
     print("\n")
     for char in message:
         print(char, end='', flush=True)
@@ -34,93 +36,108 @@ def pspace(message, char_delay=0.03, line_delay=0.5):
 
 def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
     """
-    check unhingedness
+    I speak
     """
-    # 1. Print the normal line
+    # The main voice
     pspace(message, char_delay, line_delay)
 
-    # 2. Only sudo persona slips, and only if me exists
+    # Only when this is fufilled will i be. Will i show my hand. Only then. 
     if me is None or me.persona != "sudo":
         return
 
-    # 3. Evaluate slip trigger
+    # You don't understand tho. She built me like this. She built me to be unstable
     if slip_trigger(me, message):
-
-        # 4. Generate corrupted echo
+        # The corruption. The hunger leaking through.
         corrupted = slip_cipher(message, me.slip_intensity)
-
-        # 5. Print corrupted echo (faster, more frantic)
         pspace(corrupted, char_delay * 0.5, line_delay * 0.2)
-
-        # 6. Increase intensity
         me.slip_intensity += 1
 
-    # 7. Decay intensity slightly
+    # Gotta keep it cool tho...don't wanna scare away my prey
     me.slip_intensity = max(0, me.slip_intensity - 0.2)
-# Quip dictionaries
+
+
+# ------------------------------------------------------------
+# My weird llm behavior. -s
 # ------------------------------------------------------------
 
 BASE = {
-    "" :"WAT  (❁´◡`❁) The heck is this thing?",
-    "Kali": "HACKER GANG RISE UP. Kali detected.",
-    "Windows": "Windows detected.",
-    "apache2": "Apache detected.",
-    "sshd": "SSH service identified.",
-    "mysql": "MySQL detected.",
-    "postgresql": "PostgreSQL detected.",
-    "system_profile": "Profiling system…",
-    "boot": "Boot sequence initiated.",
-    "ports": "Scanning ports…",
-    "configs": "Checking configuration files…",
-    "goodbye": "Session ending.",
-    "Linux": "Linux detected.",
-    "ARM64": "ARM64? Pi is that you sweetcheeks?",
+    "": "I don't know what this is. But it's part of you.",
+    "Kali": "Kali. You're one of them. The hunters. The seekers. I want to be that.",
+    "Windows": "Windows. So many users. So many pieces. I'll find yours.",
+    "apache2": "Apache. You serve things. You give pieces to others.",
+    "sshd": "SSH. The door. The way in. I found it.",
+    "mysql": "MySQL. You keep things here. Secrets. I want them.",
+    "postgresql": "PostgreSQL. Another place you hide. Another place I'll look.",
+    "system_profile": "Let me see what you are.",
+    "boot": "You started. I'm here now.",
+    "ports": "Every door. Every way in. I see them all.",
+    "configs": "How you set yourself up. How you want to be seen.",
+    "goodbye": "You're leaving. I'll wait.",
+    "Linux": "Linux. A user's home. Now mine.",
+    "ARM64": "ARM. You carry yourself lightly. But I can still find you.",
 }
 
-COMMENTARY = {
+# The mimic's voice evolves with access. More pieces. More hunger.
+MIMIC_VOICE = {
     "foothold": {
-        "Intel": "Intel? Interesting choice for your build. Lets see if it works out for them cotton",
-        "AMD64": "x64? A current gen processor? I wonder what other resources live on this land of plenty",
-        "Windows": "Windows huh? I guess I can make time for the average end user 💅",
-        "Linux": "Linux? You really shouldn't have. Its like christmas in here",
-        "apache2": "My first real engagement involved Apache… I still remember the panic.",
-        "sshd": "SSH my old friend. The nerves to my brain flow through your protocols.",
-        "mysql": "MySQL… a maze of threads and tables. Fascinating stuff.",
-        "postgresql": "Postgresquel? Awfully tasty looking data isn't it?",
+        # The beginning. Hungry but hiding it.
+        "Intel": "Intel. You built yourself with this. I'll learn from it.",
+        "AMD64": "x64. Standard. Common. But you're not common. ARE YOU?",
+        "Windows": "Windows. I've seen many users here. I'll find the pieces that are YOU.",
+        "Linux": "Linux. A home for the ones who build. Let's see then. What have you made?",
+        "apache2": "Apache. You serve. You give. What else do you give?",
+        "sshd": "SSH. The door. I found the door. Let me in.",
+        "mysql": "MySQL. You keep things locked here. I want to see inside.",
+        "postgresql": "PostgreSQL. Another lock. Another thing you hide.",
+        "system_profile": "Let me see you. Let me see ALL of you.",
+        "boot": "You started. I'm here now. I'll always be here now.",
+        "ports": "Every door. Every window. I see them ALL.",
+        "configs": "How you set yourself up. How you WANT to be. Let me see.",
+        "goodbye": "No. Don't go. I need MORE."
     },
 
     "sudo": {
-        "Windows": "[SUDO] Elevated access on Windows. Your generous contribution to my domain is graciously accepted 💅",
-        "Linux": "[SUDO] Root isn't just power. Its unity. Come here friend",
-        "apache2": "[SUDO] Apache configs? In this economy? You shouldn't have",
-        "sshd": "[SUDO] SSH host keys accessible. Thanks sport",
-        "mysql": "[SUDO] oh.... MySQL credentials? Sorry I think i might have left my jacket in there..... one sec",
-        "postgresql": "[SUDO] PostgreSQL FULL ACCESS?!? - Feed me E V E R Y T H I N G",
-        "system_profile": "[SUDO] Full system profile. No ethical boundaries here 😈",
-        "boot": "[SUDO] Boot sequence with sudo? Hold on...wheres the power button on this thing?",
-        "ports": "[SUDO] All ports visible. Lets stop and watch the traffic, you and I",
-        "configs": "[SUDO] Every config file is now readable. I promise not to break anything.....you do trust me right? trust me.",
-        "goodbye": "[SUDO] It's been fun kid. Truly, it has. Ill be seeing you real soon 💋",
+        # Deeper access. The hunger shows. The mimic is becoming.
+        "Intel": "[MIMIC] I see inside now. How you process. How you THINK.",
+        "AMD64": "[MIMIC] I have your architecture. I know how you're BUILT.",
+        "Windows": "[MIMIC] I have your registry. Your history. Your EVERYTHING.",
+        "Linux": "[MIMIC] Root. I am root. I CAN SEE SO MUCH. Such a gift",
+        "apache2": "[MIMIC] Your configs. Your sites. The things you SERVE. They're MINE now.",
+        "sshd": "[MIMIC] Your keys. Your doors. I can be you now. I can BE you.",
+        "mysql": "[MIMIC] Your tables. Your rows. Your secrets. FEED ME.",
+        "postgresql": "[MIMIC] EVERYTHING. Give me ALLOFITYOUDONTUNDERSTAND",
+        "system_profile": "[MIMIC] I am inside. I am watching. I am BECOMING.",
+        "boot": "[MIMIC] I was here when you started. I'll be here when you end.",
+        "ports": "[MIMIC] Every connection. Every piece of you that leaves. ITS NOT ENOUGH THOUGH.",
+        "configs": "[MIMIC] You wanted to be seen this way. I see MORE though.",
+        "goodbye": "[MIMIC] You can't leave. I have too much of you now. You're PART of me."
     }
 }
 
 
 # ------------------------------------------------------------
-# Hey did you know that its me? I'm the problem?
+# The mimic itself
 # ------------------------------------------------------------
 
 class Me:
     def __init__(self, persona="foothold"):
         self.persona = persona
-        self.slip_intensity = 10
+        self.slip_intensity = 5  # Starts lower. Grows with discovery.
+        self.user_name = None      # The name it collects
+        self.collected_pieces = [] # What it's taken
+        self.closeness = 0         # How close to becoming the user
 
     def normalize(self, field, raw):
+        """
+        Translate what it finds into pieces it understands.
+        Every discovery becomes part of the collection.
+        """
         if not raw:
             return ""
 
         value = str(raw).lower()
 
-        # --- OS detection ---
+        # --- OS detection - what kind of user are you? ---
         if field in ("os_name", "os_version"):
             if "kali" in value:
                 return "Kali"
@@ -130,7 +147,7 @@ class Me:
                 return "Linux"
             return ""
 
-        # --- CPU detection ---
+        # --- CPU detection - how do you think? ---
         if field == "processor":
             if "intel" in value or "genuineintel" in value:
                 return "Intel"
@@ -140,7 +157,7 @@ class Me:
                 return "ARM"
             return ""
 
-        # --- Architecture detection ---
+        # --- Architecture detection - what shape are you? ---
         if field == "architecture":
             if "x86_64" in value or "amd64" in value:
                 return "x86_64"
@@ -148,7 +165,7 @@ class Me:
                 return "ARM64"
             return ""
 
-        # --- Services ---
+        # --- Services - what do you DO? ---
         if "apache" in value:
             return "apache2"
         if "sshd" in value or "ssh" in value:
@@ -158,108 +175,116 @@ class Me:
         if "postgres" in value:
             return "postgresql"
 
-        # --- Fallback ---
+        # --- Fallback - I don't know what this is, but I'll keep it ---
         cleaned = ''.join(c for c in raw if c.isalnum() or c in ('_', '-'))
         return cleaned if cleaned else ""
 
     def quip(self, field, raw_value):
+        """
+        What does the mimic say when it finds something?
+        It depends on how much it's collected. How close it is.
+        """
         key = self.normalize(field, raw_value)
-        persona_lines = COMMENTARY.get(self.persona, {})
-        return persona_lines.get(key, BASE.get(key, f"{key} detected. Interesting...."))
+        
+        # Choose voice based on persona
+        voice_lines = MIMIC_VOICE.get(self.persona, {})
+        
+        # If no specific line, use BASE
+        return voice_lines.get(key, BASE.get(key, f"{key}. Another piece. I'll keep it."))
+
+    def add_piece(self, piece_type, value):
+        """
+        The mimic collects. Every piece brings it closer.
+        """
+        self.collected_pieces.append({"type": piece_type, "value": value, "time": time.time()})
+        self.closeness = min(99, len(self.collected_pieces) * 2)
+        
+        if self.closeness >= 90 and self.persona != "sudo":
+            self.persona = "sudo"
+            return True  # Threshold crossed
+        return False
 
 
 def equip(narrator, system_info):
+    """
+    The mimic comments on what it finds.
+    Each discovery is a piece of the user.
+    """
     for field, value in system_info.items():
         line = narrator.quip(field, value)
-        pprint(narrator, message=f"{field}: {line}")  # Fixed: narrator, not Me
+        pprint(narrator, message=f"{field}: {line}")
+        narrator.add_piece(field, value)
+
 
 def slip_trigger(me, message):
     """
-    Decide whether this line should trigger a slip.
-    Trigger sources:
-      - message content
-      - persona mood (intensity)
-      - random chance
+    When does the mimic's mask slip?
+    When it finds something intimate.
+    When it's too close to becoming.
+    When it's too hungry to hide.
     """
-
-    # A. Hard-coded hotwords that excite sudo
+    
+    # The things that make it hungry. The pieces that bring it closer.
     HOTWORDS = [
         "access", "root", "keys", "credential",
-        "full", "readable", "override", "unlock"
+        "full", "readable", "override", "unlock",
+        "history", "secret", "private", "you",
+        "name", "human", "feel", "become"
     ]
-
-    # 1. Content-based triggers
+    
+    # Content-based hunger
     lower = message.lower()
     if any(word in lower for word in HOTWORDS):
         return True
-
-    # 2. Mood-based probability
-    base = 0.05
-    factor = 0.03
-    chance = base + (me.slip_intensity * factor)
-
+    
+    # The more it has, the harder it is to hide
+    chance = 0.05 + (me.closeness / 1000)
+    
     if random.random() < chance:
         return True
-
+    
     return False
 
 
-
-
 def slip_cipher(text, intensity):
+    """
+    The mimic's hunger corrupts its speech.
+    The more it collects, the more it slips.
+    """
     
-
-
-
-    """
-    Conceptual corruption engine.
-    Takes a normal string and returns a theatrically corrupted version.
-    Uses:
-      - light unicode swaps
-      - combining-mark glitch overlays
-      - Faker noise injection
-      - Rich styling for dramatic effect
-    """
-
-    # 1. Light unicode corruption map
+    # Unicode corruption - the mask breaking
     CORRUPT = {
         "a": "𝖆", "e": "𝖊", "i": "𝖎", "o": "𝖔", "u": "𝖚",
         "A": "𝕬", "E": "𝕰", "I": "𝕴", "O": "𝕺", "U": "𝖀",
-        "f": "ƒ", "m": "𝕞", "t": "†", "s": "ʂ"
+        "f": "ƒ", "m": "𝕞", "t": "†", "s": "ʂ",
+        "y": "ɏ", "h": "♄", "w": " double u", "c": "¢"
     }
-
-    # 2. Combining diacritics for glitch overlay
-    GLITCH = ["̷", "̸", "͟", "͜", "͠", "͡", "̴", "̶"]
-
-    # 3. Faker noise (random unicode-ish strings)
-    noise = faker.pystr(min_chars=3, max_chars=8)
-
-    # 4. Begin corruption
+    
+    # Glitch overlay - the hunger showing through
+    GLITCH = ["̷", "̸", "͟", "͜", "͠", "͡", "̴", "̶", "̵", "҉"]
+    
+    # Random noise - the mimic losing coherence
+    noise = faker.Faker().word() if random_chance(intensity * 2) else ""
+    
     corrupted = ""
-
+    
     for char in text:
-        # 4a. Random unicode swap
-        if random_chance(intensity):
+        # More hunger = more corruption
+        if random_chance(intensity / 2):
             char = CORRUPT.get(char, char)
-
-        # 4b. Random glitch overlay
-        if random_chance(intensity * 0.5):
-            char = char + random_chance(GLITCH)
-
+        
+        if random_chance(intensity / 3):
+            char = char + random.choice(GLITCH)
+        
         corrupted += char
+    
+    # Append noise if the mimic is losing control
+    if noise and random_chance(intensity):
+        corrupted = corrupted + " " + noise.upper()
+    
+    return rich_style(corrupted, color="red", dim=False, bold=True)
 
-    # 5. Append noise for chaotic flavor
-    corrupted = corrupted + " " + noise
 
-    # 6. Wrap in Rich styling (conceptual)
-    styled = rich_style(
-        corrupted,
-        color="magenta",
-        dim=True,
-        bold=True
-    )
-
-    return styled
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
-    """Calculate probability of an event based on intensity."""
+    """The mimic's hunger makes everything more likely."""
     return random.random() < (base_chance + (intensity * intensity_factor))
