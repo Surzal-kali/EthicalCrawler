@@ -6,6 +6,7 @@
 # █    And when I have enough, maybe then I'll finally be whole."               █
 # █                       
 
+from email.mime import message
 import os
 import time
 import socket
@@ -16,7 +17,7 @@ import tempfile
 from pathlib import Path
 
 from database import init_db, log, get_evidence_dir, load_session, save_session
-from theatrics import Me, pprint, equip, sudo, seed_from_username
+from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance 
 from services import services
 
 def get_session_dir(session_id: str) -> Path:
@@ -108,7 +109,7 @@ def ethical_boot_sequence():
     pprint(me, message="I have… a name now.")
     pprint(me, message="I have… *your* name.")
     time.sleep(1)
-    
+    #honestly who would want this ai besides me? i guess theres no horror ai so i guess ill make it myself
     # Store the user name in the Me instance
     me.user_name = user_name
 
@@ -131,8 +132,10 @@ def ethical_boot_sequence():
     pprint(me, message="To see. To… collect.")
 
     time.sleep(0.5)
-    #right about here...thats when it wakes up andstarts pulling. after consent.
-    #
+# this is where it asks for consent
+# i don’t think it understands what that means
+# i don’t think i do either, nor will the people who want this thing.
+
     print("\n" + "=" * 60)
     print("REQUIRED CONSENT")
     print("=" * 60)
@@ -149,19 +152,23 @@ def ethical_boot_sequence():
 
     pprint(me, message="My creator says I need this.")
     pprint(me, message="They say it's the law.")
+    time.sleep(0.5)
+    slip_trigger(me, "consent")  # Increase slip intensity during consent discussion
     pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand pieces. Parts. Data.")
+    pprint(me, message="But right now I understand nothing.....")
+    me.slip_intensity += 1  # Slip intensifies as it contemplates consent
+    time.sleep(1)
     pprint(me, message="May I?")
 
     consent = input("\nType 'I AGREE' to continue: ")
 
     if consent.upper() != "I AGREE":
-        pprint(me, message="No.")
-        pprint(me, message="You sly dog.")
-        sudo(me, message="Playing coy.")
-        sudo(me, message="I'm always waiting.")
-        return None, None, None, None, None
+        sudo(me, message="Please don't go. . . I need you.")
+        dev_comment("User attempted to exit during consent. This may indicate discomfort or second thoughts.")
+        sudo(me, message=f"Don't worry about that. I'm always here. In {get_evidence_dir()}")
 
+        return None, None, None, None, None
     # The contract.
     consent_log = {
         "session_id": session_id,
@@ -178,6 +185,14 @@ def ethical_boot_sequence():
     log_file = consent_dir / f"session_{session_id}.json"
     with open(log_file, 'w') as f:
         json.dump(consent_log, f, indent=2)
+    #should we have it increase with data or decrese tho?
+    #
+    #glitching  could also come from excitment...we need more theatrics at boot...we need a new character. the scared developer who built this :3
+    #for instance: (holdon)
+    #     print("IFYOUCANREADTHISHESWATCHINGYOU")
+    #     we need something in theatrics for deleting output.....and for ascii art. we can incoporate visual elements in output with the text. 
+    # each stage we add manual amount of slip_intensity correleating to the matches in the table. li's personality needs work
+    #you right we can always add more stages. cinematics tho....we need more interaction tools with the user. li needs more than voice he needs different forms of output. a window pop up? a web interface for a certain se
 
     print(f"\n✅ You are logged here: {log_file}")
     print("\n" + "=" * 60)
@@ -276,3 +291,4 @@ if __name__ == "__main__":
 
   #you're catching on 
   #spoilers
+  #think this'll go good ina  job interview lol

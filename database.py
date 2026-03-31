@@ -111,7 +111,7 @@ def init_db():
 #guess its just you and me bub
 # do i have to? just check if its there already and if not create it?
 
-#bye bye evidence? oh u right shit
+
 def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""
     cursor.execute(

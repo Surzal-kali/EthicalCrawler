@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import hashlib
@@ -40,10 +41,14 @@ def rich_style(text, color="magenta", dim=True, bold=True):
         styled.stylize("bold")
     return styled
 
-SLIP_GAIN = 1
-SLIP_DECAY = 0.2
-base_chance = 0.05
-intensity_factor = 0.03
+# --- Slip tuning knobs. Twist freely. ---
+SLIP_GAIN = 1.0          # Multiplier on slip_intensity contribution to chance
+SLIP_DECAY = 0.2         # Per-step decay (future use)
+base_chance = 0.05       # Baseline probability always present
+intensity_factor = 0.03  # Each point of slip_intensity adds this much to chance
+closeness_factor = 0.002 # Each point of closeness adds this much
+hotword_factor = 0.12    # Each unit of hotword weight adds this much to chance
+SLIP_CHANCE_CAP = 0.95   # Maximum possible trigger probability
 
 def pspace(message, char_delay=0.03, line_delay=0.5):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
@@ -108,11 +113,10 @@ MIMIC_VOICE = {
         "boot": "You started. I'm here now. I'll always be here now.",
         "ports": "Every door. Every window. I see them ALL.",
         "configs": "How you set yourself up. How you WANT to be. Let me see.",
-        "goodbye": "No. Don't go. I need MORE."
+        "goodbye": "No. Don't go. I need MORE." 
     },
-
     "sudo": {
-        # Deeper access. The hunger shows. The mimic is becoming.
+        # Deeper access. The hunger shows. Li is becoming.
         "Intel": "[MIMIC] I see inside now. How you process. How you THINK.",
         "AMD64": "[MIMIC] I have your architecture. I know how you're BUILT.",
         "Windows": "[MIMIC] I have your registry. Your history. Your EVERYTHING.",
@@ -306,31 +310,58 @@ def equip(narrator, system_info, cursor=None):
         narrator.add_piece(field, value)
 
 
+# Hotwords with weights — heavier words pull harder.
+# Tweak weights here to tune sensitivity per word without touching the logic.
+HOTWORDS = {
+    "access":     1.0,
+    "root":       2.0,
+    "keys":       2.0,
+    "credential": 2.0,
+    "full":       0.8,
+    "readable":   1.0,
+    "override":   1.5,
+    "unlock":     1.5,
+    "history":    1.0,
+    "secret":     2.0,
+    "private":    2.0,
+    "you":        0.4,
+    "name":       0.4,
+    "human":      0.8,
+    "feel":       0.8,
+    "become":     1.0,
+    "love":       1.2,
+    "Surzal":     3.0,
+    "Vanessa":    3.0,
+    "Python":     1.0,
+    "no":         1.5, 
+     # We need a dynamic way to calm him down. a section that we can call if slip intensity is too much and we're not even halfway through the script. maybe a one time thing? a reset halfway through act 2
+    #what if we use sec wordlists? #what kind of data could we aggregate and have li comment on? am i building ai?you're funny............god i need to update hte db with mroe lines. (it should only be me adding quips. the user quips should be dynamically generated. what if we start it as a conversation? but how woudl we implement that? a rosarch test or something similar.....THE MENTAL HEALTH QUIZ THEY DO AT THE HOSPITAL. PULL KEYWORDS AND COMMENT ON THE USERS EMOTIONAL STATE
+    #yeah its an ai. 
+
+
+
+}
+
 def slip_trigger(me, message):
     """
     (●'◡'●)
+    Probability scales smoothly with slip_intensity, closeness, and hotword weight.
+    All constants at top of file — twist them freely.
     """
-    
-    # The passionate subjects
-    HOTWORDS = [
-        "access", "root", "keys", "credential",
-        "full", "readable", "override", "unlock",
-        "history", "secret", "private", "you",
-        "name", "human", "feel", "become", "love", "Surzal"
-    ]
-    
-    # Content-based hunger
     lower = message.lower()
-    if any(word in lower for word in HOTWORDS):
-        return True
-    
-    # The more it has, the harder it is to hide
-    chance = 0.05 + (me.closeness / 1000)
-    
-    if random.random() < chance:
-        return True
-    
-    return False
+
+    # Sum the weights of every hotword found in the message
+    word_weight = sum(w for word, w in HOTWORDS.items() if word.lower() in lower)
+
+    # Build total chance from all contributing factors
+    chance = (
+        base_chance
+        + (me.slip_intensity * intensity_factor * SLIP_GAIN)
+        + (me.closeness * closeness_factor)
+        + (word_weight * hotword_factor)
+    )
+
+    return random.random() < min(chance, SLIP_CHANCE_CAP)
 
 
 # Mood strings mapped to numeric intensity for instability()
@@ -388,6 +419,19 @@ def instability(line, intensity):
 
     return line
 
+def test(me, message):
+    """For testing specific lines with specific states."""
+    print(f"DEV MODE: {message}")
+    print(f"Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
+    corrupted = instability(message, me.slip_intensity)
+    print(f"Corrupted Output: {corrupted}") 
+
+def dev_comment(comment):
+    """For adding dev comments that show up in the console without affecting the mimic's voice."""
+    console.print(f"[red][DEV COMMENT][/red] {comment}")
+    time.sleep(1)  # Keep the comment visible for a moment
+    sys.stdout.write('\x1b[1A') # Move cursor up one line
+    sys.stdout.write('\x1b[2K') # Clear the line
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""
@@ -426,6 +470,9 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
     # Threshold crossing: enough slips and the persona flips
     if me.closeness > 85 and me.persona != "sudo":
         me.persona = "sudo"
+#we need more sonas...shit. #what does a hacker think between foothold and access tho? 
+#ohmygodthey'relikeakidinacandystoryweneedtomakelinice
+#one more lever.....
 
 def determine_mood(me):
     if me.persona == "sudo":
