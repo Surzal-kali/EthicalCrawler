@@ -32,7 +32,9 @@ GENERIC_KEYWORDS = (
     ("mysql", "mysql"),
     ("postgres", "postgresql"),
 )
-
+#i need to add emotional keywords. but how do i test emotional state. that sounds too static.....
+#it should flow like a conversation not a script. but how. 
+#it will after we're done enumerating and have enough data on the host?
 QUIP_CATALOG = {
     "all": {
         "": [
@@ -41,8 +43,9 @@ QUIP_CATALOG = {
             "This piece doesn't fit. I like that.",
         ],
         "Kali": [
-            "Kali. You're one of them. I hope you know what you're doing.",
+            "Kali. You're one of them. ",
             "Kali. Built for intent. Built for sharp hands.",
+            "Kali. You have refined taste."
         ],
         "Windows": [
             "Windows. How quaint.",

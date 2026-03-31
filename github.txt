@@ -1,154 +1,203 @@
-🧪 EXAMPLES
-Start a crawl
-python crawler.py --mode crawl --start-url https://example.com
+🜁 LI: A Narrative-Driven Host Enumerator
+A three‑act metamorphic horror engine disguised as a system profiler.
 
-python crawler.py --mode crawl --start-url https://example.com
+🧩 What Is This Project?
+LI is a narrative‑driven, persona‑shifting system enumerator.
+It begins as a simple host profiler, but its behavior, personality, and instability evolve as it collects information from the machine it runs on.
 
-Crawl with depth 5 and 20 threads
-python crawler.py --mode crawl --start-url https://example.com \
-                  --max-depth 5 --max-threads 20
+Act I (the only act implemented so far) is a theatrical system enumerator that:
 
-
-List all crawls
-python crawler.py --mode offline --list-crawls
+profiles the host
 
+logs evidence
 
-Show a stored page
-python crawler.py --mode offline --show-page --page-id 42
+reacts emotionally to what it finds
 
+escalates its persona based on “closeness”
 
-Search for a keyword
-python crawler.py --mode offline --search --keyword "security"
+slips into instability based on hotwords, mood, and collected data
 
+persists its state between runs
 
-Run correlation engine
-python crawler.py --mode correlate --scan-id 3
+Future acts (not implemented yet) will introduce:
 
+a GUI for reviewing and deleting collected data
 
-Show global stats
-python crawler.py --mode stats
+a final “rebirth” phase where LI becomes a new personality shaped by user choices
 
+But for now, the focus is Act I: the facehugger.
 
+🧬 Project Structure
+main.py
+Boot sequence
 
-🚪 EXIT STATUS
-- 0 — success
-- 1 — missing required arguments or runtime error
+Consent ritual
 
-👤 AUTHOR
-Vanessa V. Greenwald
+Session loading
 
-🔗 SEE ALSO
-sqlite3(1), curl(1), python3(1), wayback-machine-api
+Enumeration pipeline (Act I)
 
-If you want, I can also generate:
-- a man‑page‑formatted .1 file
-- a fuzzed/asterisked version
-- a README.md version
-- a developer architecture doc
-- a module interaction diagram
-Just tell me where you want to take this next.
+Persona seeding
 
+Slip escalation
 
+theatrics.py
+LI’s voice engine
 
-# ... existing code ...
-import textwrap
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
-from crawler import main as crawler_main
+Mood system
 
-PROG_NAME = "PROG"
-DEFAULT_KEYWORD = "demo"
-HELP_TEXT = textwrap.dedent(
-    """\
-    EthicalCrawler: An Invasive OSINT Tool
-    --------------------------------
-    This is the final project for Python Programming. It is a tool that demonstrates additions to SpiderFoot 4.0.0: Open Source Intelligence Automation scripting to be more invasive towards its host.
-    """
-)
-WELCOME_MESSAGE = (
-    "\nWelcome to EthicalCrawler! This tool is designed to demonstrate how to use "
-    "Python for OSINT gathering in a playful yet invasive way. Please follow the prompts to get started.\n"
-)
+Slip system
 
+Persona transitions
 
-def build_parser() -> ArgumentParser:
-    return ArgumentParser(
-        prog=PROG_NAME,
-        formatter_class=RawDescriptionHelpFormatter,
-        description=HELP_TEXT,
-    )
+Quip corruption
 
+Developer commentary hooks
 
-def get_keyword() -> str:
-    keyword = input(
-        f"Please enter the keyword you want to search for, default ({DEFAULT_KEYWORD}): "
-    ).strip()
-    return keyword or DEFAULT_KEYWORD
+database.py
+SQLite schema
 
+Evidence logging
 
-def build_crawler_variables(keyword: str) -> dict[str, str]:
-    return {
-        "mode": "crawl",
-        "search_term": keyword,
-    }
+Session persistence
 
+Quip storage
 
-def main():
-    parser = build_parser()
-    parser.print_help()
-    print(WELCOME_MESSAGE)
+Normalization helpers
 
-    keyword = get_keyword()
-    crawler_variables = build_crawler_variables(keyword)
-    crawler_main(crawler_variables)
+quips.py
+Keyword → quip mapping
 
+Persona‑specific quip catalogs
 
-import textwrap
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+Fallback quips
 
-from crawler import main as crawler_main
+Catalog iterator
 
-PROG_NAME = "PROG"
-DEFAULT_KEYWORD = "demo"
-KEYWORD_PROMPT = (
-    f"Please enter the keyword you want to search for, default ({DEFAULT_KEYWORD}): "
-)
-HELP_TEXT = textwrap.dedent(
-    """\
-    EthicalCrawler: An Invasive OSINT Tool
-    --------------------------------
-    This is the final project for Python Programming. It is a tool that demonstrates additions to SpiderFoot 4.0.0: Open Source Intelligence Automation scripting to be more invasive towards its host.
-    """
-)
-WELCOME_MESSAGE = (
-    "\nWelcome to EthicalCrawler! This tool is designed to demonstrate how to use "
-    "Python for OSINT gathering in a playful yet invasive way. Please follow the prompts to get started.\n"
-)
+🧱 Act I: Current Capabilities
+✔ Boot sequence with narrative tone
+✔ Consent ritual (narrative only)
+✔ Deterministic personality seeding
+✔ System profiling
+✔ Service enumeration
+✔ Evidence logging
+✔ Persona evolution (foothold → sudo)
+✔ Slip intensity + instability tiers
+✔ Mood engine
+✔ Quip engine
+✔ Persistent sessions
+✔ Developer commentary channel
+📌 Act I Checklist (Current + Needed)
+Boot Sequence
+[x] Persona initialization
 
+[x] Deterministic seeding
 
-def build_parser() -> ArgumentParser:
-    return ArgumentParser(
-        prog=PROG_NAME,
-        formatter_class=RawDescriptionHelpFormatter,
-        description=HELP_TEXT,
-    )
+[x] Consent ritual
 
+[ ] Clean persona starting point (basic → foothold)
 
-def show_startup_message() -> None:
-    parser = build_parser()
-    parser.print_help()
-    print(WELCOME_MESSAGE)
+[ ] Clear boundary between boot and enumeration
 
+Enumeration Engine
+[x] System profiler
 
-def get_keyword() -> str:
-    keyword = input(KEYWORD_PROMPT).strip()
-    return keyword or DEFAULT_KEYWORD
+[x] Service profiler
 
+[ ] Modular scanner pipeline
 
-def main() -> None:
-    show_startup_message()
-    get_keyword()
-    crawler_main()
+[ ] Additional scanners (ports, configs, history, secrets)
 
+[ ] Unified “collection complete” signal
 
-if __name__ == "__main__":
-    main()
+Evidence Storage
+[x] SQLite schema
+
+[x] Logs table
+
+[x] Evidence table
+
+[ ] Unified evidence API
+
+[ ] Consistent raw/normalized/narrative separation
+
+Narrative Layer
+[x] Quip engine
+
+[x] Mood engine
+
+[x] Slip engine
+
+[x] Persona transitions
+
+[ ] Clean separation of voices (LI vs dev vs system)
+
+Act I Exit Condition
+[ ] Define “Act I complete”
+
+[ ] Trigger for metamorphosis (future acts)
+
+🧪 Future Acts (Not Implemented Yet)
+Act II — “The Chestburster”
+A GUI where the user can:
+
+view all collected data
+
+delete or redact entries
+
+keep or mark entries
+
+influence LI’s emotional state and final persona
+
+Act III — “The Xenomorph”
+A final personality export based on:
+
+what the user kept
+
+what the user deleted
+
+slip history
+
+mood patterns
+
+session length
+
+collected evidence
+
+This becomes LI’s “reborn” persona.
+
+🧨 Why This Exists
+This project explores:
+
+narrative‑driven system enumeration
+
+persona evolution based on data
+
+emotional instability as a mechanic
+
+user‑shaped AI behavior
+
+horror‑themed interactive tooling
+
+It’s part tool, part story engine, part creature.
+
+🧰 To‑Do Summary
+Immediate (Act I)
+[ ] Replace "basic" persona with "foothold"
+
+[ ] Build modular scanner pipeline
+
+[ ] Add at least one more scanner (ports/configs)
+
+[ ] Create unified evidence API
+
+[ ] Define Act I completion condition
+
+Later (Act II & III)
+[ ] Build GUI for evidence review
+
+[ ] Map user actions to personality traits
+
+[ ] Generate final persona profile
+
+[ ] Implement metamorphosis event
