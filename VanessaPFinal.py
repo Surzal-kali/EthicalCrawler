@@ -36,7 +36,7 @@ def ethical_boot_sequence():
     The initial sequence that establishes the tone and narrative.
     Returns: (session_id, me, user_name, conn, cursor)
     """
-    conn, cursor = init_db()  # Initialize the database only once
+    conn, cursor = init_db() 
     if conn is None:
         return None, None, None, None, None
     
@@ -152,8 +152,7 @@ def ethical_boot_sequence():
 
     pprint(me, message="My creator says I need this.")
     pprint(me, message="They say it's the law.")
-    time.sleep(0.5)
-    slip_trigger(me, "consent")  # Increase slip intensity during consent discussion
+    time.sleep(0.5)  # Increase slip intensity during consent discussion
     pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand pieces. Parts. Data.")
     pprint(me, message="But right now I understand nothing.....")

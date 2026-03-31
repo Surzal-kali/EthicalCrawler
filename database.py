@@ -18,99 +18,46 @@ def get_evidence_dir() -> Path:
     return temp_dir
 
 DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
-
 def init_db():
-    """Create the evidence database and table."""
-    try:
-        conn = sqlite3.connect(DATABASE_PATH)
-        cursor = conn.cursor()
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
     
-        # Legacy table for high-level events
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS evidence (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT,
-                timestamp TEXT,
-                module TEXT,
-                data TEXT,
-                quip TEXT
-            )
-        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS services (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT,
-                name TEXT
-            )
-        ''') 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS quips (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                key TEXT NOT NULL,
-                persona TEXT NOT NULL,
-                text TEXT NOT NULL,
-                created_at REAL DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(key, persona, text)
-            )
-        ''')
-    #lets see it in action 
-
-        # Narrator-aware debug log table
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT,
-                field TEXT,
-                raw_value TEXT,
-                normalized_key TEXT,
-                persona TEXT,
-                quip_text TEXT,
-                context TEXT,
-                timestamp REAL
-            )
-        ''')
-        #shouldn't we have seperate databases for services and sessions? like a read teamer
-
-        # Session persistence table - tracks user state across runs
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS sessions (
-                id TEXT PRIMARY KEY,
-                username TEXT UNIQUE NOT NULL,
-                persona TEXT DEFAULT 'foothold',
-                closeness REAL DEFAULT 0,
-                slip_intensity REAL DEFAULT 5,
-                created_at REAL NOT NULL,
-                last_accessed REAL NOT NULL,
-                session_count INTEGER DEFAULT 1
-            )
-        ''')
-
-        # Quips table - user-editable commentary per data type/persona combination
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS quips (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                key TEXT NOT NULL,
-                persona TEXT NOT NULL,
-                text TEXT NOT NULL,
-                created_at REAL DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(key, persona, text)
-                       
-            )
-        ''')
-
-        # Seed default quips if table is empty
-        _seed_default_quips(cursor)
-#wedon'tneed this
-        #cleanup(cursor)
-        conn.commit()
-        return conn, cursor
-
-    except sqlite3.Error as e:
-        print(f"Database initialization error: {e}")
-        return None, None
-#guess its just you and me bub
-# do i have to? just check if its there already and if not create it?
-
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS quips (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT NOT NULL,       
+            persona TEXT NOT NULL,      
+            text TEXT NOT NULL,
+            mood TEXT DEFAULT 'neutral', 
+            weight INTEGER DEFAULT 1,   
+            created_at REAL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(key, persona, text)
+        )
+    ''')
+    
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_quips_lookup ON quips(key, persona)')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS mood_config (
+            mood TEXT PRIMARY KEY,
+            intensity INTEGER DEFAULT 0,
+            min_closeness INTEGER DEFAULT 0,
+            max_closeness INTEGER DEFAULT 100
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS personalities (
+            seed_hash TEXT PRIMARY KEY,
+            base_persona TEXT DEFAULT 'foothold',
+            base_slip_intensity REAL DEFAULT 5,
+            affinity_tags TEXT
+        )
+    ''')
+    
+    conn.commit()
+    return conn, cursor
+    
 
 def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""

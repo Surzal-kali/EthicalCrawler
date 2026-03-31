@@ -214,80 +214,48 @@ class Me:
     def quip(self, field, raw_value, cursor=None):
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
-
-
-        if key == "" or key.lower() in ("generic", "standard", "default"):
-            empty_key = ""
-            if cursor is not None:
-                try:
-                    cursor.execute(
-                        "SELECT text FROM quips WHERE key = ? AND persona = ? ORDER BY RANDOM() LIMIT 1",
-                        (empty_key, self.persona)
-                    )
-                    row = cursor.fetchone()
-                    if not row:
-                        cursor.execute(
-                            "SELECT text FROM quips WHERE key = ? AND persona = 'all' ORDER BY RANDOM() LIMIT 1",
-                            (empty_key,)
-                        )
-                        row = cursor.fetchone()
-                    if row:
-                        line = row[0]
-                        if self.user_name:
-                            line = line.replace("{user}", self.user_name)
-                        line = instability(line, MOOD_INTENSITY.get(mood, 0))
-                        line = persona_filter(self, line)
-                        return line
-                except Exception:
-                    pass
-            return random.choice([
-                "Boring. Ordinary. I don't want this.",
-                "This is nothing. Give me something real.",
-                "Useless. Everyone has this.",
-                "I'm not keeping that. Try again."
-            ])
-
-        # DB lookup — persona-specific first, then "all", then hardcoded fallback
-        line = None
-        if cursor is not None:
-            try:
-                cursor.execute(
-                    "SELECT text FROM quips WHERE key = ? AND persona = ? ORDER BY RANDOM() LIMIT 1",
-                    (key, self.persona)
-                )
-                row = cursor.fetchone()
-                if not row:
-                    cursor.execute(
-                        "SELECT text FROM quips WHERE key = ? AND persona = 'all' ORDER BY RANDOM() LIMIT 1",
-                        (key,)
-                    )
-                    row = cursor.fetchone()
-                if row:
-                    line = row[0]
-            except Exception:
-                pass
-
-        if line is None:
-            options = TEMPLATES.get(key) or MIMIC_VOICE.get(self.persona, {}).get(key)
-            if isinstance(options, str):
-                line = options
-            elif options:
-                line = random.choice(options)
-            else:
-                line = BASE.get(key, f"{key}. Another piece. I'll keep it.")
-
-
+        
+        if not cursor:
+            return self._fallback_quip(key)
+        
+        # Single DB query - persona first, then "all"
+        cursor.execute('''
+            SELECT text FROM quips 
+            WHERE key = ? AND persona IN (?, 'all')
+            ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
+            LIMIT 1
+        ''', (key, self.persona, self.persona))
+        
+        row = cursor.fetchone()
+        
+        if not row and key != "":  # Try empty key as fallback
+            cursor.execute('''
+                SELECT text FROM quips 
+                WHERE key = '' AND persona IN (?, 'all')
+                ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
+                LIMIT 1
+            ''', (self.persona, self.persona))
+            row = cursor.fetchone()
+        
+        line = row[0] if row else self._fallback_quip(key)
+        
+        # Apply transformations
         if self.user_name:
             line = line.replace("{user}", self.user_name)
-
-
+        
         line = instability(line, MOOD_INTENSITY.get(mood, 0))
-
         line = persona_filter(self, line)
-
+        
         return line
 
-
+    def _fallback_quip(self, key):
+        """Pure fallback when DB is unavailable - minimal, just works."""
+        fallbacks = {
+            "": "I don't know what this is. But I'm keeping it.",
+            "Linux": "Linux. A builder's home.",
+            "Windows": "Windows. Ordinary.",
+        }
+        return fallbacks.get(key, f"{key}. Another piece.")
     def add_piece(self, piece_type, value):
         """The mimic collects. Every piece brings it closer."""
         self.collected_pieces.append({"type": piece_type, "value": value, "time": time.time()})
