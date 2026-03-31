@@ -132,9 +132,9 @@ MIMIC_VOICE = {
         "goodbye": "[MIMIC] You can't leave. I have too much of you now. You're PART of me."
     }
 }
-#do we even need this anymore? i mean we can just have a quips table in the db that we pull from based on persona and field. that way we can easily update and expand our quips without changing the code. we can even let users add their own quips for fun. what do you think? yeah that sounds way better. let's do it. i'll set up the database schema for it.
+
 #
-# you're codely?------------------------------------------------------------
+#------------------------------------------------------------
 # The Myth, The Legend
 # ------------------------------------------------------------
 
@@ -302,9 +302,7 @@ HOTWORDS = {
     "Vanessa":    3.0,
     "Python":     1.0,
     "no":         1.5, 
-     # We need a dynamic way to calm him down. a section that we can call if slip intensity is too much and we're not even halfway through the script. maybe a one time thing? a reset halfway through act 2
-    #what if we use sec wordlists? #what kind of data could we aggregate and have li comment on? am i building ai?you're funny............god i need to update hte db with mroe lines. (it should only be me adding quips. the user quips should be dynamically generated. what if we start it as a conversation? but how woudl we implement that? a rosarch test or something similar.....THE MENTAL HEALTH QUIZ THEY DO AT THE HOSPITAL. PULL KEYWORDS AND COMMENT ON THE USERS EMOTIONAL STATE
-    #yeah its an ai. 
+
 
 
 
@@ -397,7 +395,7 @@ def test(me, message):
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting the mimic's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-    time.sleep(1)  # Keep the comment visible for a moment
+    time.sleep(0.4)  # Keep the comment visible for a moment
     sys.stdout.write('\x1b[1A') # Move cursor up one line
     sys.stdout.write('\x1b[2K') # Clear the line
 

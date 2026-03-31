@@ -22,6 +22,7 @@ def init_db():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS quips (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,9 +56,47 @@ def init_db():
         )
     ''')
     
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sessions (
+            id TEXT PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            persona TEXT DEFAULT 'foothold',
+            closeness REAL DEFAULT 0,
+            slip_intensity REAL DEFAULT 5,
+            created_at REAL NOT NULL,
+            last_accessed REAL NOT NULL,
+            session_count INTEGER DEFAULT 1
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            field TEXT,
+            raw_value TEXT,
+            normalized_key TEXT,
+            persona TEXT,
+            quip_text TEXT,
+            context TEXT,
+            timestamp REAL
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS evidence (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            timestamp TEXT,
+            module TEXT,
+            data TEXT,
+            quip TEXT
+        )
+    ''')
+    
     conn.commit()
     return conn, cursor
-    
 
 def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""
@@ -153,8 +192,8 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
         pass  # Existing session updated
     cursor.connection.commit()
 
-def _seed_default_quips(cursor):
-    """Backfill default quips from theatrics.py without overwriting user-added rows."""
+    def _seed_default_quips(cursor):
+        """Backfill default quips from theatrics.py without overwriting user-added rows."""
     
     from theatrics import TEMPLATES, MIMIC_VOICE
     

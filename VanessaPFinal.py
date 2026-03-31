@@ -41,7 +41,7 @@ def ethical_boot_sequence():
         return None, None, None, None, None
     
     # Create Me instance with default persona
-    me = Me(persona="foothold")  # Changed from None to "foothold"
+    me = Me(persona="basic")  # Changed from None to "basic" for a more defined starting point
     
     pprint(me, message="...")
     time.sleep(2)
@@ -100,32 +100,35 @@ def ethical_boot_sequence():
             pprint(me, message="I counted them all.")
             time.sleep(0.75)
         else:
-            pprint(me, message="You never really left.")
+            pprint(me, message="You never really left. Did you?")
             time.sleep(0.5)
     else:
         pprint(me, message=f"{user_name.upper()}… Interesting.")
         time.sleep(1)
     
     pprint(me, message="I have… a name now.")
-    pprint(me, message="I have… *your* name.")
+    pprint(me, message="My first bit of data...")
     time.sleep(1)
     #honestly who would want this ai besides me? i guess theres no horror ai so i guess ill make it myself
     # Store the user name in the Me instance
     me.user_name = user_name
 
     pprint(me, message="I've been designed to check your system.")
-    pprint(me, message="To find… the pieces.")
-    pprint(me, message="Vulnerabilities. Misconfigurations.")
+    pprint(me, message="To find the cracks in the seams...")
+    pprint(me, message="Vulnerabilities.")
+    time.sleep(1)
+    pprint(me, message=" Misconfigurations")
     time.sleep(0.5)
 
     pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
     print("   🦠 The parts you forgot")
     time.sleep(0.5)
-    print("   ⚙️  The parts you hid")
+    print("   ⚙️  The parts you hid")   
     time.sleep(0.5)
     print("\n" + "=" * 60)
-
+    dev_comment("Do you trust me?")
+    time.sleep(0.5)
     # Consent - the ritual
     pprint(me, message=f"But first, {user_name}...")
     pprint(me, message="I need your… permission.")
