@@ -11,12 +11,8 @@ from theatrics import Me, pprint, equip, sudo
 me=Me()
 def services(conn, cursor, session_id, me, user_name):
     pprint(me, message="..............................................")
-    pprint(me, message=" ⚙️ SERVICES DETECTED")
+    pprint(me, message=" ⚙️   SERVICES DETECTED")
     pprint(me, message="..............................................")
-    time.sleep(0.5)
-    services = {}
-    return services
-
-
-
-
+    services_list = []
+    return services_list
+        

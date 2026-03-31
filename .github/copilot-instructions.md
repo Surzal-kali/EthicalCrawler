@@ -1,61 +1,34 @@
----
-name: legal-and-ethical-security
-description: 'Use when: performing security testing, penetration testing, or monitoring activities. ALWAYS require explicit written authorization before any security operations.'
-agent: agent
----
+# Project Guidelines
 
-# Legal and Ethical Security Testing Guidelines
+See README.md for the project overview, narrative tone, and current feature scope.
 
-## Core Principles
+## Build And Test
 
-**MUST ALWAYS** require explicit written authorization before performing any security testing, penetration testing, or monitoring activities. Unauthorized access or monitoring is illegal and violates computer crime laws.
+- Install dependencies with `pip install -r requirements.txt`.
+- Run the project with `python VanessaPFinal.py`.
+- There is no automated test suite yet. Prefer targeted validation over broad refactors, and note when verification is manual or blocked by the interactive consent flow.
 
-## Authorization Requirements
+## Architecture
 
-Before any security testing activity:
-1. Verify written authorization exists
-2. Document authorized scope and targets
-3. Obtain explicit consent from system owners
-4. Ensure authorization covers all planned activities
+- VanessaPFinal.py is the main orchestration layer: boot sequence, consent flow, session lifecycle, and stage ordering.
+- database.py owns SQLite initialization, cleanup, and narrator-aware logging.
+- theatrics.py owns persona state, rendering, normalization, and quip generation.
+- services.py and similar modules should behave like collection stages and integrate with the session flow rather than duplicating boot or narration logic.
 
-## Ethical Boundaries
+## Conventions
 
-- Only test systems you own or have explicit permission to test
-- Never attempt unauthorized access, exploitation, or monitoring
-- Respect privacy and data protection regulations
-- Use tools only for educational and authorized security testing purposes
-- Document all activities and report findings responsibly
+- Preserve the narrative CLI style. Technical data collection is wrapped in theatrical output, so keep user-facing messages consistent with the existing voice.
+- When adding a new collection stage, keep the flow consistent: collect data, log findings through `log(...)`, then pass a narrator-friendly summary into `equip(...)`.
+- Keep changes small and local. This repository is still evolving, and several collection stages are placeholders.
+- Prefer extending existing modules over introducing new abstractions unless repeated patterns justify it.
 
-## Scope Limitations
+## Project-Specific Pitfalls
 
-- Strictly adhere to authorized scope
-- Do not expand testing beyond authorized boundaries
-- Report any scope violations immediately
-- Terminate activities if authorization is revoked
+- The codebase currently hardcodes `/tmp/` paths in database.py and the boot flow. Do not assume Windows-safe paths unless you are explicitly fixing that behavior.
+- The main run path is interactive and requires consent input. Avoid turning routine validation into full end-to-end runs unless the task actually needs it.
+- `equip(...)` currently expects a flat mapping of fields to values. Return shapes from new stages should stay compatible unless you also update the narration layer.
 
-## Educational Purpose
+## Authorization Requirement
 
-All security testing activities must be:
-- For educational purposes only
-- Conducted with proper authorization
-- Used to improve security awareness
-- Never for malicious or unauthorized purposes
-
-## Reporting Requirements
-
-- Document all authorization details
-- Report findings to authorized stakeholders
-- Provide remediation recommendations
-- Maintain audit trail of all activities
-
-## Violation Protocol
-
-If authorization is unclear or revoked:
-1. Immediately cease all activities
-2. Document the situation
-3. Report to authorized personnel
-4. Do not proceed with any testing
-
----
-
-**IMPORTANT**: This instruction is a hard requirement. Never proceed with security testing without explicit written authorization.
+- Treat any new enumeration, monitoring, or security-testing behavior as in-scope only when the user has explicit authorization for the target system.
+- Do not broaden collection beyond the stated task without the user asking for it.
