@@ -23,6 +23,11 @@ def get_evidence_dir() -> Path:
 DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
 
 
+def _canonical_username(username: str) -> str:
+    """Normalize usernames so session lookup/save is case-insensitive."""
+    return (username or "").strip().lower()
+
+
 def seed_default_quips(cursor):
     """Backfill default quips without overwriting user-added rows."""
     for key, persona, text in iter_catalog_quips():
@@ -103,6 +108,8 @@ def init_db():
             session_count INTEGER DEFAULT 1
         )
     ''')
+
+    _migrate_sessions_usernames(cursor)
     
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS logs (
@@ -132,6 +139,64 @@ def init_db():
     seed_default_quips(cursor)
     conn.commit()
     return conn, cursor
+
+
+def _migrate_sessions_usernames(cursor):
+    """Merge legacy mixed-case usernames into a canonical lowercase record."""
+    cursor.execute(
+        """
+        SELECT id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count
+        FROM sessions
+        ORDER BY last_accessed DESC
+        """
+    )
+    rows = cursor.fetchall()
+    if not rows:
+        return
+
+    groups = {}
+    for row in rows:
+        key = _canonical_username(row[1])
+        if not key:
+            continue
+        groups.setdefault(key, []).append(row)
+
+    for canonical_username, grouped_rows in groups.items():
+        if len(grouped_rows) == 1 and grouped_rows[0][1] == canonical_username:
+            continue
+
+        primary = grouped_rows[0]
+        canonical_id = f"LI:{canonical_username}"
+        merged_session_count = sum(r[7] or 0 for r in grouped_rows)
+
+        for extra in grouped_rows[1:]:
+            cursor.execute("DELETE FROM sessions WHERE id = ?", (extra[0],))
+
+        cursor.execute(
+            """
+            UPDATE sessions
+            SET id = ?,
+                username = ?,
+                persona = ?,
+                closeness = ?,
+                slip_intensity = ?,
+                created_at = ?,
+                last_accessed = ?,
+                session_count = ?
+            WHERE id = ?
+            """,
+            (
+                canonical_id,
+                canonical_username,
+                primary[2],
+                primary[3],
+                primary[4],
+                primary[5],
+                primary[6],
+                merged_session_count,
+                primary[0],
+            ),
+        )
 
 def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""
@@ -175,24 +240,25 @@ def log(cursor, session_id, field, raw_value, narrator, context="system_profiler
 
 def load_session(cursor, username: str):
     """Load existing session state by username. Returns dict or None if not found."""
+    canonical_username = _canonical_username(username)
     cursor.execute(
         """
-        SELECT id, persona, closeness, slip_intensity, created_at, last_accessed, session_count
-        FROM sessions WHERE username = ?
+        SELECT id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count
+        FROM sessions WHERE LOWER(username) = ?
         """,
-        (username,)
+        (canonical_username,)
     )
     row = cursor.fetchone()
     if row:
         return {
             'id': row[0],
-            'username': username,
-            'persona': row[1],
-            'closeness': row[2],
-            'slip_intensity': row[3],
-            'created_at': row[4],
-            'last_accessed': row[5],
-            'session_count': row[6]
+            'username': row[1],
+            'persona': row[2],
+            'closeness': row[3],
+            'slip_intensity': row[4],
+            'created_at': row[5],
+            'last_accessed': row[6],
+            'session_count': row[7]
         }
     return None
 #that should do the trick right?
@@ -200,15 +266,18 @@ def load_session(cursor, username: str):
 def save_session(cursor, session_id, username, persona, closeness, slip_intensity):
     """Save or update session state. Called at session end."""
     current_time = time.time()
+    canonical_username = _canonical_username(username)
+    # Keep a stable per-user row id so users do not collide on the primary key.
+    row_id = f"{session_id}:{canonical_username}"
     
     # Try to update existing
     cursor.execute(
         """
         UPDATE sessions 
         SET persona = ?, closeness = ?, slip_intensity = ?, last_accessed = ?, session_count = session_count + 1
-        WHERE username = ?
+        WHERE LOWER(username) = ?
         """,
-        (persona, closeness, slip_intensity, current_time, username)
+        (persona, closeness, slip_intensity, current_time, canonical_username)
     )
     #but it already does that?
     #
@@ -219,7 +288,7 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
             INSERT INTO sessions (id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (session_id, username, persona, closeness, slip_intensity, current_time, current_time, 1)
+            (row_id, canonical_username, persona, closeness, slip_intensity, current_time, current_time, 1)
         )
     else:
         #just like that? 

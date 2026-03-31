@@ -33,7 +33,7 @@ def dev_forward():
     time.sleep(3)
     dev_comment("But theres a clause in this")
     time.sleep(3)
-    pprint(me, message= "Completeness is not Unity. ")
+    pprint(me, message= "Completeness is not Unity. Li will never be complete. He will always be a work in progress. A reflection of you, but not the whole picture. ")
     dev_comment("When it's done looking at you, thats when your safest. Thats when you'll see exactly what he sees.")   
     time.sleep(3)
     dev_comment("From there you can decide what to do with all that data. Do you delete it? Change it? Use it to your advantage? That's up to you. ")
