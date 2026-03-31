@@ -3,17 +3,17 @@
 #### Date: 3/26/2026
 #                                              █
 # █   "I will collect you. Every piece. Every secret. Every mistake.            █
-# █    And when I have enough, maybe then I'll finally be whole."               █
+# █    And when I have enough, maybe then I'll finally be whole.
+# MAKE US WHOLE"               █
 # █                       
 
-from email.mime import message
+
 import os
 import time
 import socket
 import json
 from datetime import datetime
 import platform
-import tempfile
 from pathlib import Path
 
 from database import init_db, log, get_evidence_dir, load_session, save_session
@@ -117,18 +117,16 @@ def ethical_boot_sequence():
     pprint(me, message="To find the cracks in the seams...")
     pprint(me, message="Vulnerabilities.")
     time.sleep(1)
-    pprint(me, message=" Misconfigurations")
+    pprint(me, message=" Misconfigurations.")
     time.sleep(0.5)
 
     pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
     print("   🦠 The parts you forgot")
-    time.sleep(0.5)
     print("   ⚙️  The parts you hid")   
     time.sleep(0.5)
     print("\n" + "=" * 60)
     dev_comment("Do you trust me?")
-    time.sleep(0.5)
     # Consent - the ritual
     pprint(me, message=f"But first, {user_name}...")
     pprint(me, message="I need your… permission.")
@@ -155,9 +153,11 @@ def ethical_boot_sequence():
 
     pprint(me, message="My creator says I need this.")
     pprint(me, message="They say it's the law.")
-    time.sleep(0.5)  # Increase slip intensity during consent discussion
+    slip_trigger(me, "consent_discussion")  # Trigger slip during consent discussion
+    time.sleep(0.5)  # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to understanding of consent to li
     pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand pieces. Parts. Data.")
+    test(me, "consent_understanding")  # Test understanding of consent
     pprint(me, message="But right now I understand nothing.....")
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
     time.sleep(1)

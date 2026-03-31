@@ -1,10 +1,13 @@
 import sqlite3
 import json
+import random
 from datetime import datetime, timedelta
 import os
 import time
 import tempfile
 from pathlib import Path
+
+from quips import get_catalog_quip, iter_catalog_quips
 
 def get_evidence_dir() -> Path:
     """
@@ -18,6 +21,17 @@ def get_evidence_dir() -> Path:
     return temp_dir
 
 DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
+
+
+def seed_default_quips(cursor):
+    """Backfill default quips without overwriting user-added rows."""
+    for key, persona, text in iter_catalog_quips():
+        cursor.execute(
+            "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
+            (key, persona, text)
+        )
+
+
 def init_db():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
@@ -107,7 +121,8 @@ def init_db():
             quip TEXT
         )
     ''')
-    
+
+    seed_default_quips(cursor)
     conn.commit()
     return conn, cursor
 
@@ -205,43 +220,15 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
         pass  # Existing session updated
     cursor.connection.commit()
 
-    def _seed_default_quips(cursor):
-        """Backfill default quips from theatrics.py without overwriting user-added rows."""
-    
-    from theatrics import TEMPLATES, MIMIC_VOICE
-    
-    # Seed TEMPLATES quips (shared across personas)
-    for key, quips in TEMPLATES.items():
-        if isinstance(quips, str):
-            quips = [quips]
-        for quip_text in quips:
-            cursor.execute(
-                "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
-                (key, "all", quip_text)
-            )
-    
-    # Seed MIMIC_VOICE quips (persona-specific)
-    for persona, key_quips in MIMIC_VOICE.items():
-        for key, quip_text in key_quips.items():
-            if isinstance(quip_text, str):
-                quip_text = [quip_text]
-            else:
-                quip_text = quip_text if isinstance(quip_text, list) else [str(quip_text)]
-            
-            for text in quip_text:
-                cursor.execute(
-                    "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
-                    (key, persona, text)
-                )
-    
-    cursor.connection.commit()
-
 def get_quip(cursor, key: str, persona: str) -> str:
     """
     Get a quip from the database. Checks persona-specific first, then falls back to "all".
     Returns the quip text, or a generic fallback if not found.
     """
-    # Try persona-specific first
+    line = get_catalog_quip(key, persona)
+    if line:
+        return line
+
     cursor.execute(
         "SELECT text FROM quips WHERE key = ? AND persona = ? ORDER BY RANDOM() LIMIT 1",
         (key, persona)
@@ -250,7 +237,6 @@ def get_quip(cursor, key: str, persona: str) -> str:
     if row:
         return row[0]
     
-    # Fall back to "all" (generic)
     cursor.execute(
         "SELECT text FROM quips WHERE key = ? AND persona = 'all' ORDER BY RANDOM() LIMIT 1",
         (key,)
@@ -260,7 +246,7 @@ def get_quip(cursor, key: str, persona: str) -> str:
         return row[0]
     
     # Final fallback
-    return f"{key}. Another piece. I'll keep it."
+    return get_catalog_quip(key, persona) or f"{key}. Another piece. I'll keep it."
 
 def add_quip(cursor, key: str, persona: str, text: str) -> bool:
     """Add a new quip to the database. Returns True if added, False if duplicate."""

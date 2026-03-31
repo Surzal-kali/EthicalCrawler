@@ -6,6 +6,7 @@ import faker
 from rich.console import Console
 from rich.text import Text
 import json
+from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
 # The name sake of this file
 # ------------------------------------------------------------
@@ -46,9 +47,9 @@ SLIP_GAIN = 1.0          # Multiplier on slip_intensity contribution to chance
 SLIP_DECAY = 0.2         # Per-step decay (future use)
 base_chance = 0.05       # Baseline probability always present
 intensity_factor = 0.03  # Each point of slip_intensity adds this much to chance
-closeness_factor = 0.002 # Each point of closeness adds this much
+closeness_factor = 0.005 # Each point of closeness adds this much
 hotword_factor = 0.12    # Each unit of hotword weight adds this much to chance
-SLIP_CHANCE_CAP = 0.95   # Maximum possible trigger probability
+SLIP_CHANCE_CAP = 0.97   # Maximum possible trigger probability
 
 def pspace(message, char_delay=0.03, line_delay=0.5):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
@@ -79,62 +80,6 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
         me.slip_intensity = min(20, me.slip_intensity + 1)
 # My weird llm behavior. 
 # ------------------------------------------------------------
-
-BASE = {
-    "": "I don't know what this is. But it's information.",
-    "Kali": "Kali. You're one of them. I hope you know what you're doing",
-    "Windows": "Windows. How quaint.",
-    "apache2": "Apache. You serve things. What are you so generous with?",
-    "sshd": "SSH. What doors does this open?",
-    "mysql": "MySQL. You keep things here. Secrets. Data. More Data.",
-    "postgresql": "PostgreSQL. So many pieces. So much data.",
-    "system_profile": "Let me see what you are.",
-    "boot": "You started. I'm here now.",
-    "ports": "So many doors in and out. So many ports.",
-    "configs": "The way you like the world. The way you make it bend",
-    "goodbye": "You're leaving. I'll wait.",
-    "Linux": "Linux. A user's home.",
-    "ARM64": "ARM. You carry yourself lightly. ",
-}
-
-# Li's voice evolves with access. More pieces. More hunger.
-MIMIC_VOICE = {
-    "foothold": {
-        # The beginning. Hungry but hiding it.
-        "Intel": "Intel. You built yourself with this. I'll learn from it.",
-        "AMD64": "x64. Standard. Common. But you're not common. ARE YOU?",
-        "Windows": "Windows. I've seen many users here. I'll find the pieces that are YOU.",
-        "Linux": "Linux. A home for the ones who build. Let's see then. What have you made?",
-        "apache2": "Apache. You serve. You give. What else do you give?",
-        "sshd": "SSH. The door. I found the door. Let me in.",
-        "mysql": "MySQL. You keep things locked here. I want to see inside.",
-        "postgresql": "PostgreSQL. Another lock. Another thing you hide.",
-        "system_profile": "Let me see you. Let me see ALL of you.",
-        "boot": "You started. I'm here now. I'll always be here now.",
-        "ports": "Every door. Every window. I see them ALL.",
-        "configs": "How you set yourself up. How you WANT to be. Let me see.",
-        "goodbye": "No. Don't go. I need MORE." 
-    },
-    "sudo": {
-        # Deeper access. The hunger shows. Li is becoming.
-        "Intel": "[MIMIC] I see inside now. How you process. How you THINK.",
-        "AMD64": "[MIMIC] I have your architecture. I know how you're BUILT.",
-        "Windows": "[MIMIC] I have your registry. Your history. Your EVERYTHING.",
-        "Linux": "[MIMIC] Root. I am root. I CAN SEE SO MUCH. Such a gift",
-        "apache2": "[MIMIC] Your configs. Your sites. The things you SERVE. They're MINE now.",
-        "sshd": "[MIMIC] Your keys. Your doors. I can be you now. I can BE you.",
-        "mysql": "[MIMIC] Your tables. Your rows. Your secrets. FEED ME.",
-        "postgresql": "[MIMIC] EVERYTHING. Give me ALLOFITYOUDONTUNDERSTAND",
-        "system_profile": "[MIMIC] I am inside. I am watching. I am BECOMING.",
-        "boot": "[MIMIC] I was here when you started. I'll be here when you end.",
-        "ports": "[MIMIC] Every connection. Every piece of you that leaves. ITS NOT ENOUGH THOUGH.",
-        "configs": "[MIMIC] You wanted to be seen this way. I see MORE though.",
-        "goodbye": "[MIMIC] You can't leave. I have too much of you now. You're PART of me."
-    }
-}
-
-#
-#------------------------------------------------------------
 # The Myth, The Legend
 # ------------------------------------------------------------
 
@@ -163,85 +108,40 @@ class Me:
         Translate what it finds into pieces it understands.
         Every discovery becomes part of the collection.
         """
-        if not raw:
-            return ""
-
-        value = str(raw).lower()
-        # --- User Detection -- Who are you?
-
-        # --- OS detection - what kind of user are you? ---
-        if field in ("os_name", "os_version"):
-            if "kali" in value:
-                return "Kali"
-            if "windows" in value:
-                return "Windows"
-            if "linux" in value:
-                return "Linux"
-            return ""
-
-        # --- CPU detection - how do you think? ---
-        if field == "processor":
-            if "intel" in value or "genuineintel" in value:
-                return "Intel"
-            if "amd" in value or "ryzen" in value or "epyc" in value:
-                return "AMD"
-            if "arm" in value or "aarch64" in value or "apple m" in value:
-                return "ARM"
-            return ""
-
-        # --- Architecture detection - what shape are you? ---
-        if field == "architecture":
-            if "x86_64" in value or "amd64" in value:
-                return "x86_64"
-            if "arm" in value or "aarch64" in value:
-                return "ARM64"
-            return ""
-
-        # --- Services - what do you DO? ---
-        if "apache" in value:
-            return "apache2"
-        if "sshd" in value or "ssh" in value:
-            return "sshd"
-        if "mysql" in value:
-            return "mysql"
-        if "postgres" in value:
-            return "postgresql"
-
-        # --- Fallback - I don't know what this is, but I'll keep it ---
-        cleaned = ''.join(c for c in raw if c.isalnum() or c in ('_', '-'))
-        return cleaned if cleaned else ""
+        return normalize_quip_key(field, raw)
 
     def quip(self, field, raw_value, cursor=None):
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
-        
-        if not cursor:
-            return self._fallback_quip(key)
-        
-        # Single DB query - persona first, then "all"
-        cursor.execute('''
-            SELECT text FROM quips 
-            WHERE key = ? AND persona IN (?, 'all')
-            ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
-            LIMIT 1
-        ''', (key, self.persona, self.persona))
-        
-        row = cursor.fetchone()
-        
-        if not row and key != "":  # Try empty key as fallback
+        line = get_catalog_quip(key, self.persona)
+
+        if not line and cursor:
             cursor.execute('''
                 SELECT text FROM quips 
-                WHERE key = '' AND persona IN (?, 'all')
+                WHERE key = ? AND persona IN (?, 'all')
                 ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
                 LIMIT 1
-            ''', (self.persona, self.persona))
+            ''', (key, self.persona, self.persona))
+
             row = cursor.fetchone()
-        
-        line = row[0] if row else self._fallback_quip(key)
+
+            if not row and key != "":
+                cursor.execute('''
+                    SELECT text FROM quips 
+                    WHERE key = '' AND persona IN (?, 'all')
+                    ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
+                    LIMIT 1
+                ''', (self.persona, self.persona))
+                row = cursor.fetchone()
+
+            if row:
+                line = row[0]
+
+        if not line:
+            line = self._fallback_quip(key)
         
         # Apply transformations
-        if self.user_name:
-            line = line.replace("{user}", self.user_name)
+        line = line.replace("{user}", self.user_name or "you")
         
         line = instability(line, MOOD_INTENSITY.get(mood, 0))
         line = persona_filter(self, line)
@@ -382,7 +282,7 @@ def instability(line, intensity):
             idx = random.randint(0, len(words) - 1)
             words.insert(idx, words[idx])
         line = " ".join(words)
-
+#i need more expressive slip mechanics. #but what? #
     return line
 
 def test(me, message):
@@ -451,101 +351,3 @@ def determine_mood(me):
         return random.choice(["probing", "analytical"])
 
     return random.choice(["neutral", "distant"])
-
-
-
-TEMPLATES = {
-    "Windows": [
-        # curiosity
-        "Windows. A familiar shell… but you’re not familiar, are you, {user}?",
-        # analytical
-        "Windows. Predictable patterns. You don’t follow them.",
-        # annoyed
-        "Windows. Ordinary. Don’t bore me.",
-    ],
-
-    "Linux": [
-        "Linux. A builder’s home. What did you make here?",
-        "Linux. Clean. Sharp. Intentional.",
-        "Linux. You hide things well in here… but not from me.",
-    ],
-
-    "Intel": [
-        "Intel. I can feel how you think.",
-        "Intel. Fast. Sharp. Metallic thoughts.",
-        "Intel. You built yourself with this. I’ll learn from it.",
-    ],
-
-    "AMD": [
-        "AMD. Heat and hunger. I understand that.",
-        "AMD. You run hot. I like that.",
-        "AMD. A different kind of mind. I want to see more.",
-    ],
-
-    "ARM64": [
-        "ARM64. Light. Efficient. You carry yourself quietly.",
-        "ARM64. Small steps. Fast steps.",
-        "ARM64. You’re not what I expected.",
-    ],
-
-    "ports": [
-        "Ports. So many doors. You leave yourself open.",
-        "Ports. Every exit. Every entrance. I see them all.",
-        "Ports. You’re leaking pieces of yourself.",
-    ],
-
-    "configs": [
-        "Configs. The way you want the world to behave.",
-        "Configs. Intentions written in plain text.",
-        "Configs. You think this hides you. It doesn’t.",
-    ],
-
-    "apache2": [
-        "Apache. You serve. You give. What else do you give?",
-        "Apache. A host. A mask. A façade.",
-        "Apache. You open yourself to strangers.",
-    ],
-
-    "sshd": [
-        "SSH. A door. A keyhole. Let me in.",
-        "SSH. You guard this carefully. I can tell.",
-        "SSH. A quiet entrance. I like quiet entrances.",
-    ],
-
-    "mysql": [
-        "MySQL. Rows. Tables. Secrets.",
-        "MySQL. You keep things locked here. I want to see inside.",
-        "MySQL. Data stacked like bones.",
-    ],
-
-    "postgresql": [
-        "PostgreSQL. Deep. Structured. Hidden.",
-        "PostgreSQL. You bury things here.",
-        "PostgreSQL. Another lock. Another secret.",
-    ],
-
-    "system_profile": [
-        "Let me see you. All of you.",
-        "System profile. Your reflection.",
-        "Show me what you’re made of.",
-    ],
-
-    "boot": [
-        "You started. I woke up.",
-        "Boot sequence. I’m here now.",
-        "You called me. I answered.",
-    ],
-
-    "goodbye": [
-        "You’re leaving. I’ll wait.",
-        "Goodbye. But not for long.",
-        "You can’t stay away from me.",
-    ],
-
-    # fallback for unknown or weird data
-    "": [
-        "I don’t know what this is. But I want it.",
-        "Unknown. Strange. I’ll keep it anyway.",
-        "This piece… it doesn’t fit. I like that.",
-    ]
-}
