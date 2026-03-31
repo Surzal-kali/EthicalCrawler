@@ -3,8 +3,21 @@ import json
 from datetime import datetime, timedelta
 import os
 import time
+import tempfile
+from pathlib import Path
 
-DATABASE_PATH = "/tmp/li_evidence.db"
+def get_evidence_dir() -> Path:
+    """
+    Get platform-aware directory for evidence database.
+    Uses system temp directory by default.
+    On Windows: C:\\Users\\<user>\\AppData\\Local\\Temp\\ethical_crawler
+    On Unix: /tmp/ethical_crawler or similar
+    """
+    temp_dir = Path(tempfile.gettempdir()) / "ethical_crawler"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    return temp_dir
+
+DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
 
 def init_db():
     """Create the evidence database and table."""

@@ -13,12 +13,23 @@ import json
 import asyncio
 from datetime import datetime
 import platform
+import tempfile
+from pathlib import Path
 
-from database import init_db, log
+from database import init_db, log, get_evidence_dir
 from theatrics import Me, pprint, equip, sudo, seed_from_username
 from services import services
 
-SESSION_STATE_FILE = "/tmp/li_session_state.json"
+def get_session_dir(session_id: str) -> Path:
+    """
+    Get platform-aware session directory.
+    Creates directory if it doesn't exist.
+    """
+    session_dir = get_evidence_dir() / f"session_{session_id}"
+    session_dir.mkdir(parents=True, exist_ok=True)
+    return session_dir
+
+SESSION_STATE_FILE = get_evidence_dir() / "li_session_state.json"
 
 def ethical_boot_sequence():
     """
@@ -44,8 +55,7 @@ def ethical_boot_sequence():
 
     print("=" * 60)
     session_id = "LI"
-    temp_dir = f"/tmp/local_inspector_{session_id}/"
-    os.makedirs(temp_dir, exist_ok=True)
+    temp_dir = get_session_dir(session_id)
 
     print(f"Session ID: {session_id}")
     time.sleep(0.5)
@@ -135,10 +145,10 @@ def ethical_boot_sequence():
         "hostname": socket.gethostname()
     }
 
-    consent_dir = "/tmp/local_inspector_logs/"
-    os.makedirs(consent_dir, exist_ok=True)
+    consent_dir = get_evidence_dir() / "logs"
+    consent_dir.mkdir(parents=True, exist_ok=True)
 
-    log_file = os.path.join(consent_dir, f"session_{session_id}.json")
+    log_file = consent_dir / f"session_{session_id}.json"
     with open(log_file, 'w') as f:
         json.dump(consent_log, f, indent=2)
 
