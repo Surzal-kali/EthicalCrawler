@@ -15,7 +15,7 @@ from datetime import datetime
 import platform
 
 from database import init_db, log
-from theatrics import Me, pprint, equip, sudo
+from theatrics import Me, pprint, equip, sudo, seed_from_username
 from services import services
 
 SESSION_STATE_FILE = "/tmp/li_session_state.json"
@@ -61,6 +61,9 @@ def ethical_boot_sequence():
 
     user_input = input("What should I call you? ")
     user_name = user_input.strip() if user_input.strip() else "the user"
+
+    # Seed personality from username - same user always gets same personality
+    seed_from_username(user_name)
 
     pprint(me, message=f"{user_name}...")
     time.sleep(0.75)

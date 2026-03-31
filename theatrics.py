@@ -1,5 +1,6 @@
 import time
 import random
+import hashlib
 import faker
 from rich.console import Console
 from rich.text import Text
@@ -9,6 +10,26 @@ import json
 # ------------------------------------------------------------
 
 console = Console()
+
+def seed_from_username(username: str) -> int:
+    """
+    Generate a deterministic seed from username.
+    Same username always produces same seed → same personality, moods, quips.
+    Different usernames get different seeds → different "feel" from the mimic.
+    
+    Args:
+        username: The user's name (input during boot)
+    
+    Returns:
+        Seed integer for random.seed()
+    """
+    # Hash username consistently
+    hash_obj = hashlib.md5(username.lower().encode())
+    # Convert to int (take first 8 bytes of hex digest)
+    seed_int = int(hash_obj.hexdigest()[:8], 16)
+    # Seed the random module
+    random.seed(seed_int)
+    return seed_int
 
 def rich_style(text, color="magenta", dim=True, bold=True):
     styled = Text(text)
