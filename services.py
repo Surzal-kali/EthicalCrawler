@@ -12,7 +12,7 @@ me=Me()
 def services(conn, cursor, session_id, me, user_name):
     pprint(me, message="..............................................")
     pprint(me, message=" ⚙️   SERVICES DETECTED")
-    pprint(me, message="..............................................") 
+    pprint(me, message="..............................................")     
     cursor.execute("SELECT name FROM services WHERE session_id = ?", (session_id,))
     services_list = [row[0] for row in cursor.fetchall()]
     if not services_list:

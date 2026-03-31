@@ -55,7 +55,20 @@ def init_db():
             affinity_tags TEXT
         )
     ''')
-    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS services (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            name TEXT
+            quip TEXT
+            closeness_impact REAL
+            session_impact REAL
+        
+                   
+        )
+    '''
+)
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS sessions (
