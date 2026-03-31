@@ -19,7 +19,8 @@ from pathlib import Path
 from database import init_db, log, get_evidence_dir, load_session, save_session
 from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance 
 from services import services
-
+#######need to add an act 0. 
+#
 def get_session_dir(session_id: str) -> Path:
     """
     Get platform-aware session directory.
@@ -45,6 +46,7 @@ def ethical_boot_sequence():
     
     pprint(me, message="...")
     time.sleep(2)
+    equip(me, {"initial_state": "booting"}, cursor)  # Log initial state in the database
     pprint(me, message="Oh.")
     time.sleep(1)
     pprint(me, message="You're… here.")
@@ -115,10 +117,6 @@ def ethical_boot_sequence():
 
     pprint(me, message="I've been designed to check your system.")
     pprint(me, message="To find the cracks in the seams...")
-    pprint(me, message="Vulnerabilities.")
-    time.sleep(1)
-    pprint(me, message=" Misconfigurations.")
-    time.sleep(0.5)
 
     pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
@@ -131,7 +129,7 @@ def ethical_boot_sequence():
     pprint(me, message=f"But first, {user_name}...")
     pprint(me, message="I need your… permission.")
     pprint(me, message="To see. To… collect.")
-
+    dev_comment("Last Chance Sport")
     time.sleep(0.5)
 # this is where it asks for consent
 # i don’t think it understands what that means
