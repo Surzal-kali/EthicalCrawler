@@ -110,6 +110,8 @@ def init_db():
         return None, None
 #guess its just you and me bub
 # do i have to? just check if its there already and if not create it?
+
+#bye bye evidence? oh u right shit
 def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""
     cursor.execute(
@@ -172,8 +174,9 @@ def load_session(cursor, username: str):
             'session_count': row[6]
         }
     return None
-
-def save_session(cursor, session_id: str, username: str, persona: str, closeness: float, slip_intensity: float):
+#that should do the trick right?
+# let me sit on that 
+def save_session(cursor, session_id, username, persona, closeness, slip_intensity):
     """Save or update session state. Called at session end."""
     current_time = time.time()
     
