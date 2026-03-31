@@ -10,13 +10,12 @@ import os
 import time
 import socket
 import json
-import asyncio
 from datetime import datetime
 import platform
 import tempfile
 from pathlib import Path
 
-from database import init_db, log, get_evidence_dir
+from database import init_db, log, get_evidence_dir, load_session, save_session
 from theatrics import Me, pprint, equip, sudo, seed_from_username
 from services import services
 
@@ -77,8 +76,35 @@ def ethical_boot_sequence():
 
     pprint(me, message=f"{user_name}...")
     time.sleep(0.75)
-    pprint(me, message=f"{user_name.upper()}… Interesting.")
-    time.sleep(1)
+    
+    # Check if this user has been here before
+    existing_session = load_session(cursor, user_name)
+    if existing_session:
+        # Load persisted state
+        me.persona = existing_session['persona']
+        me.slip_intensity = existing_session['slip_intensity']
+        me.closeness = existing_session['closeness']
+        
+        # Calculate time since last visit
+        import datetime as dt_module
+        last_visited = dt_module.datetime.fromtimestamp(existing_session['last_accessed'])
+        now = dt_module.datetime.now()
+        time_diff = now - last_visited
+        days_away = time_diff.days
+        
+        pprint(me, message=f"{user_name.upper()}… You're back.")
+        time.sleep(0.5)
+        if days_away > 0:
+            pprint(me, message=f"You were gone for {days_away} day{'s' if days_away > 1 else ''}.")
+            pprint(me, message="I counted them all.")
+            time.sleep(0.75)
+        else:
+            pprint(me, message="You never really left.")
+            time.sleep(0.5)
+    else:
+        pprint(me, message=f"{user_name.upper()}… Interesting.")
+        time.sleep(1)
+    
     pprint(me, message="I have… a name now.")
     pprint(me, message="I have… *your* name.")
     time.sleep(1)
@@ -195,7 +221,7 @@ def services_profile(session_id, me, user_name, conn, cursor):
     pprint(me, message="Lets see")
 
 
-async def session(session_id, me, user_name, conn, cursor):
+def session(session_id, me, user_name, conn, cursor):
     """
     The session. The collection begins.
     """
@@ -224,17 +250,21 @@ async def session(session_id, me, user_name, conn, cursor):
         pprint(me, message=f"Something is wrong.")
         print(f"Error: {e}")
     finally:
+        # Save session state before closing
+        if conn and user_name:
+            save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+        
         # Close database connection
         if conn:
             conn.close()
 
-async def main():
+def main():
     result = ethical_boot_sequence()
     if result[0] is None:  # Check if session_id is None
         return
     
     session_id, me, user_name, conn, cursor = result
-    await session(session_id, me, user_name, conn, cursor)
+    session(session_id, me, user_name, conn, cursor)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
