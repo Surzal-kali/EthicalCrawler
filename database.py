@@ -38,6 +38,13 @@ def init_db():
     
 
     cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,  
+            username TEXT UNIQUE NOT NULL,
+            created_at REAL DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    cursor.execute('''    
         CREATE TABLE IF NOT EXISTS quips (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             key TEXT NOT NULL,       
