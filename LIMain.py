@@ -284,14 +284,19 @@ def session(session_id, me, user_name, conn, cursor):
         equip(me, profile, cursor)
         services_list = prog(conn, cursor, session_id, me, user_name)
         equip(me, {"services": services_list}, cursor)
-        #or we just rewrite equip...yeth
-        #sys calls......we need to communicate to the host the best way a script can. system to system. how do i do that narratively. we can't just shove paperwork down their throat.
         # TODO: Read Service and executable names.
         # TODO:# Create a fetch function for crawling.
-        # TODO: Dig deeper
+#act 2
         # TODO: Find shell history
         # TODO: Find files
-        # TODO: Make PDFexport function (try/fail/okthenwaitformoresessionsiguess)
+        # TODO: aggregate file names and search for repeated words or themes.
+        # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES ABOVE
+#act 3
+        # TODO: Aggregate Variables under generated db schema for easier access and correlation.
+        # TODO: Show the user what we learned. 
+        # TODO: User Data Perusal Interface.
+        # TODO: Regenerate LI based on user changes to data....no more probing after this poitn. LI becomes what the user made him.
+        #li as a blue team defense mechanism?
         # TODO: Get a shrink lol
         
         pprint(me, message="I have collected the surface.")
