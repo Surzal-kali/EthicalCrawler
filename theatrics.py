@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import random
@@ -295,9 +296,8 @@ def test(me, message):
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting the mimic's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-    time.sleep(0.4)  # Keep the comment visible for a moment
-    sys.stdout.write('\x1b[1A') # Move cursor up one line
-    sys.stdout.write('\x1b[2K') # Clear the line
+    time.sleep(5)  # Keep the comment visible for a moment
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""

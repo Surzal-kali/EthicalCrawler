@@ -1,7 +1,11 @@
+from os import system
+import os
+
 from theatrics import Me, dev_comment
 from theatrics import pprint, Me, equip, sudo, pprint 
 import time
 def dev_forward():
+    system('cls' if os.name == 'nt' else 'clear')
     dev_comment("This repository was named Ethical Boundaries for a reason. It pushes them")   
     time.sleep(3)
     dev_comment("This is not a tool for malicious use. What you do with it is your responsiblity.")
