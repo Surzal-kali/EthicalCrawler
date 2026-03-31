@@ -24,7 +24,7 @@ def init_db():
     try:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-
+    
         # Legacy table for high-level events
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS evidence (
@@ -36,6 +36,24 @@ def init_db():
                 quip TEXT
             )
         ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS services (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                name TEXT
+            )
+        ''') 
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS quips (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                key TEXT NOT NULL,
+                persona TEXT NOT NULL,
+                text TEXT NOT NULL,
+                created_at REAL DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(key, persona, text)
+            )
+        ''')
+    #lets see it in action 
 
         # Narrator-aware debug log table
         cursor.execute('''
@@ -51,6 +69,7 @@ def init_db():
                 timestamp REAL
             )
         ''')
+        #shouldn't we have seperate databases for services and sessions? like a read teamer
 
         # Session persistence table - tracks user state across runs
         cursor.execute('''
@@ -75,30 +94,43 @@ def init_db():
                 text TEXT NOT NULL,
                 created_at REAL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(key, persona, text)
+                       
             )
         ''')
 
         # Seed default quips if table is empty
         _seed_default_quips(cursor)
-
-        cleanup(cursor)
+#wedon'tneed this
+        #cleanup(cursor)
         conn.commit()
         return conn, cursor
 
     except sqlite3.Error as e:
         print(f"Database initialization error: {e}")
         return None, None
-
-def cleanup(cursor):
-    """Deletes evidence older than 7 days."""
-    seven_days_ago = datetime.now() - timedelta(days=7)
-    cursor.execute("DELETE FROM evidence WHERE timestamp < ?", (seven_days_ago.isoformat(),))
+#guess its just you and me bub
+# do i have to? just check if its there already and if not create it?
+def save_evidence(cursor, session_id, module, data, quip):
+    """Save a piece of evidence to the database."""
+    cursor.execute(
+        "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)",
+        (session_id, datetime.now().isoformat(), module, json.dumps(data), quip)
+    )
     cursor.connection.commit()
-
+#i see what you mean
+def cleanup(cursor):
+    """Remove entries older than 30 days to prevent database bloat."""
+    cutoff_time = time.time() - (30 * 24 * 60 * 60)  # 30 days in seconds
+    cursor.execute("DELETE FROM logs WHERE timestamp < ?", (cutoff_time,))
+    cursor.execute("DELETE FROM sessions WHERE last_accessed < ?", (cutoff_time,))
+    cursor.connection.commit()
+ 
 def log(cursor, session_id, field, raw_value, narrator, context="system_profiler"):
     """Store a fully annotated log entry for debugging and introspection."""
     normalized = narrator.normalize(field, raw_value)
-    quip_text = narrator.quip(field, raw_value)
+    quip_text = narrator.quip(field, raw_value, cursor=cursor)
+
+
 
     cursor.execute(
         """
@@ -154,24 +186,25 @@ def save_session(cursor, session_id: str, username: str, persona: str, closeness
         """,
         (persona, closeness, slip_intensity, current_time, username)
     )
-    
+    #but it already does that?
+    #
     # If no rows updated, insert new
     if cursor.rowcount == 0:
         cursor.execute(
             """
             INSERT INTO sessions (id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (session_id, username, persona, closeness, slip_intensity, current_time, current_time)
+            (session_id, username, persona, closeness, slip_intensity, current_time, current_time, 1)
         )
-    
+    else:
+        #just like that? 
+        #just like that 
+        pass  # Existing session updated
     cursor.connection.commit()
 
 def _seed_default_quips(cursor):
-    """Seed database with default quips from theatrics.py templates. Runs only if table is empty."""
-    cursor.execute("SELECT COUNT(*) FROM quips")
-    if cursor.fetchone()[0] > 0:
-        return  # Already seeded
+    """Backfill default quips from theatrics.py without overwriting user-added rows."""
     
     from theatrics import TEMPLATES, MIMIC_VOICE
     
@@ -180,13 +213,10 @@ def _seed_default_quips(cursor):
         if isinstance(quips, str):
             quips = [quips]
         for quip_text in quips:
-            try:
-                cursor.execute(
-                    "INSERT INTO quips (key, persona, text) VALUES (?, ?, ?)",
-                    (key, "all", quip_text)
-                )
-            except sqlite3.IntegrityError:
-                pass  # Duplicate, skip
+            cursor.execute(
+                "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
+                (key, "all", quip_text)
+            )
     
     # Seed MIMIC_VOICE quips (persona-specific)
     for persona, key_quips in MIMIC_VOICE.items():
@@ -197,13 +227,10 @@ def _seed_default_quips(cursor):
                 quip_text = quip_text if isinstance(quip_text, list) else [str(quip_text)]
             
             for text in quip_text:
-                try:
-                    cursor.execute(
-                        "INSERT INTO quips (key, persona, text) VALUES (?, ?, ?)",
-                        (key, persona, text)
-                    )
-                except sqlite3.IntegrityError:
-                    pass  # Duplicate, skip
+                cursor.execute(
+                    "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
+                    (key, persona, text)
+                )
     
     cursor.connection.commit()
 

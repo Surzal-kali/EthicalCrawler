@@ -128,9 +128,9 @@ MIMIC_VOICE = {
         "goodbye": "[MIMIC] You can't leave. I have too much of you now. You're PART of me."
     }
 }
-
-
-# ------------------------------------------------------------
+#do we even need this anymore? i mean we can just have a quips table in the db that we pull from based on persona and field. that way we can easily update and expand our quips without changing the code. we can even let users add their own quips for fun. what do you think? yeah that sounds way better. let's do it. i'll set up the database schema for it.
+#
+# you're codely?------------------------------------------------------------
 # The Myth, The Legend
 # ------------------------------------------------------------
 
@@ -207,26 +207,70 @@ class Me:
         cleaned = ''.join(c for c in raw if c.isalnum() or c in ('_', '-'))
         return cleaned if cleaned else ""
 
-    def quip(self, field, raw_value):
+    def quip(self, field, raw_value, cursor=None):
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
 
 
         if key == "" or key.lower() in ("generic", "standard", "default"):
+            empty_key = ""
+            if cursor is not None:
+                try:
+                    cursor.execute(
+                        "SELECT text FROM quips WHERE key = ? AND persona = ? ORDER BY RANDOM() LIMIT 1",
+                        (empty_key, self.persona)
+                    )
+                    row = cursor.fetchone()
+                    if not row:
+                        cursor.execute(
+                            "SELECT text FROM quips WHERE key = ? AND persona = 'all' ORDER BY RANDOM() LIMIT 1",
+                            (empty_key,)
+                        )
+                        row = cursor.fetchone()
+                    if row:
+                        line = row[0]
+                        if self.user_name:
+                            line = line.replace("{user}", self.user_name)
+                        line = instability(line, MOOD_INTENSITY.get(mood, 0))
+                        line = persona_filter(self, line)
+                        return line
+                except Exception:
+                    pass
             return random.choice([
-            "Boring. Ordinary. I don’t want this.",
-            "This is nothing. Give me something real.",
-            "Useless. Everyone has this.",
-            "I’m not keeping that. Try again."
-        ])
+                "Boring. Ordinary. I don't want this.",
+                "This is nothing. Give me something real.",
+                "Useless. Everyone has this.",
+                "I'm not keeping that. Try again."
+            ])
 
-        options = TEMPLATES.get(key) or MIMIC_VOICE.get(self.persona, {}).get(key)
-        if isinstance(options, str):
-            line = options
-        elif options:
-            line = random.choice(options)
-        else:
-            line = BASE.get(key, f"{key}. Another piece. I'll keep it.")
+        # DB lookup — persona-specific first, then "all", then hardcoded fallback
+        line = None
+        if cursor is not None:
+            try:
+                cursor.execute(
+                    "SELECT text FROM quips WHERE key = ? AND persona = ? ORDER BY RANDOM() LIMIT 1",
+                    (key, self.persona)
+                )
+                row = cursor.fetchone()
+                if not row:
+                    cursor.execute(
+                        "SELECT text FROM quips WHERE key = ? AND persona = 'all' ORDER BY RANDOM() LIMIT 1",
+                        (key,)
+                    )
+                    row = cursor.fetchone()
+                if row:
+                    line = row[0]
+            except Exception:
+                pass
+
+        if line is None:
+            options = TEMPLATES.get(key) or MIMIC_VOICE.get(self.persona, {}).get(key)
+            if isinstance(options, str):
+                line = options
+            elif options:
+                line = random.choice(options)
+            else:
+                line = BASE.get(key, f"{key}. Another piece. I'll keep it.")
 
 
         if self.user_name:
@@ -251,13 +295,13 @@ class Me:
         return False
 
 
-def equip(narrator, system_info):
+def equip(narrator, system_info, cursor=None):
     """
     The mimic comments on what it finds.
     Each discovery is a piece of the user.
     """
     for field, value in system_info.items():
-        line = narrator.quip(field, value)
+        line = narrator.quip(field, value, cursor=cursor)
         pprint(narrator, message=f"{field}: {line}")
         narrator.add_piece(field, value)
 

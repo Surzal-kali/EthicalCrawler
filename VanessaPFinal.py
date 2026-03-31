@@ -131,7 +131,8 @@ def ethical_boot_sequence():
     pprint(me, message="To see. To… collect.")
 
     time.sleep(0.5)
-
+    #right about here...thats when it wakes up andstarts pulling. after consent.
+    #
     print("\n" + "=" * 60)
     print("REQUIRED CONSENT")
     print("=" * 60)
@@ -182,7 +183,7 @@ def ethical_boot_sequence():
     print("\n" + "=" * 60)
 
     pprint(me, message="Thank you.")
-    pprint(me, message="You're awfully… helpful.")
+    pprint(me, message="You're such a kind user.")
     pprint(me, message="Let's see…")
 
     time.sleep(1)
@@ -191,6 +192,8 @@ def ethical_boot_sequence():
     return session_id, me, user_name, conn, cursor
 
 def system_profiler(conn, cursor, session_id, me, user_name):
+    #with loading screen....need ascii art instead
+     # 
     """
     The program looks through the machine. Feeding. Enumerating.
     """
@@ -230,10 +233,10 @@ def session(session_id, me, user_name, conn, cursor):
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
-        equip(me, profile)
+        equip(me, profile, cursor)
         programs = services(conn, cursor, session_id, me, user_name)
-        equip(me,programs)
-        
+        equip(me, {"services": programs}, cursor)
+        #or we just rewrite equip...yeth
 
         # TODO: Dig deeper
         # TODO: Find shell history
@@ -268,3 +271,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+  
