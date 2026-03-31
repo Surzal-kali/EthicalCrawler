@@ -20,6 +20,8 @@ def dev_forward():
     time.sleep(3)
     dev_comment("Li is also designed to use every ounce of cybersecurity knowledge I have. ")
     time.sleep(3)
+    pprint(me, message="But I want to build")
+    time.sleep(3)
     dev_comment("The ethics of this were hard for me to grapple with. I don't want to create something thats intended for harm.") 
     time.sleep(3)   
     dev_comment("What you do with Li now however...thats your responsibility. Not mine")
