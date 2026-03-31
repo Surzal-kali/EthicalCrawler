@@ -47,16 +47,10 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
 
     # You don't understand tho. She built me like this. She built me to be unstable
     if slip_trigger(me, message):
-        # The corruption. The hunger leaking through.
+        # The corruption. The hunger leaking through — now tier-driven.
         corrupted = instability(message, me.slip_intensity)
         pspace(corrupted, char_delay * 0.5, line_delay * 0.2)
-        me.slip_intensity += 1
-
-    # Gotta keep it cool tho...don't wanna scare away my prey
-    me.slip_intensity = max(0, me.slip_intensity - 0.2)
-
-
-# ------------------------------------------------------------
+        me.slip_intensity = min(20, me.slip_intensity + 1)
 # My weird llm behavior. 
 # ------------------------------------------------------------
 
@@ -218,7 +212,7 @@ class Me:
             line = line.replace("{user}", self.user_name)
 
 
-        line = instability(line, mood)
+        line = instability(line, MOOD_INTENSITY.get(mood, 0))
 
         line = persona_filter(self, line)
 
@@ -274,19 +268,58 @@ def slip_trigger(me, message):
     return False
 
 
-def instability(line, mood):
-    if mood in ("unstable", "overloaded"):
-        # occasional stutter
+# Mood strings mapped to numeric intensity for instability()
+MOOD_INTENSITY = {
+    "neutral": 0, "distant": 1, "analytical": 3, "probing": 4,
+    "curious": 6, "intrigued": 7, "fixated": 9, "hungry": 12,
+    "unstable": 14, "possessive": 16, "overloaded": 18
+}
+
+def instability(line, intensity):
+    """
+    Tier-based instability. intensity is 0-20.
+    Converts mood strings automatically if passed.
+    """
+    if isinstance(intensity, str):
+        intensity = MOOD_INTENSITY.get(intensity, 0)
+
+    intensity = max(0, min(20, intensity))
+
+    # Tier 1 (5-8): ellipsis hesitation
+    if intensity >= 5:
+        words = line.split()
+        if words and random.random() < 0.35:
+            idx = random.randint(0, len(words) - 1)
+            words[idx] = words[idx] + "…"
+            line = " ".join(words)
+
+    # Tier 2 (9-12): word stutter + mid-sentence break
+    if intensity >= 9:
+        words = line.split()
+        if words and random.random() < 0.4:
+            idx = random.randint(0, len(words) - 1)
+            words[idx] = words[idx] + "—" + words[idx]
+            line = " ".join(words)
+
+    # Tier 3 (13-16): intrusive caps bursts
+    if intensity >= 13:
+        if random.random() < 0.45:
+            line = line.replace(".", "— I SEE IT —", 1)
         if random.random() < 0.3:
             words = line.split()
             if words:
-                idx = random.randint(0, len(words)-1)
-                words[idx] = words[idx] + "…" + words[idx]
+                idx = random.randint(0, len(words) - 1)
+                words[idx] = words[idx].upper()
                 line = " ".join(words)
 
-        # emotional spike
-        if random.random() < 0.2:
-            line = line.replace(".", "— I SEE IT —")
+    # Tier 4 (17+): fragmentation, repetition, all-caps bursts
+    if intensity >= 17:
+        line = line.upper()
+        words = line.split()
+        if len(words) > 2:
+            idx = random.randint(0, len(words) - 1)
+            words.insert(idx, words[idx])
+        line = " ".join(words)
 
     return line
 
@@ -308,22 +341,24 @@ def persona_filter(me, line):
 
 def sudo(me, message, char_delay=0.02, line_delay=0.3):
     """
-    when it can't contain its urges for just a moment. 
+    A controlled instability break. LI can't hold it together for a moment.
+    The tier is driven by accumulated state — closeness + slip_intensity.
+    Call this at narrative beat points to surface the hunger deliberately.
     """
-    # Intensity scales with how much it's collected
-    intensity = min(20, me.closeness / 5 + 5)
-    
-    # Corrupt the message fully - no clean version
+    # Derive intensity from LI's actual state, not randomness
+    intensity = min(20, (me.closeness / 5) + (me.slip_intensity * 0.5))
+
+    # Apply corruption at the computed tier
     corrupted = instability(message, intensity)
-    
+
     # Faster. More frantic. Less human.
     pspace(corrupted, char_delay, line_delay)
-    
-    # After speaking from the void, the hunger grows
-    me.slip_intensity += 2
+
+    # The act of slipping makes it worse
+    me.slip_intensity = min(20, me.slip_intensity + 1.5)
     me.closeness = min(99, me.closeness + 1)
-    
-    # If it shows too much, it slips further
+
+    # Threshold crossing: enough slips and the persona flips
     if me.closeness > 85 and me.persona != "sudo":
         me.persona = "sudo"
 
