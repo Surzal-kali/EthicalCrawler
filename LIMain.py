@@ -9,18 +9,44 @@
 
 
 import os
+import sys
 import time
 import socket
 import json
+import traceback
 from datetime import datetime
 import platform
 from pathlib import Path
 
 from database import init_db, log, get_evidence_dir, load_session, save_session
 from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance
-from services import services
+from services import prog
 #######need to add an act 0. 
 #
+
+DEBUG_MODE = "--debug" in sys.argv or os.getenv("ETHICAL_CRAWLER_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
+SLIP_DECAY_PER_DAY = 0.5
+MIN_SLIP_INTENSITY = 1.0
+
+
+def decay_slip_intensity(saved_intensity, last_accessed, decay_per_day=SLIP_DECAY_PER_DAY, floor=MIN_SLIP_INTENSITY):
+    """Decay slip intensity by time-away so long absences cool instability."""
+    try:
+        current = float(saved_intensity)
+    except (TypeError, ValueError):
+        current = floor
+
+    try:
+        last_seen = float(last_accessed)
+    except (TypeError, ValueError):
+        return max(floor, current)
+
+    elapsed_seconds = max(0.0, time.time() - last_seen)
+    elapsed_days = elapsed_seconds / 86400.0
+    decayed = current - (elapsed_days * decay_per_day)
+    return round(max(floor, decayed), 2)
+
+
 def get_session_dir(session_id: str) -> Path:
     """
     Get platform-aware session directory.
@@ -37,8 +63,10 @@ def ethical_boot_sequence():
     The initial sequence that establishes the tone and narrative.
     Returns: (session_id, me, user_name, conn, cursor)
     """
-    conn, cursor = init_db() 
+    conn, cursor = init_db(debug=DEBUG_MODE)
     if conn is None:
+        if DEBUG_MODE:
+            print("[DEBUG][LIMain] Failed to initialize database.")
         return None, None, None, None, None
     
     # Create Me instance with default persona
@@ -85,7 +113,10 @@ def ethical_boot_sequence():
     if existing_session:
         # Load persisted state
         me.persona = existing_session['persona']
-        me.slip_intensity = existing_session['slip_intensity']
+        me.slip_intensity = decay_slip_intensity(
+            existing_session['slip_intensity'],
+            existing_session['last_accessed'],
+        )
         me.closeness = existing_session['closeness']
         
         # Calculate time since last visit
@@ -94,6 +125,13 @@ def ethical_boot_sequence():
         now = dt_module.datetime.now()
         time_diff = now - last_visited
         days_away = time_diff.days
+
+        if DEBUG_MODE:
+            print(
+                f"[DEBUG][LIMain] Loaded session for {user_name}: "
+                f"saved_slip={existing_session['slip_intensity']} decayed_slip={me.slip_intensity} "
+                f"days_away={days_away}"
+            )
         
         pprint(me, message=f"{user_name.upper()}… You're back.")
         time.sleep(0.5)
@@ -183,8 +221,8 @@ def ethical_boot_sequence():
     consent_dir.mkdir(parents=True, exist_ok=True)
 
     log_file = consent_dir / f"session_{session_id}.json"
-    with open(log_file, 'w') as f:
-        json.dump(consent_log, f, indent=2)
+    with open(log_file, 'w', encoding='utf-8') as f:
+        json.dump(consent_log, f, indent=2, default=str)
     #should we have it increase with data or decrese tho?
     #
     #glitching  could also come from excitment...we need more theatrics at boot...we need a new character. the scared developer who built this :3
@@ -244,10 +282,8 @@ def session(session_id, me, user_name, conn, cursor):
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
         equip(me, profile, cursor)
-        programs = services(conn, cursor, session_id, me, user_name)
-        equip(me, {"services": programs}, cursor)
-        services = services(conn, cursor, session_id, me, user_name)
-        equip(me, {"services": services}, cursor)
+        services_list = prog(conn, cursor, session_id, me, user_name)
+        equip(me, {"services": services_list}, cursor)
         #or we just rewrite equip...yeth
         #sys calls......we need to communicate to the host the best way a script can. system to system. how do i do that narratively. we can't just shove paperwork down their throat.
         # TODO: Read Service and executable names.
@@ -266,6 +302,8 @@ def session(session_id, me, user_name, conn, cursor):
         pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
         pprint(me, message=f"Something is wrong.")
         print(f"Error: {e}")
+        if DEBUG_MODE:
+            traceback.print_exc()
 
 def main():
     result = ethical_boot_sequence()
@@ -278,7 +316,12 @@ def main():
     finally:
         # Persist state and close DB in one place for all main-path exits.
         if conn and user_name:
-            save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+            try:
+                save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+            except Exception as exc:
+                print(f"Warning: failed to save session state: {exc}")
+                if DEBUG_MODE:
+                    traceback.print_exc()
 
         if conn:
             conn.close()

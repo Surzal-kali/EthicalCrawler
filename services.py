@@ -2,7 +2,7 @@ import psutil
 from theatrics import pprint
 
 
-def services(conn, cursor, session_id, me, user_name):
+def prog(conn, cursor, session_id, me, user_name):
     pprint(me, message="..............................................")
     pprint(me, message=" ⚙️   SERVICES DETECTED")
     pprint(me, message="..............................................")     

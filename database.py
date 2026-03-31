@@ -21,6 +21,34 @@ def get_evidence_dir() -> Path:
     return temp_dir
 
 DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
+DEBUG_ENV_VAR = "ETHICAL_CRAWLER_DEBUG"
+
+
+def _debug_enabled(debug=False):
+    if debug:
+        return True
+    return os.getenv(DEBUG_ENV_VAR, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _debug_print(enabled, message):
+    if enabled:
+        print(f"[DEBUG][database] {message}")
+
+
+def _json_default(value):
+    if isinstance(value, datetime):
+        return value.isoformat()
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, (set, tuple)):
+        return list(value)
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return str(value)
+
+
+def _safe_json_dumps(data):
+    return json.dumps(data, default=_json_default)
 
 
 def _canonical_username(username: str) -> str:
@@ -37,123 +65,130 @@ def seed_default_quips(cursor):
         )
 
 
-def init_db():
-    conn = sqlite3.connect(DATABASE_PATH)
-    cursor = conn.cursor()
-    
+def init_db(debug=False):
+    debug_mode = _debug_enabled(debug)
+    conn = None
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
 
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,  
-            username TEXT UNIQUE NOT NULL,
-            created_at REAL DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    cursor.execute('''    
-        CREATE TABLE IF NOT EXISTS quips (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key TEXT NOT NULL,       
-            persona TEXT NOT NULL,      
-            text TEXT NOT NULL,
-            mood TEXT DEFAULT 'neutral', 
-            weight INTEGER DEFAULT 1,   
-            created_at REAL DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(key, persona, text)
-        )
-    ''')
-    
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_quips_lookup ON quips(key, persona)')
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS mood_config (
-            mood TEXT PRIMARY KEY,
-            intensity INTEGER DEFAULT 0,
-            min_closeness INTEGER DEFAULT 0,
-            max_closeness INTEGER DEFAULT 100
-        )
-    ''')
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS personalities (
-            seed_hash TEXT PRIMARY KEY,
-            base_persona TEXT DEFAULT 'foothold',
-            base_slip_intensity REAL DEFAULT 5,
-            affinity_tags TEXT
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS services (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT,
-            name TEXT NOT NULL,
-            quip TEXT,
-            closeness_impact REAL,
-            session_impact REAL,
-            UNIQUE(session_id, name)
-        )
-    '''
-)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                created_at REAL DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS quips (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                key TEXT NOT NULL,
+                persona TEXT NOT NULL,
+                text TEXT NOT NULL,
+                mood TEXT DEFAULT 'neutral',
+                weight INTEGER DEFAULT 1,
+                created_at REAL DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(key, persona, text)
+            )
+        ''')
 
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_quips_lookup ON quips(key, persona)')
 
-    cursor.execute(
-        '''
-        DELETE FROM services
-        WHERE rowid NOT IN (
-            SELECT MIN(rowid)
-            FROM services
-            GROUP BY session_id, name
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS mood_config (
+                mood TEXT PRIMARY KEY,
+                intensity INTEGER DEFAULT 0,
+                min_closeness INTEGER DEFAULT 0,
+                max_closeness INTEGER DEFAULT 100
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS personalities (
+                seed_hash TEXT PRIMARY KEY,
+                base_persona TEXT DEFAULT 'foothold',
+                base_slip_intensity REAL DEFAULT 5,
+                affinity_tags TEXT
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS services (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                name TEXT NOT NULL,
+                quip TEXT,
+                closeness_impact REAL,
+                session_impact REAL
+            )
+        ''')
+
+        cursor.execute(
+            '''
+            DELETE FROM services
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM services
+                GROUP BY session_id, name
+            )
+            '''
         )
-        '''
-    )
 
-    cursor.execute(
-        'CREATE UNIQUE INDEX IF NOT EXISTS idx_services_session_name ON services(session_id, name)'
-    )
-
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sessions (
-            id TEXT PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            persona TEXT DEFAULT 'foothold',
-            closeness REAL DEFAULT 0,
-            slip_intensity REAL DEFAULT 5,
-            created_at REAL NOT NULL,
-            last_accessed REAL NOT NULL,
-            session_count INTEGER DEFAULT 1
+        cursor.execute(
+            'CREATE UNIQUE INDEX IF NOT EXISTS idx_services_session_name ON services(session_id, name)'
         )
-    ''')
 
-    _migrate_sessions_usernames(cursor)
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT,
-            field TEXT,
-            raw_value TEXT,
-            normalized_key TEXT,
-            persona TEXT,
-            quip_text TEXT,
-            context TEXT,
-            timestamp REAL
-        )
-    ''')
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS evidence (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT,
-            timestamp TEXT,
-            module TEXT,
-            data TEXT,
-            quip TEXT
-        )
-    ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS sessions (
+                id TEXT PRIMARY KEY,
+                username TEXT UNIQUE NOT NULL,
+                persona TEXT DEFAULT 'foothold',
+                closeness REAL DEFAULT 0,
+                slip_intensity REAL DEFAULT 5,
+                created_at REAL NOT NULL,
+                last_accessed REAL NOT NULL,
+                session_count INTEGER DEFAULT 1
+            )
+        ''')
 
-    seed_default_quips(cursor)
-    conn.commit()
-    return conn, cursor
+        _migrate_sessions_usernames(cursor)
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                field TEXT,
+                raw_value TEXT,
+                normalized_key TEXT,
+                persona TEXT,
+                quip_text TEXT,
+                context TEXT,
+                timestamp REAL
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS evidence (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                timestamp TEXT,
+                module TEXT,
+                data TEXT,
+                quip TEXT
+            )
+        ''')
+
+        seed_default_quips(cursor)
+        conn.commit()
+        return conn, cursor
+    except (sqlite3.Error, OSError) as exc:
+        if conn:
+            try:
+                conn.rollback()
+            except sqlite3.Error:
+                pass
+            conn.close()
+        _debug_print(debug_mode, f"init_db failed: {exc}")
+        return None, None
 
 
 def _migrate_sessions_usernames(cursor):
@@ -217,7 +252,7 @@ def save_evidence(cursor, session_id, module, data, quip):
     """Save a piece of evidence to the database."""
     cursor.execute(
         "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)",
-        (session_id, datetime.now().isoformat(), module, json.dumps(data), quip)
+        (session_id, datetime.now().isoformat(), module, _safe_json_dumps(data), quip)
     )
     cursor.connection.commit()
 #i see what you mean
