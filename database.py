@@ -85,15 +85,30 @@ def init_db():
         CREATE TABLE IF NOT EXISTS services (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT,
-            name TEXT
-            quip TEXT
-            closeness_impact REAL
-            session_impact REAL
-        
-                   
+            name TEXT NOT NULL,
+            quip TEXT,
+            closeness_impact REAL,
+            session_impact REAL,
+            UNIQUE(session_id, name)
         )
     '''
 )
+
+
+    cursor.execute(
+        '''
+        DELETE FROM services
+        WHERE rowid NOT IN (
+            SELECT MIN(rowid)
+            FROM services
+            GROUP BY session_id, name
+        )
+        '''
+    )
+
+    cursor.execute(
+        'CREATE UNIQUE INDEX IF NOT EXISTS idx_services_session_name ON services(session_id, name)'
+    )
 
 
     cursor.execute('''

@@ -1,35 +1,45 @@
-import os
-import time
-import socket
-import json
-import asyncio
-from datetime import datetime
-import platform
+import psutil
+from theatrics import pprint
 
-from database import init_db, log
-from theatrics import Me, pprint, equip, sudo
-me=Me()
+
 def services(conn, cursor, session_id, me, user_name):
     pprint(me, message="..............................................")
     pprint(me, message=" ⚙️   SERVICES DETECTED")
     pprint(me, message="..............................................")     
-    cursor.execute("SELECT name FROM services WHERE session_id = ?", (session_id,))
+    cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
     services_list = [row[0] for row in cursor.fetchall()]
     if not services_list:
-        #######logic here to detect services and insert into database########
-        # Example: Detecting common services (this is just a placeholder, actual detection logic WILL go here)
-        common_services = ["ssh", "nginx", "mysql", "postgresql", "redis", "docker", "kubernetes"]
-        for service in common_services:
-            # Placeholder for actual detection logic
-            detected = True  # Replace with actual detection result
-            if detected:
-                cursor.execute("INSERT INTO services (session_id, name) VALUES (?, ?)", (session_id, service))
-                conn.commit()
-                services_list.append(service)
-    return services_list
-#we gotta change theatrics 
+        common_services = [
+            "steam", "spotify", "discord", "slack", "teams", "zoom", "skype", "dropbox", "google drive", "onedrive",
+            "chrome", "firefox", "edge", "opera", "brave", "vivaldi", "tor", "thunderbird", "outlook", "evolution",
+            "calibre", "vlc", "itunes", "gimp", "photoshop", "illustrator", "blender", "autocad", "visual studio",
+            "code", "notepad++", "pycharm",
+        ]
 
-####not creepy enough, maybe add some quips about the services it finds? like "oh look, nginx is running. how quaint." or "docker? really? what are you hiding?" or "ssh? trying to keep things secure, huh?" ####more predatory
-####the creator abandoned them thats why their not whole
-#justlike you
-#shouldn't that be in db?
+        running_process_names = set()
+        for proc in psutil.process_iter(['name']):
+            try:
+                proc_name = (proc.info.get('name') or '').lower()
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                continue
+
+            if proc_name:
+                running_process_names.add(proc_name)
+
+        detected_services = []
+        for service in common_services:
+            service_name = service.lower()
+            if any(service_name in proc_name for proc_name in running_process_names):
+                detected_services.append(service)
+
+        if detected_services:
+            for service in detected_services:
+                cursor.execute(
+                    "INSERT OR IGNORE INTO services (session_id, name) VALUES (?, ?)",
+                    (session_id, service),
+                )
+            conn.commit()
+            cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
+            services_list = [row[0] for row in cursor.fetchall()]
+    return services_list
+

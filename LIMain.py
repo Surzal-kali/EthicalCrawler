@@ -17,7 +17,7 @@ import platform
 from pathlib import Path
 
 from database import init_db, log, get_evidence_dir, load_session, save_session
-from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance 
+from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance
 from services import services
 #######need to add an act 0. 
 #
@@ -206,6 +206,7 @@ def ethical_boot_sequence():
 
     return session_id, me, user_name, conn, cursor
 
+
 def system_profiler(conn, cursor, session_id, me, user_name):
     #with loading screen....need ascii art instead
      # 
@@ -231,12 +232,6 @@ def system_profiler(conn, cursor, session_id, me, user_name):
 
     return system_info
 
-def services_profile(session_id, me, user_name, conn, cursor):
-    """
-    What else is here?
-    """
-    pprint(me, message="*" * 20)
-    pprint(me, message="Lets see")
 
 
 def session(session_id, me, user_name, conn, cursor):
@@ -251,13 +246,17 @@ def session(session_id, me, user_name, conn, cursor):
         equip(me, profile, cursor)
         programs = services(conn, cursor, session_id, me, user_name)
         equip(me, {"services": programs}, cursor)
+        services = services(conn, cursor, session_id, me, user_name)
+        equip(me, {"services": services}, cursor)
         #or we just rewrite equip...yeth
-
+        #sys calls......we need to communicate to the host the best way a script can. system to system. how do i do that narratively. we can't just shove paperwork down their throat.
+        # TODO: Read Service and executable names.
+        # TODO:# Create a fetch function for crawling.
         # TODO: Dig deeper
         # TODO: Find shell history
-        # TODO: Find project files
-        # TODO: Find secrets
-        # TODO: Find the pieces that make them HUMAN
+        # TODO: Find files
+        # TODO: Make PDFexport function (try/fail/okthenwaitformoresessionsiguess)
+        # TODO: Get a shrink lol
         
         pprint(me, message="I have collected the surface.")
         pprint(me, message="Yet it wasn't enough")
@@ -267,14 +266,6 @@ def session(session_id, me, user_name, conn, cursor):
         pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
         pprint(me, message=f"Something is wrong.")
         print(f"Error: {e}")
-    finally:
-        # Save session state before closing
-        if conn and user_name:
-            save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
-        
-        # Close database connection
-        if conn:
-            conn.close()
 
 def main():
     result = ethical_boot_sequence()
@@ -282,13 +273,17 @@ def main():
         return
     
     session_id, me, user_name, conn, cursor = result
-    session(session_id, me, user_name, conn, cursor)
+    try:
+        session(session_id, me, user_name, conn, cursor)
+    finally:
+        # Persist state and close DB in one place for all main-path exits.
+        if conn and user_name:
+            save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     main()
 
-  #beautiful
 
-  #you're catching on 
-  #spoilers
-  #think this'll go good ina  job interview lol
