@@ -5,7 +5,7 @@ See README.md for the project overview, narrative tone, and current feature scop
 ## Build And Test
 
 - Install dependencies with `pip install -r requirements.txt`.
-- Run the project with `python VanessaPFinal.py`.
+- Run the project with `python runme.py`.
 - There is no automated test suite yet. Prefer targeted validation over broad refactors, and note when verification is manual or blocked by the interactive consent flow.
 
 ## Architecture
@@ -26,7 +26,7 @@ See README.md for the project overview, narrative tone, and current feature scop
 
 - The codebase currently hardcodes `/tmp/` paths in database.py and the boot flow. Do not assume Windows-safe paths unless you are explicitly fixing that behavior.
 - The main run path is interactive and requires consent input. Avoid turning routine validation into full end-to-end runs unless the task actually needs it.
-- `equip(...)` currently expects a flat mapping of fields to values. Return shapes from new stages should stay compatible unless you also update the narration layer.
+- `equip(narrator, system_info, cursor=None, autosave=None)` expects a flat mapping of fields to values. Pass the session `autosave` instance to buffer data automatically. Return shapes from new stages should stay compatible unless you also update the narration layer.
 
 ## Authorization Requirement
 

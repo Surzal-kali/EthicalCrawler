@@ -2,7 +2,7 @@ import psutil
 from theatrics import pprint
 
 
-def prog(conn, cursor, session_id, me, user_name):
+def prog(conn, cursor, session_id, me, user_name, autosave=None):
     pprint(me, message="..............................................")
     pprint(me, message=" ⚙️   SERVICES DETECTED")
     pprint(me, message="..............................................")     
@@ -41,5 +41,9 @@ def prog(conn, cursor, session_id, me, user_name):
             conn.commit()
             cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
             services_list = [row[0] for row in cursor.fetchall()]
+
+    if autosave is not None and services_list:
+        autosave.add("services_detected", services_list, context="services")
+
     return services_list
 

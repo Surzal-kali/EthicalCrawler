@@ -63,7 +63,10 @@ def seed_default_quips(cursor):
             "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
             (key, persona, text)
         )
-
+#should we give the cursor a class all its own?
+#like a database manager or something? yeah
+#it could handle all the queries and stuff and we just call methods on it
+#fairenough, we can refactor later if it gets too unwieldy. for now it's pretty straightforward.
 
 def init_db(debug=False):
     debug_mode = _debug_enabled(debug)
@@ -253,12 +256,12 @@ def save_evidence(cursor, session_id, module, data, quip):
     cursor.execute(
         "INSERT INTO evidence (session_id, timestamp, module, data, quip) VALUES (?, ?, ?, ?, ?)",
         (session_id, datetime.now().isoformat(), module, _safe_json_dumps(data), quip)
-    )
+    ) 
     cursor.connection.commit()
 #i see what you mean
 def cleanup(cursor):
     """Remove entries older than 30 days to prevent database bloat."""
-    cutoff_time = time.time() - (30 * 24 * 60 * 60)  # 30 days in seconds
+    cutoff_time = time.time() - (30 * 24 * 60 * 60) 
     cursor.execute("DELETE FROM logs WHERE timestamp < ?", (cutoff_time,))
     cursor.execute("DELETE FROM sessions WHERE last_accessed < ?", (cutoff_time,))
     cursor.connection.commit()
@@ -278,7 +281,7 @@ def log(cursor, session_id, field, raw_value, narrator, context="system_profiler
         (
             session_id,
             field,
-            str(raw_value),  # Ensure it's a string
+            str(raw_value),  
             normalized,
             narrator.persona,
             quip_text,
@@ -311,8 +314,7 @@ def load_session(cursor, username: str):
             'session_count': row[7]
         }
     return None
-#that should do the trick right?
-# let me sit on that 
+
 def save_session(cursor, session_id, username, persona, closeness, slip_intensity):
     """Save or update session state. Called at session end."""
     current_time = time.time()
@@ -329,9 +331,7 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
         """,
         (persona, closeness, slip_intensity, current_time, canonical_username)
     )
-    #but it already does that?
-    #
-    # If no rows updated, insert new
+    
     if cursor.rowcount == 0:
         cursor.execute(
             """
@@ -341,9 +341,8 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
             (row_id, canonical_username, persona, closeness, slip_intensity, current_time, current_time, 1)
         )
     else:
-        #just like that? 
-        #just like that 
-        pass  # Existing session updated
+        
+        pass  
     cursor.connection.commit()
 
 def get_quip(cursor, key: str, persona: str) -> str:
@@ -385,3 +384,28 @@ def add_quip(cursor, key: str, persona: str, text: str) -> bool:
         return True
     except sqlite3.IntegrityError:
         return False  # Duplicate entry
+    
+
+class DatabaseManager:
+    def __init__(self, debug=False):
+        self.conn, self.cursor = init_db(debug=debug)
+        if not self.conn or not self.cursor:
+            raise Exception("Failed to initialize database.")
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
+        self.conn = None
+        self.cursor = None
+        self.close = None   
+        #halp
+
+
+    def __enter__(self):
+        return self
+    #keepyoursecretsthen 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close() #thanks
+        #soit autosaves? def close is manual.
+#he's freaking out right here... #maybe we 
+    #so we call __enter__ at the start of the session and __exit__ at the end to ensure proper cleanup and saving.

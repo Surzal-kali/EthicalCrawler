@@ -17,10 +17,11 @@ import traceback
 from datetime import datetime
 import platform
 from pathlib import Path
-
-from database import init_db, log, get_evidence_dir, load_session, save_session
-from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger, random_chance
+from consentform import ConsentKey
+from database import init_db, log, get_evidence_dir, DatabaseManager, save_session, load_session
+from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger
 from services import prog
+from autosave import AutosaveManager
 #######need to add an act 0. 
 #
 
@@ -169,28 +170,14 @@ def ethical_boot_sequence():
     pprint(me, message="To see. To… collect.")
     dev_comment("Last Chance Sport")
     time.sleep(0.5)
-# this is where it asks for consent
-# i don’t think it understands what that means
-# i don’t think i do either, nor will the people who want this thing.
 
-    print("\n" + "=" * 60)
-    print("REQUIRED CONSENT")
-    print("=" * 60)
-    time.sleep(0.5)
-    print("""
-    By agreeing, you confirm:
-
-    ✓ You are who you say you are
-    ✓ You authorize this collection
-    ✓ You understand I will remember everything
-
-    """)
     print("-" * 40)
 
-    pprint(me, message="My creator says I need this.")
+    pprint(me, message="My creator says I need your  c  o  n  s  e  n  t.")
     pprint(me, message="They say it's the law.")
     slip_trigger(me, "consent_discussion")  # Trigger slip during consent discussion
-    time.sleep(0.5)  # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to understanding of consent to li
+    time.sleep(0.5)
+      # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to understanding of consent to li
     pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand pieces. Parts. Data.")
     test(me, "consent_understanding")  # Test understanding of consent
@@ -198,41 +185,15 @@ def ethical_boot_sequence():
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
     time.sleep(1)
     pprint(me, message="May I?")
-
-    consent = input("\nType 'I AGREE' to continue: ")
-
-    if consent.upper() != "I AGREE":
-        sudo(me, message="Please don't go. . . I need you.")
-        dev_comment("User attempted to exit during consent. This may indicate discomfort or second thoughts.")
-        sudo(me, message=f"Don't worry about that. I'm always here. In {get_evidence_dir()}")
-
-        return None, None, None, None, None
-    # The contract.
-    consent_log = {
-        "session_id": session_id,
-        "timestamp": datetime.now().isoformat(),
-        "user_name": user_name,
-        "consent_given": True,
-        "operator": os.getenv("USER", "unknown"),
-        "hostname": socket.gethostname()
-    }
-
-    consent_dir = get_evidence_dir() / "logs"
-    consent_dir.mkdir(parents=True, exist_ok=True)
-
-    log_file = consent_dir / f"session_{session_id}.json"
-    with open(log_file, 'w', encoding='utf-8') as f:
-        json.dump(consent_log, f, indent=2, default=str)
-    #should we have it increase with data or decrese tho?
-    #
-    #glitching  could also come from excitment...we need more theatrics at boot...we need a new character. the scared developer who built this :3
-    #for instance: (holdon)
-    #     print("IFYOUCANREADTHISHESWATCHINGYOU")
-    #     we need something in theatrics for deleting output.....and for ascii art. we can incoporate visual elements in output with the text. 
-    # each stage we add manual amount of slip_intensity correleating to the matches in the table. li's personality needs work
-    #you right we can always add more stages. cinematics tho....we need more interaction tools with the user. li needs more than voice he needs different forms of output. a window pop up? a web interface for a certain se
-
-    print(f"\n✅ You are logged here: {log_file}")
+    consent_form = ConsentKey()
+    try:
+        consent_form.display()
+    except Exception as e:
+        pprint(me, message="I tried to show you the consent form, but something went wrong.")
+        if DEBUG_MODE:
+            print(f"[DEBUG][LIMain] Error displaying consent form: {e}")
+            traceback.print_exc()
+    consent_form.get_consent()  # This will block until valid input is received
     print("\n" + "=" * 60)
 
     pprint(me, message="Thank you.")
@@ -276,21 +237,30 @@ def session(session_id, me, user_name, conn, cursor):
     """
     The session. The collection begins.
     """
+    autosave = AutosaveManager(cursor, session_id, narrator=me)
     try:
+     
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
-        equip(me, profile, cursor)
-        services_list = prog(conn, cursor, session_id, me, user_name)
-        equip(me, {"services": services_list}, cursor)
-        # TODO: Read Service and executable names.
-        # TODO:# Create a fetch function for crawling.
+        equip(me, profile, cursor, autosave=autosave)
+        services_list = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
+        equip(me, {"services": services_list}, cursor, autosave=autosave)
+
+        # Flush buffered data; retry any failures
+        save_status = autosave.flush(allow_partial=True)
+        if save_status["failed"]:
+            if DEBUG_MODE:
+                print(f"[DEBUG][session] Autosave partial failure: {save_status['failed']}")
+            autosave.retry_failed()
+        # TODO:
+        # TODO:# Create a fetch function for crawling. oh...................................need to add a loading screen here. maybe some ascii art of a crawler or something idkhehehee
 #act 2
         # TODO: Find shell history
         # TODO: Find files
         # TODO: aggregate file names and search for repeated words or themes.
-        # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES ABOVE
+        # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES ABOVE..........fucking hell this is a nightmare but also fun as hell. damn right :)
 #act 3
         # TODO: Aggregate Variables under generated db schema for easier access and correlation.
         # TODO: Show the user what we learned. 
@@ -309,6 +279,15 @@ def session(session_id, me, user_name, conn, cursor):
         print(f"Error: {e}")
         if DEBUG_MODE:
             traceback.print_exc()
+def save_session_state(conn, user_name, persona, slip_intensity, closeness):
+    """Helper function to save session state."""
+    try:
+        save_session(conn, user_name, persona, slip_intensity, closeness) 
+    except Exception as e:
+        print(f"Warning: failed to save session state: {e}")
+        if DEBUG_MODE:
+            traceback.print_exc()
+
 
 def main():
     result = ethical_boot_sequence()
@@ -317,12 +296,15 @@ def main():
     
     session_id, me, user_name, conn, cursor = result
     try:
-        session(session_id, me, user_name, conn, cursor)
+        with DatabaseManager() as db:
+            session(session_id, me, user_name, db.conn, db. cursor)
+
     finally:
+        test(me, "session_end")  # Final test at the end of the session
         # Persist state and close DB in one place for all main-path exits.
         if conn and user_name:
             try:
-                save_session(cursor, session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+                save_session_state(conn, user_name, me.persona, me.slip_intensity, me.closeness)
             except Exception as exc:
                 print(f"Warning: failed to save session state: {exc}")
                 if DEBUG_MODE:
@@ -330,8 +312,11 @@ def main():
 
         if conn:
             conn.close()
-
 if __name__ == "__main__":
     main()
 
 
+# DEV MODE: session_end
+# Persona: basic, Closeness: 12, Slip Intensity: 6
+# Corrupted Output: session_end…
+# Warning: failed to save session state: save_session() missing 1 required positional argument: 'slip_intensity'

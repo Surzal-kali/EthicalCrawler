@@ -168,7 +168,7 @@ class Me:
         return False
 
 
-def equip(narrator, system_info, cursor=None):
+def equip(narrator, system_info, cursor=None, autosave=None):
     """
     The mimic comments on what it finds.
     Each discovery is a piece of the user.
@@ -177,6 +177,8 @@ def equip(narrator, system_info, cursor=None):
         line = narrator.quip(field, value, cursor=cursor)
         pprint(narrator, message=f"{field}: {line}")
         narrator.add_piece(field, value)
+        if autosave is not None:
+            autosave.add(field, value, context="equip")
 
 
 # Hotwords with weights — heavier words pull harder.
@@ -283,7 +285,7 @@ def instability(line, intensity):
             idx = random.randint(0, len(words) - 1)
             words.insert(idx, words[idx])
         line = " ".join(words)
-#i need more expressive slip mechanics. #but what? #
+#i need more expressive slip mechanics. #but what? # 
     return line
 
 def test(me, message):

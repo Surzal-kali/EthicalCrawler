@@ -1,19 +1,21 @@
 from os import system
 import os
 
-from theatrics import Me, dev_comment
+from theatrics import Me, dev_comment, test, pprint, sudo
 from theatrics import pprint, Me, equip, sudo, pprint 
 import time
 def dev_forward():
     system('cls' if os.name == 'nt' else 'clear')
     dev_comment("This repository was named Ethical Boundaries for a reason. It pushes them")   
     time.sleep(3)
-    dev_comment("This is not a tool intentionally designed for malicious use. But what you do with it is your responsiblity.")
+    dev_comment("This is not a tool intentionally designed for malicious use. But it comes with the power to do harm. I want to be clear about that. ")
     time.sleep(3)
-    dev_comment("It started as a web crawler, then an enumeration program. ")
+    dev_comment("It started out just wanting to be a bot that could crawl and enumerate. But as I built it, it became something more. ")
     time.sleep(3)
-    dev_comment("It's become so much more. It's a bot designed to enumerate you, and change itself based on what it sees.")
+    dev_comment("A new feature here...a new language there.")
+    time.sleep(3)
     me = Me()
+    sudo(me, "Now, I want to introduce you to the star of the show. The Ethical Crawler. LI.")
     time.sleep(3)
     pprint(me, message="..............................................")    
     dev_comment("Meet LI. LI is a bot. He's designed to crawl, enumerate, and learn all about you. ")
@@ -27,19 +29,19 @@ def dev_forward():
     time.sleep(3)   
     dev_comment("theres a clause in this")
     time.sleep(3)
-    pprint(me, message= "Completeness is not Unity. Li will only grow into what you feed hit. ")
-    dev_comment("As he scans and enumerates,  you'll begin to  see exactly what he sees.")   
+    sudo(me,message="During the session, you will have the ability to list anything and everything you want to keep out of LI's reach. You can also delete or change any data LI collects about you. ")
+    time.sleep(1)
+    test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
-    dev_comment("From there you can decide what to do with all that data. Do you delete it? Change it? Use it to your advantage? That's up to you. ")
+    pprint(me, message="The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. It's designed to be unsettling. To make you question what you're doing. To make you question the ethics of it all. ")
+    dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
+    time.sleep(3)
+    dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
     time.sleep(5)
-    dev_comment("I encourge those who know code to look at what's happening. LI's documentation is not uniform, but the code is there. If you know where to look.")
-    time.sleep(5)   
-    dev_comment("When you're done looking at all the data LI collects, and you delete or change it according to your wishes. LI will be like a new slate")
-    time.sleep(5)
-    dev_comment("Or he'll be exactly as you made him. It's up to you. ")
+    dev_comment("he'll be exactly as you make him. It's up to you. ")
     time.sleep(5)
     pprint(me, message="..............................................")    
-
+    sudo (me, "Good luck.")
 if __name__ == "__main__":
     dev_forward()
     dev_comment("Starting Ethical Crawler")

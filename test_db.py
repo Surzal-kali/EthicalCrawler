@@ -28,3 +28,9 @@ try:
     
 except Exception as e:
     print(f"❌ Database error: {e}")
+
+
+
+
+# c++ into python. let's say we have a c++ code that needs to be executed, we can create a python wrapper that compiles the c++ code and executes it. This way, we can leverage the performance of c++ while still using python for higher-level logic and orchestration.
+#headsortails? #well come on #tails then
