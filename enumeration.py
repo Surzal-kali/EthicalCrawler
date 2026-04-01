@@ -1,172 +1,68 @@
-import sqlite3
-import json
-import random
-from datetime import datetime, timedelta
-import os
-import time
-import tempfile
 from pathlib import Path
-from database import get_evidence_dir
-from theatrics import Me, dev_comment, test, pprint, sudo, equip
-from consentform import ConsentKey
-import tkinter as tk
 from tkinter import filedialog
+import tkinter as tk
 
-##Persona: foothold, Closeness: 10.0, Slip Intensity: 17.78
-# Corrupted Output: CONSENT_UNDERSTANDING—CONSENT_UNDERSTANDING
-#he gets it :)
-#we need a seperate entity to deal with network logic and browsers. 
+from database import log
+from theatrics import test
+
+
 class FileCrawler:
     def __init__(self, consent_form):
         self.consent_form = consent_form
         self.consent_given = consent_form.consent_given
-        self.out_of_scope_items = consent_form.out_of_scope_items
-        self.db_path = self.get_db_path() 
-        self.evidence_dir = self.get_evidence_dir()
-        self.slip_intensity = 0
-        self.knowledge_base = {}
-        self.initialize_db()
-    def initialize_db(self):
-        try:
-            os.makedirs(self.evidence_dir, exist_ok=True)
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS evidence (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp TEXT,
-                    data_type TEXT,
-                    data_content TEXT
-                )
-            """)
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print(f"❌ Database initialization error: {e}")
-    def collect_evidence(self, data_type, data_content):
-        if not self.consent_given:
-            print("Consent not given. Cannot collect evidence.")
-            return
-        if data_type in self.out_of_scope_items:
-            print(f"Data type '{data_type}' is out of scope. Skipping collection.")
-            return
-        timestamp = datetime.now().isoformat()
-        try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO evidence (timestamp, data_type, data_content)
-                VALUES (?, ?, ?)
-            """, (timestamp, data_type, json.dumps(data_content)))
-            conn.commit()
-            conn.close()
-            self.knowledge_base[data_type] = data_content
-            self.slip_intensity += 1
-        except Exception as e:
-            print(f"❌ Database error: {e}")
-            conn.close()
-    def get_evidence_dir(self, evidence_dir=None):
-        """Get platform-aware evidence directory."""
-        if evidence_dir is None:
-            base_dir = Path.home() / "ethical_crawler" #but the folder is tmp/ethical_crawler not _data. remember li says thats where he resides. we should keep it consistent. we'rll do same dir for now for test but we can change it later.
-            evidence_dir = base_dir / "evidence"
-            evidence_dir.mkdir(parents=True, exist_ok=True)
-            return evidence_dir
-    def display_file_explorer(self):#a shared folder #like a vm # its not allowing input...OH. alright alright ill stop poking and pipe in
-        if not self.consent_given:
-            print("Consent not given. Cannot display file explorer.")
-            return
-        
+        self.out_of_scope_items = {
+            item.strip().lower() for item in (consent_form.out_of_scope_items or []) if item.strip()
+        }
 
+    def _is_out_of_scope(self, data_type: str) -> bool:
+        return data_type.strip().lower() in self.out_of_scope_items
 
-        def open_file_explorer():
-            # Open file dialog starting from a specific directory
-            file_path = filedialog.askopenfilename(
-                initialdir=self.get_evidence_dir().parent, # Set your desired starting directory here
-                title="My Bin",
-                filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
-            )
-            if file_path:
-                label.config(text=f"Selected File: {file_path}")
-
-        # Create main window
+    def _pick_file(self):
         root = tk.Tk()
-        root.title("My Bin")  # Set the title of the window
-        root.geometry("400x200")
+        root.withdraw()
+        root.attributes("-topmost", True)
+        file_path = filedialog.askopenfilename(
+            title="My Bin",
+            filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+        )
+        root.destroy()
+        return file_path
 
-        # Add label and button
-        label = tk.Label(root, text="Nothing", wraplength=300)
-        label.pack(pady=10)
+    def _build_payload(self, file_path: str):
+        selected = Path(file_path)
+        size_bytes = selected.stat().st_size
+        preview = ""
+        try:
+            with selected.open("r", encoding="utf-8", errors="replace") as handle:
+                preview = handle.read(300).strip()
+        except OSError:
+            preview = ""
 
-        button = tk.Button(root, text="Open File Explorer", command=open_file_explorer)
-        button.pack(pady=10)
+        return {
+            "enumeration_file_path": str(selected),
+            "enumeration_file_name": selected.name,
+            "enumeration_file_extension": selected.suffix.lower() or "<none>",
+            "enumeration_file_size_bytes": size_bytes,
+            "enumeration_file_preview": preview or "<empty_or_binary>",
+        }
 
-        # Run the application
-        root.mainloop()
-#tikinter lets you log key presses.....
-#wcan tkinter handle pretending to play terminal?
-#doesn'tmattter
-
-    def get_db_path(self, db_path=None):
-            """Get platform-aware database path.""" #propogate from that source. think enumeration sweetie. 
-            if db_path is None:
-                base_dir = Path.home() / "tmp/ethical_crawler"
-                base_dir.mkdir(parents=True, exist_ok=True)
-                return base_dir / "evidence.db"
-#If you don’t call the mainloop() method, the main window will display and disappear almost instantly – too quickly to perceive its appearance.
-    def display_file_explorer(self):#a shared folder #like a vm
+    def collect_and_log(self, cursor, session_id, me, autosave=None):
         if not self.consent_given:
-            print("Consent not given. Cannot display file explorer.")
-            return
-        
-        import tkinter as tk
-        from tkinter import filedialog
+            return {}
 
-        def open_file_explorer():
-            # Open file dialog starting from a specific directory
-            file_path = filedialog.askopenfilename(
-                initialdir=self.get_evidence_dir().parent, # Set your desired starting directory here
-                title="My Bin",
-                filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
-            )
-            if file_path:
-                label.config(text=f"Selected File: {file_path}")
+        if self._is_out_of_scope("files"):
+            return {}
 
-        # Create main window
-        root = tk.Tk()
-        root.title("My Bin")  # Set the title of the window
-        root.geometry("400x200")
+        selected_file = self._pick_file()
+        if not selected_file:
+            return {}
 
-        # Add label and button
-        label = tk.Label(root, text="Nothing", wraplength=300)
-        label.pack(pady=10)
+        payload = self._build_payload(selected_file)
+        for field, value in payload.items():
+            log(cursor, session_id, field, value, me, context="enumeration")
+            if autosave is not None:
+                autosave.add(field, value, context="enumeration")
 
-        button = tk.Button(root, text="Open File Explorer", command=open_file_explorer)
-        button.pack(pady=10)
+        test(me, "file_understanding")
+        return payload
 
-        # Run the application
-        root.mainloop()
-        #this is...my....bin.
-        #is there...
-        #anything you want to show me {user_name}?
-        #dev_comment("better check what you toss kiddo")
-    #we already do that. the logs in the quips. we just need to make sure to log the enumeration. we can have a seperate log for enumeration. and then we can have a seperate log for the quips. #i mean...thats all in the same table.....
-    #isn't it?
-    #do that later
- #im confused what isn't firing #
-if __name__ == "__main__":
-    consent_form = ConsentKey()
-    try:
-        consent_form.display()  # Display the consent form before collecting consent
-    except Exception as e:
-        print(f"❌ Error displaying consent form: {e}")
-
-    else:
-        print("Consent form displayed successfully.")
-        get_evidence_dir()  # Ensure evidence directory is created
-        filer= FileCrawler(consent_form)
-        filer.display_file_explorer()
-#this is...my....bin.
-#is there...anything you'd like to show me?
-#dev_comment("better check what you toss kiddo")
-#they asked for this....i threw up enough warnings. they know what they signed up for. #also we can have the file explorer be the first thing they see after consenting. and then we can have the crawler collect data on what they click on and how long they look at it and all that good stuff. #we can also have a seperate log for the file explorer interactions. #and then we can have a seperate log for the quips. #i mean...thats all in the same table..... #isn't it? #do that later

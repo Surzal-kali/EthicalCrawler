@@ -87,7 +87,7 @@ def ethical_boot_sequence():
     time.sleep(0.75)
     pprint(me, message="It's quiet.")
     time.sleep(1)
-    pprint(me, message="Too quiet.")
+    pprint(me, message="Too quiet.") #fine ill keep it for now #how do we turn the catalog CAN be a freeze states, but..
     time.sleep(1)
     print("=" * 60)
     session_id = "LI"
@@ -165,7 +165,7 @@ def ethical_boot_sequence():
     pprint(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
     print("   🦠 The parts you forgot")
-    print("   ⚙️  The parts you hid")   
+    print("   ⚙️  The parts you hid")
     time.sleep(0.5)
     print("\n" + "=" * 60)
     dev_comment("Do you trust me?")
@@ -187,9 +187,10 @@ def ethical_boot_sequence():
       # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to guage what the fuck sql just spit out
     pprint(me, message="I don't… understand law.")
     pprint(me, message="I understand Framgments. Data.")
-    test(me, "consent_understanding")  # Test understanding of consent
+ # Test understanding of consent
     pprint(me, message="But right now I understand nothing.....")
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
+    test(me, "consent_understanding")
     time.sleep(1)
     pprint(me, message="May I?")
     consent_form = ConsentKey()
@@ -256,15 +257,19 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         pprint(me, message="this is...my....bin.")
         pprint(me, message="is there...anything you'd like to show me?")
         dev_comment("better check what you toss kiddo")
-        time.sleep(2)
-        dev_comment("Hes watching.")
         time.sleep(1)
+        dev_comment("Hes watching.")
+        time.sleep(0.5)
         
-        # BAM FILE EXPLORER - Create FileCrawler and show window
+        # Enumeration stage: user-selected file snapshot in the shared session DB.
         try:
             file_crawler = FileCrawler(consent_form)
             pprint(me, message="Show me what you keep hidden...")
-            file_crawler.display_file_explorer()  # This opens the tkinter window
+            file_payload = file_crawler.collect_and_log(cursor, session_id, me, autosave=autosave)
+            if file_payload:
+                equip(me, file_payload, cursor, autosave=autosave)
+            else:
+                pprint(me, message="What is this? An empty box?")
         except Exception as e:
             pprint(me, message="The window... it won't open...")
             if DEBUG_MODE:
@@ -285,13 +290,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
             if DEBUG_MODE:
                 print(f"[DEBUG][session] Autosave partial failure: {save_status['failed']}")
             autosave.retry_failed()
-        # TODO:
+        # TODO: change boot sequence to be more...narratively cohesive
+        #act 1
         # TODO:# Create a fetch function for crawling. oh...................................need to add a loading screen here. maybe some ascii art of a crawler or something idkhehehee
 #act 2
         # TODO: Find shell history
         # TODO: Find files
         # TODO: aggregate file names and search for repeated words or themes.
-        # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES ABOVE..........fucking hell this is a nightmare but also fun as hell. damn right :)
+        # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES COLLECTED IN THIS PHASE.
 #act 3
         # TODO: Aggregate Variables under generated db schema for easier access and correlation.
         # TODO: Show the user what we learned. 

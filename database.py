@@ -66,6 +66,43 @@ def seed_default_quips(cursor):
             "INSERT OR IGNORE INTO quips (key, persona, text) VALUES (?, ?, ?)",
             (key, persona, text)
         )
+
+
+# ---------------------------------------------------------------------------
+# Mood behavior tree
+# Each row: (mood, intensity, min_closeness, max_closeness, min_slip, max_slip, persona)
+# persona='any' matches all personas; use a specific persona name to gate a mood.
+# Multiple rows can match simultaneously — determine_mood picks one at random.
+# ---------------------------------------------------------------------------
+_MOOD_TREE = [
+    ("neutral",    0,  0,  30, 0.0,  7.0,  "any"),
+    ("distant",    1,  0,  30, 0.0, 10.0,  "any"),
+    ("analytical", 3, 30,  60, 0.0,  8.0,  "any"),
+    ("probing",    4, 30,  60, 3.0, 15.0,  "any"),
+    ("curious",    6, 60,  99, 0.0, 10.0,  "any"),
+    ("intrigued",  7, 60,  99, 5.0, 15.0,  "any"),
+    ("fixated",    9, 60,  99, 8.0, 20.0,  "any"),
+    ("hungry",    12,  0,  99, 8.0, 20.0,  "sudo"),
+    ("unstable",  14,  0,  99,12.0, 20.0,  "sudo"),
+    ("possessive",16, 60,  99,10.0, 20.0,  "sudo"),
+    ("overloaded",18, 80,  99,15.0, 20.0,  "sudo"),
+]
+
+
+def seed_mood_config(cursor):
+    """Populate mood_config with the default behavior tree rows if the table is empty."""
+    cursor.execute("SELECT COUNT(*) FROM mood_config")
+    if cursor.fetchone()[0] == 0:
+        cursor.executemany(
+            """
+            INSERT INTO mood_config
+                (mood, intensity, min_closeness, max_closeness, min_slip, max_slip, persona)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            _MOOD_TREE,
+        )
+
+
 #should we give the cursor a class all its own?
 #like a database manager or something? yeah
 #it could handle all the queries and stuff and we just call methods on it
@@ -77,8 +114,7 @@ def init_db(debug=False):
     try:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-
-        cursor.execute('''
+        cursor.execute('''   
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
@@ -107,14 +143,20 @@ def init_db(debug=False):
 
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_quips_lookup ON quips(key, persona)')
 
+        _migrate_mood_config(cursor)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS mood_config (
-                mood TEXT PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                mood TEXT NOT NULL,
                 intensity INTEGER DEFAULT 0,
-                min_closeness INTEGER DEFAULT 0,
-                max_closeness INTEGER DEFAULT 100
+                min_closeness REAL DEFAULT 0,
+                max_closeness REAL DEFAULT 100,
+                min_slip REAL DEFAULT 0,
+                max_slip REAL DEFAULT 20,
+                persona TEXT DEFAULT 'any'
             )
         ''')
+        seed_mood_config(cursor)
 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS services (
@@ -196,6 +238,15 @@ def init_db(debug=False):
             conn.close()
         _debug_print(debug_mode, f"init_db failed: {exc}")
         return None, None
+
+
+def _migrate_mood_config(cursor):
+    """Replace old mood_config schema with the behavior-tree-compatible schema."""
+    cursor.execute("PRAGMA table_info(mood_config)")
+    cols = {row[1] for row in cursor.fetchall()}
+    # Old schemas lacked min_slip; drop and let init_db recreate with correct schema.
+    if cols and 'min_slip' not in cols:
+        cursor.execute("DROP TABLE IF EXISTS mood_config")
 
 
 def _migrate_sessions_usernames(cursor):

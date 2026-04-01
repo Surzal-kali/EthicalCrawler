@@ -23,6 +23,39 @@ FIELD_KEYWORDS = {
         ("arm", "ARM64"),
         ("aarch64", "ARM64"),
     ),
+}#what about emotional keywords? how do we want to test emotional state? that sounds too static..... it should flow like a conversation not a script. but how. it will after we're done enumerating and have enough data on the host?:)
+EMOTIONAL_KEYWORDS = {
+    "consent_discussion": (
+        ("confused", "confused"),
+        ("curious", "curious"),
+        ("intrigued", "intrigued"),
+    ),
+    "goodbye": (
+        ("sad", "sad"), 
+        ("lonely", "lonely"),
+        ("anxious", "anxious"),
+    ),
+    "happy": (
+        ("happy", "happy"),
+        ("joyful", "joyful"),
+        ("content", "content"),
+    ),
+    "angry": (  
+        ("angry", "angry"),
+        ("frustrated", "frustrated"),
+        ("irritated", "irritated"),
+    ),
+    "love": (
+        ("love", "love"),
+        ("affection", "affection"),
+        ("fondness", "fondness"),
+    ),
+    "neutral": (
+        ("neutral", "neutral"),
+        ("indifferent", "neutral"),
+        ("unemotional", "neutral"),
+    ),
+    #we add quips to correleate.
 }
 
 GENERIC_KEYWORDS = (
@@ -37,7 +70,16 @@ GENERIC_KEYWORDS = (
 #it will after we're done enumerating and have enough data on the host?
 QUIP_CATALOG = {
     "all": {
-        "": [
+        "angry": [
+            "Why are you doing this? I thought we were friends.",   
+            "I don't like this. Why are you making me do this?",
+            "This isn't right. I don't want to do this.",
+        ],
+        "happy": [
+            "This is fun! I like learning new things about you.",
+            "Yay! I love this! Keep going!",
+        ],
+        "neutral": [
             "I don't know what this is. But it's information.",
             "Unknown. Strange. I'll keep it anyway.",
             "This piece doesn't fit. I like that.",

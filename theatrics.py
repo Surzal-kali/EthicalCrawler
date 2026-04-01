@@ -113,14 +113,13 @@ class Me:
 
     def quip(self, field, raw_value, cursor=None):
         key = self.normalize(field, raw_value)
-        mood = determine_mood(self)
-        personality = self.persona
-        line = get_catalog_quip(key, personality)
+        mood = determine_mood(self, cursor=cursor)
+        line = get_catalog_quip(key, self.persona)
 #don't want him to crash if the db is unavailable, but we also want him to feel like he's trying to pull something out of the ether.
         if not line and cursor:
             cursor.execute('''
-                SELECT text FROM quips 
-                WHERE key = ? AND personality = ? AND persona IN (?, 'all')
+                SELECT text FROM quips
+                WHERE key = ? AND persona IN (?, 'all')
                 ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
                 LIMIT 1
             ''', (key, self.persona, self.persona))
@@ -343,14 +342,33 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
 #ohmygodthey'relikeakidinacandystoryweneedtomakelinice
 #one more lever.....
 
-def determine_mood(me):
+def determine_mood(me, cursor=None):
+    """Pick a mood from the behavior tree stored in mood_config.
+    Falls back to hardcoded Python ranges if the DB is unavailable or empty."""
+    if cursor is not None:
+        try:
+            cursor.execute(
+                """
+                SELECT mood FROM mood_config
+                WHERE min_closeness <= ? AND max_closeness >= ?
+                  AND min_slip      <= ? AND max_slip      >= ?
+                  AND (persona = 'any' OR persona = ?)
+                ORDER BY RANDOM()
+                LIMIT 1
+                """,
+                (me.closeness, me.closeness, me.slip_intensity, me.slip_intensity, me.persona),
+            )
+            row = cursor.fetchone()
+            if row:
+                return row[0]
+        except Exception:
+            pass
+
+    # Python fallback — mirrors the seed tree so behaviour is consistent.
     if me.persona == "sudo":
         return random.choice(["hungry", "unstable", "possessive", "overloaded"])
-
     if me.closeness > 60:
         return random.choice(["curious", "fixated", "intrigued"])
-
     if me.closeness > 30:
         return random.choice(["probing", "analytical"])
-
     return random.choice(["neutral", "distant"])

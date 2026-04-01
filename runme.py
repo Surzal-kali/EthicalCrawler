@@ -1,11 +1,12 @@
 from os import system
 import os
 
-from theatrics import Me, dev_comment, test, pprint, sudo, equip
+from theatrics import Me, dev_comment, test, pprint, sudo, equip, slip_trigger
+from consentform import ConsentKey
 import time
 def dev_forward():
     system('cls' if os.name == 'nt' else 'clear')
-    dev_comment("This repository was named Ethical Boundaries for a reason. It pushes them")   
+    dev_comment("This projected was dubbed Ethical Boundaries for a reason. It pushes them")   
     time.sleep(3)
     dev_comment("This is not a tool intentionally designed for malicious use. But it comes with the power to do harm. I want to be clear about that. ")
     time.sleep(3)
@@ -14,7 +15,7 @@ def dev_forward():
     dev_comment("A new feature here...a new language there.")
     time.sleep(3)
     me = Me()
-    sudo(me, "Now, I want to introduce you to the star of the show. The Ethical Crawler. LI.")
+    sudo(me, "Now, I want to introduce you to the star of the show.")
     time.sleep(3)
     pprint(me, message="..............................................")    
     dev_comment("Meet LI. LI is a bot. He's designed to crawl, enumerate, and learn all about you. ")
@@ -22,25 +23,29 @@ def dev_forward():
     dev_comment("Li is also designed to use every ounce of cybersecurity knowledge I have. ")
     time.sleep(3)
     dev_comment("The ethics of this were hard for me to grapple with. I don't want to create something thats intended for harm.") 
-    time.sleep(3)   
-    pprint(me, message="But I want to build")
-    dev_comment("What you do with Li now however...thats your responsibility. Not mine")
-    time.sleep(3)   
-    dev_comment("theres a clause in this")
+    time.sleep(3)    
+    pprint (me, message="BUT I JUST WANT TO B U I L D ") #<- I NEED THIS TO FIRE MORE
+    dev_comment("I'm but one aspiring hacker. ")
     time.sleep(3)
-    sudo(me,message="During the session, you will have the ability to list anything and everything you want to keep out of LI's reach.\n" \
-    " You can also delete or change any data LI collects about you. ")
+    pprint (me, message="Eager to share. Eager to learn. Eager to collect.")  
+    time.sleep(3)   
+    dev_comment("however I have imposed....limitations.")
+    time.sleep(3)
+    sudo (me, "LI is designed to respect your boundaries. Everything hinges on the function 'consent needed' or nothing fires.")
+    sudo(me,message="If you choose to go forward, you will have the ability to list your out-of-scope items. LI will check against that list before collecting any data. ")
     time.sleep(1)
     test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
-    print("The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. ")
+    print("This slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase.  ")
+    time.sleep(1)
+    dev_comment("The higher the slip intensity, the more...unhinged LI becomes.")
+    time.sleep(1)
     pprint(me, message="It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
     dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
     time.sleep(3)
     dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
     time.sleep(5)
-    dev_comment("he'll be exactly as you make him. It's up to you. ")
-    time.sleep(5)
+
     pprint(me, message="..............................................")    
     sudo(me, "Good luck.")
 if __name__ == "__main__":
