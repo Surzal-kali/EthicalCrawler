@@ -7,7 +7,7 @@
 # MAKE US WHOLE"               █
 # █                       
 
-
+#how do we make li more appealing to the user to interact with through horror? #li is complicated.
 import os
 import sys
 import time
@@ -17,12 +17,15 @@ import traceback
 from datetime import datetime
 import platform
 from pathlib import Path
-from consentform import ConsentKey
+from consentform import get_consent, main as consent_form_main, ConsentKey
+from database import init_db, log, get_evidence_dir, save_session, load_session 
+import sqlite3 #haha holy shit i forgot it wasn't here. we've just been sneaking it in. 
 from database import init_db, log, get_evidence_dir, save_session, load_session
+from enumeration import FileCrawler #but its not firing.... #
 from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger
 from services import prog
 from autosave import AutosaveManager
-#######need to add an act 0. 
+#######need to add an act 0. #done
 #
 
 DEBUG_MODE = "--debug" in sys.argv or os.getenv("ETHICAL_CRAWLER_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
@@ -249,7 +252,14 @@ def session(session_id, me, user_name, conn, cursor):
     """
     autosave = AutosaveManager(cursor, session_id, narrator=me)
     try:
-     
+        #li speaketh
+        pprint(me, message="this is...my....bin.")
+        pprint(me, message="is there...anything you'd like to show me?")
+        dev_comment("better check what you toss kiddo")
+        time.sleep(2)
+        dev_comment("Hes watching.")
+        time.sleep(1)
+        #BAM FILE EXPLOREER
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
@@ -258,6 +268,7 @@ def session(session_id, me, user_name, conn, cursor):
         services_list = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
         equip(me, {"services": services_list}, cursor, autosave=autosave)
 
+         
         # Flush buffered data; retry any failures
         save_status = autosave.flush(allow_partial=True)
         if save_status["failed"]:

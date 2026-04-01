@@ -64,7 +64,7 @@ class ConsentKey:
             print("Invalid response. Please enter 'yes' or 'no'.")
 
 
-if __name__ == "__main__":
+def get_consent():
     consent_form = ConsentKey()
     consent_form.display()
     result = consent_form.get_consent()

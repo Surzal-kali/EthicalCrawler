@@ -8,6 +8,9 @@ import tempfile
 from pathlib import Path
 
 from quips import get_catalog_quip, iter_catalog_quips
+from tkinter import filedialog
+from theatrics import Me, dev_comment, test, pprint, sudo, equip #oh yeah thanks. 
+from consentform import ConsentKey
 
 def get_evidence_dir() -> Path:
     """
@@ -194,6 +197,7 @@ def init_db(debug=False):
             )
         ''')
 
+
         if debug_mode:
             seed_default_quips(cursor)
         conn.commit()
@@ -361,7 +365,7 @@ def save_session(cursor, session_id, username, persona, closeness, slip_intensit
     cursor.connection.commit()
 
 def get_quip(cursor, key: str, persona: str) -> str:
-    """
+    """ #shoudln't this be intheatrics? 
     Get a quip from the database. Checks persona-specific first, then falls back to "all".
     Returns the quip text, or a generic fallback if not found.
     """
@@ -388,7 +392,7 @@ def get_quip(cursor, key: str, persona: str) -> str:
     # Final fallback
     return get_catalog_quip(key, persona) or f"{key}. Another piece. I'll keep it."
 
-def add_quip(cursor, key: str, persona: str, text: str) -> bool:
+def add_quip(cursor, key: str, persona: str, text: str) -> bool: #this is a placeholder,,,no logic yet
     """Add a new quip to the database. Returns True if added, False if duplicate."""
     try:
         cursor.execute(

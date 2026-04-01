@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 from theatrics import Me, dev_comment, test, pprint, sudo, equip #oh yeah
 from consentform import ConsentKey
-from database import temp_dir #halp #
+from LIMain import get_evidence_dir, get_session_dir
 import tkinter as tk
 from tkinter import filedialog#listen i really need to learn this stupid library for class
 #we could have the user explore their files. and drag and drop what they wanna show off?????
@@ -22,8 +22,8 @@ class FileCrawler:
         self.consent_form = consent_form
         self.consent_given = consent_form.consent_given
         self.out_of_scope_items = consent_form.out_of_scope_items
-        self.evidence_dir = temp_dir()
         self.db_path = self.get_db_path() 
+        self.evidence_dir = self.get_evidence_dir()
         self.slip_intensity = 0
         self.knowledge_base = {}
         self.initialize_db()
@@ -69,11 +69,11 @@ class FileCrawler:
     def get_evidence_dir(self, evidence_dir=None):
         """Get platform-aware evidence directory."""
         if evidence_dir is None:
-            base_dir = Path.home() / "ethical_crawler_data"
+            base_dir = Path.home() / "ethical_crawler" #but the folder is tmp/ethical_crawler not _data. remember li says thats where he resides. we should keep it consistent. we'rll do same dir for now for test but we can change it later.
             evidence_dir = base_dir / "evidence"
             evidence_dir.mkdir(parents=True, exist_ok=True)
             return evidence_dir
-    def display_file_explorer(self):#a shared folder #like a vm
+    def display_file_explorer(self):#a shared folder #like a vm # its not allowing input...OH. alright alright ill stop poking and pipe in
         if not self.consent_given:
             print("Consent not given. Cannot display file explorer.")
             return
@@ -83,7 +83,7 @@ class FileCrawler:
         def open_file_explorer():
             # Open file dialog starting from a specific directory
             file_path = filedialog.askopenfilename(
-                initialdir=self.get_db_path().parent, # Set your desired starting directory here
+                initialdir=self.get_evidence_dir().parent, # Set your desired starting directory here
                 title="My Bin",
                 filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
             )
@@ -111,7 +111,7 @@ class FileCrawler:
     def get_db_path(self, db_path=None):
             """Get platform-aware database path.""" #propogate from that source. think enumeration sweetie. 
             if db_path is None:
-                base_dir = Path.home() / "ethical_crawler_data"
+                base_dir = Path.home() / "tmp/ethical_crawler"
                 base_dir.mkdir(parents=True, exist_ok=True)
                 return base_dir / "evidence.db"
 #If you don’t call the mainloop() method, the main window will display and disappear almost instantly – too quickly to perceive its appearance.
@@ -126,7 +126,7 @@ class FileCrawler:
         def open_file_explorer():
             # Open file dialog starting from a specific directory
             file_path = filedialog.askopenfilename(
-                initialdir=self.get_db_path().parent, # Set your desired starting directory here
+                initialdir=self.get_evidence_dir().parent, # Set your desired starting directory here
                 title="My Bin",
                 filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
             )
@@ -164,7 +164,10 @@ if __name__ == "__main__":
 
     else:
         print("Consent form displayed successfully.")
+        get_evidence_dir()  # Ensure evidence directory is created
         filer= FileCrawler(consent_form)
         filer.display_file_explorer()
-
+#this is...my....bin.
+#is there...anything you'd like to show me?
+#dev_comment("better check what you toss kiddo")
 #they asked for this....i threw up enough warnings. they know what they signed up for. #also we can have the file explorer be the first thing they see after consenting. and then we can have the crawler collect data on what they click on and how long they look at it and all that good stuff. #we can also have a seperate log for the file explorer interactions. #and then we can have a seperate log for the quips. #i mean...thats all in the same table..... #isn't it? #do that later
