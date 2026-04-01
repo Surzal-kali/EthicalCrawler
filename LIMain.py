@@ -18,7 +18,7 @@ from datetime import datetime
 import platform
 from pathlib import Path
 from consentform import ConsentKey
-from database import init_db, log, get_evidence_dir, DatabaseManager, save_session, load_session
+from database import init_db, log, get_evidence_dir, save_session, load_session
 from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger
 from services import prog
 from autosave import AutosaveManager
@@ -279,10 +279,10 @@ def session(session_id, me, user_name, conn, cursor):
         print(f"Error: {e}")
         if DEBUG_MODE:
             traceback.print_exc()
-def save_session_state(conn, user_name, persona, slip_intensity, closeness):
+def save_session_state(cursor, session_id, user_name, persona, slip_intensity, closeness):
     """Helper function to save session state."""
     try:
-        save_session(conn, user_name, persona, slip_intensity, closeness) 
+        save_session(cursor, session_id, user_name, persona, closeness, slip_intensity)
     except Exception as e:
         print(f"Warning: failed to save session state: {e}")
         if DEBUG_MODE:
@@ -296,15 +296,14 @@ def main():
     
     session_id, me, user_name, conn, cursor = result
     try:
-        with DatabaseManager() as db:
-            session(session_id, me, user_name, db.conn, db. cursor)
+        session(session_id, me, user_name, conn, cursor)
 
     finally:
         test(me, "session_end")  # Final test at the end of the session
         # Persist state and close DB in one place for all main-path exits.
-        if conn and user_name:
+        if cursor and user_name:
             try:
-                save_session_state(conn, user_name, me.persona, me.slip_intensity, me.closeness)
+                save_session_state(cursor, session_id, user_name, me.persona, me.slip_intensity, me.closeness)
             except Exception as exc:
                 print(f"Warning: failed to save session state: {exc}")
                 if DEBUG_MODE:
@@ -319,4 +318,8 @@ if __name__ == "__main__":
 # DEV MODE: session_end
 # Persona: basic, Closeness: 12, Slip Intensity: 6
 # Corrupted Output: session_end…
-# Warning: failed to save session state: save_session() missing 1 required positional argument: 'slip_intensity'
+# Warning: failed to save session state: save_session()
+
+# we need to change boot sequence, its too fuckin messy. 
+#we have a test username ladies and gents..
+#vanessa it is

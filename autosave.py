@@ -37,6 +37,7 @@ class AutosaveManager:
         self.narrator = narrator
         self.buffer: Dict[str, Dict[str, Any]] = {}  # field -> {value, context}
         self.failed_fields: Dict[str, str] = {}  # field -> error_reason
+        self.failed_payloads: Dict[str, Dict[str, Any]] = {}  # field -> original buffered data
         self.saved_count = 0
         self.flush_count = 0
         
@@ -101,6 +102,8 @@ class AutosaveManager:
                 results["saved"].append(field)
                 self.saved_count += 1
                 del self.buffer[field]  # Only remove if successful
+                self.failed_fields.pop(field, None)
+                self.failed_payloads.pop(field, None)
                 
             except Exception as e:
                 error_msg = f"{type(e).__name__}: {str(e)}"
@@ -112,6 +115,7 @@ class AutosaveManager:
                     ) from e
                 
                 self.failed_fields[field] = error_msg
+                self.failed_payloads[field] = data.copy()
                 results["failed"].append(field)
         
         # Commit successful saves
@@ -137,12 +141,12 @@ class AutosaveManager:
         # Move failed fields back to buffer
         for field, _ in self.failed_fields.items():
             if field not in self.buffer:
-                self.buffer[field] = {
-                    "value": None,  # Lost original; would need to track separately
-                    "context": "retry_failed"
-                }
+                payload = self.failed_payloads.get(field)
+                if payload is not None:
+                    self.buffer[field] = payload.copy()
         
         self.failed_fields.clear()
+        self.failed_payloads.clear()
         return self.flush(allow_partial=True)
     
     def peek_buffer(self) -> Dict[str, Dict[str, Any]]:
@@ -164,9 +168,11 @@ class AutosaveManager:
     
     def clear(self):
         """Clear all buffers (destructive; use with caution)."""
+
         self.buffer.clear()
         self.failed_fields.clear()
-#we'll expand on this later in act 3
+        self.failed_payloads.clear()
+#we'll expand on this later in act 3 #
 
 class AutosaveCheckpoint:
     """

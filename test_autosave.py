@@ -299,6 +299,49 @@ def test_clear():
     conn.close()
 
 
+def test_retry_failed_preserves_original_payload():
+    """Test: retry_failed keeps original value/context instead of writing nulls."""
+    print("\n[TEST 12] Retry failed preserves original payload...")
+    conn, real_cursor = setup_test_db()
+
+    class FaultyCursor:
+        def __init__(self, cursor):
+            self._cursor = cursor
+            self._failed_once = False
+
+        def execute(self, sql, params=None):
+            if params is not None and sql.strip().startswith("INSERT INTO logs"):
+                field = params[1]
+                if field == "retry_field" and not self._failed_once:
+                    self._failed_once = True
+                    raise sqlite3.OperationalError("simulated transient write failure")
+            if params is None:
+                return self._cursor.execute(sql)
+            return self._cursor.execute(sql, params)
+
+    autosave = AutosaveManager(FaultyCursor(real_cursor), "test_session_12")
+
+    autosave.add("retry_field", {"k": "v"}, context="retry_context")
+    status = autosave.flush(allow_partial=True)
+    assert status["failed"] == ["retry_field"]
+
+    retry_status = autosave.retry_failed()
+    assert retry_status["saved"] == ["retry_field"]
+    assert retry_status["failed"] == []
+
+    real_cursor.execute(
+        "SELECT raw_value, context FROM logs WHERE session_id = ? AND field = ?",
+        ("test_session_12", "retry_field"),
+    )
+    row = real_cursor.fetchone()
+    assert row is not None
+    assert json.loads(row[0]) == {"k": "v"}
+    assert row[1] == "retry_context"
+
+    print("  ✓ Failed retries keep original payload and context")
+    conn.close()
+
+
 def run_all_tests():
     """Execute all tests."""
     print("\n" + "="*60)
@@ -317,6 +360,7 @@ def run_all_tests():
         test_empty_flush,
         test_checkpoint_mark_and_rollback,
         test_clear,
+        test_retry_failed_preserves_original_payload,
     ]
     
     passed = 0
