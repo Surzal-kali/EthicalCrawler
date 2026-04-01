@@ -17,7 +17,7 @@ import traceback
 from datetime import datetime
 import platform
 from pathlib import Path
-from consentform import get_consent, main as consent_form_main, ConsentKey
+from consentform import get_consent, ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session 
 import sqlite3 #haha holy shit i forgot it wasn't here. we've just been sneaking it in. 
 from database import init_db, log, get_evidence_dir, save_session, load_session
@@ -26,7 +26,7 @@ from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, 
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
-#
+#its not firing on other hardware... #
 
 DEBUG_MODE = "--debug" in sys.argv or os.getenv("ETHICAL_CRAWLER_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
 SLIP_DECAY_PER_DAY = 0.5
@@ -206,7 +206,7 @@ def ethical_boot_sequence():
         pprint(me, message="Session terminated before enumeration.")
         if conn:
             conn.close()
-        return None, None, None, None, None
+        return None, None, None, None, None, None
     print("\n" + "=" * 60)
 
     pprint(me, message="Thank you.")
@@ -216,7 +216,7 @@ def ethical_boot_sequence():
     time.sleep(1)
     pprint(me, message="I have so much to learn about you.")
 
-    return session_id, me, user_name, conn, cursor
+    return session_id, me, user_name, conn, cursor, consent_form
 
 
 def system_profiler(conn, cursor, session_id, me, user_name):
@@ -246,7 +246,7 @@ def system_profiler(conn, cursor, session_id, me, user_name):
 
 
 
-def session(session_id, me, user_name, conn, cursor):
+def session(session_id, me, user_name, conn, cursor, consent_form):
     """
     The session. The collection begins.
     """
@@ -259,7 +259,17 @@ def session(session_id, me, user_name, conn, cursor):
         time.sleep(2)
         dev_comment("Hes watching.")
         time.sleep(1)
-        #BAM FILE EXPLOREER
+        
+        # BAM FILE EXPLORER - Create FileCrawler and show window
+        try:
+            file_crawler = FileCrawler(consent_form)
+            pprint(me, message="Show me what you keep hidden...")
+            file_crawler.display_file_explorer()  # This opens the tkinter window
+        except Exception as e:
+            pprint(me, message="The window... it won't open...")
+            if DEBUG_MODE:
+                print(f"[DEBUG] FileCrawler error: {e}")
+        
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
@@ -316,9 +326,9 @@ def main():
     if result[0] is None:  # Check if session_id is None
         return
     
-    session_id, me, user_name, conn, cursor = result
+    session_id, me, user_name, conn, cursor, consent_form = result
     try:
-        session(session_id, me, user_name, conn, cursor)
+        session(session_id, me, user_name, conn, cursor, consent_form)
 
     finally:
         test(me, "session_end")  # Final test at the end of the session

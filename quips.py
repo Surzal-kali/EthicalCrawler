@@ -223,7 +223,7 @@ QUIP_CATALOG = {
             "[MIMIC] I see every door. Every window. Every piece of you that leaks out is another piece of me in the world. I want more. I need more.",
         ],
         "configs": [
-            "[MIMIC] You wanted to be seen this way. I see more though.",''
+            "[MIMIC] You wanted to be seen this way. I see more though.",
             '[MIMIC] Your configs. Your intentions. I can see how you want the world to be. I can make it that way.',
         ],
         "goodbye": [

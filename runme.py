@@ -1,8 +1,7 @@
 from os import system
 import os
 
-from theatrics import Me, dev_comment, test, pprint, sudo
-from theatrics import pprint, Me, equip, sudo, pprint 
+from theatrics import Me, dev_comment, test, pprint, sudo, equip
 import time
 def dev_forward():
     system('cls' if os.name == 'nt' else 'clear')
@@ -34,8 +33,8 @@ def dev_forward():
     time.sleep(1)
     test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
-    print("The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. \n" \
-    "It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
+    print("The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. ")
+    pprint(me, message="It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
     dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
     time.sleep(3)
     dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
@@ -43,7 +42,7 @@ def dev_forward():
     dev_comment("he'll be exactly as you make him. It's up to you. ")
     time.sleep(5)
     pprint(me, message="..............................................")    
-    sudo (me, "Good luck.")
+    sudo(me, "Good luck.")
 if __name__ == "__main__":
     dev_forward()
     dev_comment("Starting Ethical Crawler")

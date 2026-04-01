@@ -90,12 +90,15 @@ class AutosaveManager:
         for field, data in list(self.buffer.items()):
             try:
                 self.cursor.execute("""
-                    INSERT INTO logs (session_id, field, raw_value, context, timestamp)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO logs (session_id, field, raw_value, normalized_key, persona, quip_text, context, timestamp)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     self.session_id,
                     field,
                     self._serialize_value(data["value"]),
+                    None,  # normalized_key - not tracked in autosave
+                    self.narrator.persona if self.narrator else None,
+                    None,  # quip_text - not stored here
                     data.get("context"),
                     data.get("timestamp", time.time())
                 ))

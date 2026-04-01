@@ -115,7 +115,7 @@ class Me:
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
         personality = self.persona
-        line = get_catalog_quip(key, personality, mood, cursor=cursor)
+        line = get_catalog_quip(key, personality)
 #don't want him to crash if the db is unavailable, but we also want him to feel like he's trying to pull something out of the ether.
         if not line and cursor:
             cursor.execute('''

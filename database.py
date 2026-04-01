@@ -86,13 +86,6 @@ def init_db(debug=False):
             )
         ''')
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                created_at REAL DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        cursor.execute('''
             CREATE TABLE IF NOT EXISTS personalities (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
@@ -123,14 +116,6 @@ def init_db(debug=False):
             )
         ''')
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS personalities (
-                seed_hash TEXT PRIMARY KEY,
-                base_persona TEXT DEFAULT 'foothold',
-                base_slip_intensity REAL DEFAULT 5,
-                affinity_tags TEXT
-            )
-        ''')
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS services (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -6,12 +6,11 @@ import os
 import time
 import tempfile
 from pathlib import Path
-from theatrics import Me, dev_comment, test, pprint, sudo, equip #oh yeah
+from database import get_evidence_dir
+from theatrics import Me, dev_comment, test, pprint, sudo, equip
 from consentform import ConsentKey
-from LIMain import get_evidence_dir, get_session_dir
 import tkinter as tk
-from tkinter import filedialog#listen i really need to learn this stupid library for class
-#we could have the user explore their files. and drag and drop what they wanna show off?????
+from tkinter import filedialog
 
 ##Persona: foothold, Closeness: 10.0, Slip Intensity: 17.78
 # Corrupted Output: CONSENT_UNDERSTANDING—CONSENT_UNDERSTANDING

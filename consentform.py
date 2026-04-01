@@ -71,3 +71,4 @@ def get_consent():
     print()
     print("Consent summary:")
     print(result)
+    return result
