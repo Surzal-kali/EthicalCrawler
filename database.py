@@ -83,6 +83,20 @@ def init_db(debug=False):
             )
         ''')
         cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                created_at REAL DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS personalities (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT UNIQUE NOT NULL,
+                description TEXT
+            )   
+        ''')
+        cursor.execute('''
             CREATE TABLE IF NOT EXISTS quips (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 key TEXT NOT NULL,
@@ -180,7 +194,8 @@ def init_db(debug=False):
             )
         ''')
 
-        seed_default_quips(cursor)
+        if debug_mode:
+            seed_default_quips(cursor)
         conn.commit()
         return conn, cursor
     except (sqlite3.Error, OSError) as exc:

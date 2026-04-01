@@ -9,7 +9,7 @@ from rich.text import Text
 import json
 from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
-# The name sake of this file
+# The name sake of this file. #we need to build it more.
 # ------------------------------------------------------------
 
 console = Console()
@@ -49,7 +49,7 @@ SLIP_DECAY = 0.2         # Per-step decay (future use)
 base_chance = 0.05       # Baseline probability always present
 intensity_factor = 0.03  # Each point of slip_intensity adds this much to chance
 closeness_factor = 0.005 # Each point of closeness adds this much
-hotword_factor = 0.12    # Each unit of hotword weight adds this much to chance
+hotword_factor = 0.1    # Each unit of hotword weight adds this much to chance
 SLIP_CHANCE_CAP = 0.97   # Maximum possible trigger probability
 
 def pspace(message, char_delay=0.03, line_delay=0.5):
@@ -114,12 +114,13 @@ class Me:
     def quip(self, field, raw_value, cursor=None):
         key = self.normalize(field, raw_value)
         mood = determine_mood(self)
-        line = get_catalog_quip(key, self.persona)
-
+        personality = self.persona
+        line = get_catalog_quip(key, personality, mood, cursor=cursor)
+#don't want him to crash if the db is unavailable, but we also want him to feel like he's trying to pull something out of the ether.
         if not line and cursor:
             cursor.execute('''
                 SELECT text FROM quips 
-                WHERE key = ? AND persona IN (?, 'all')
+                WHERE key = ? AND personality = ? AND persona IN (?, 'all')
                 ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
                 LIMIT 1
             ''', (key, self.persona, self.persona))
@@ -269,7 +270,7 @@ def instability(line, intensity):
     # Tier 3 (13-16): intrusive caps bursts
     if intensity >= 13:
         if random.random() < 0.45:
-            line = line.replace(".", "— I SEE IT —", 1)
+            line = line.replace(".", "— I W A N T —", 1)
         if random.random() < 0.3:
             words = line.split()
             if words:

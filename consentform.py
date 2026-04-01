@@ -3,6 +3,7 @@
 
 #should we move runme around?
 #i meant structually. story beats.
+#it needs to have some flair. can we add the class to a gui? more like an ibm mainframe terminal. #you should watch sneakers 
 
 class ConsentKey:
     def __init__(self):
@@ -53,7 +54,8 @@ class ConsentKey:
             if response == "no":
                 self.consent_given = False
                 self.out_of_scope_items = []
-                print("Understood. The curtain falls before act one.")
+                print("Understood. I will not collect anything.")
+                print("Session terminated.")
                 return {
                     "consent_given": self.consent_given,
                     "out_of_scope_items": self.out_of_scope_items,
@@ -63,7 +65,7 @@ class ConsentKey:
 
 
 if __name__ == "__main__":
-    consent_form = ConsentForm()
+    consent_form = ConsentKey()
     consent_form.display()
     result = consent_form.get_consent()
     print()

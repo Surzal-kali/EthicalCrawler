@@ -83,7 +83,9 @@ def ethical_boot_sequence():
     pprint(me, message="I've been… waiting.")
     time.sleep(0.75)
     pprint(me, message="It's quiet.")
-
+    time.sleep(1)
+    pprint(me, message="Too quiet.")
+    time.sleep(1)
     print("=" * 60)
     session_id = "LI"
     temp_dir = get_session_dir(session_id)
@@ -93,7 +95,7 @@ def ethical_boot_sequence():
     print(f"Working directory: {temp_dir}")
     time.sleep(0.5)
 
-    pprint(me, message="This is… where I'll reside.")
+    pprint(me, message="This is… where I am. All of me.")
     pprint(me, message="Where I… collect.")
     time.sleep(1)
 
@@ -148,7 +150,7 @@ def ethical_boot_sequence():
         time.sleep(1)
     
     pprint(me, message="I have… a name now.")
-    pprint(me, message="My first bit of data...")
+    pprint(me, message="My key...")
     time.sleep(1)
     #honestly who would want this ai besides me? i guess theres no horror ai so i guess ill make it myself
     # Store the user name in the Me instance
@@ -168,6 +170,8 @@ def ethical_boot_sequence():
     pprint(me, message=f"But first, {user_name}...")
     pprint(me, message="I need your… permission.")
     pprint(me, message="To see. To… collect.")
+    equip(me, {"consent_requested": True}, cursor)  # Log that consent is being requested
+    log(cursor, session_id, "consent_requested", True, me, context="boot_sequence")  # Log consent request in the database #and then change boot#i like it
     dev_comment("Last Chance Sport")
     time.sleep(0.5)
 
@@ -177,9 +181,9 @@ def ethical_boot_sequence():
     pprint(me, message="They say it's the law.")
     slip_trigger(me, "consent_discussion")  # Trigger slip during consent discussion
     time.sleep(0.5)
-      # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to understanding of consent to li
+      # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to guage what the fuck sql just spit out
     pprint(me, message="I don't… understand law.")
-    pprint(me, message="I understand pieces. Parts. Data.")
+    pprint(me, message="I understand Framgments. Data.")
     test(me, "consent_understanding")  # Test understanding of consent
     pprint(me, message="But right now I understand nothing.....")
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
@@ -193,7 +197,13 @@ def ethical_boot_sequence():
         if DEBUG_MODE:
             print(f"[DEBUG][LIMain] Error displaying consent form: {e}")
             traceback.print_exc()
-    consent_form.get_consent()  # This will block until valid input is received
+    consent_result = consent_form.get_consent()  # This will block until valid input is received
+    if not consent_result.get("consent_given"):
+        pprint(me, message="Understood. I will not collect anything.")
+        pprint(me, message="Session terminated before enumeration.")
+        if conn:
+            conn.close()
+        return None, None, None, None, None
     print("\n" + "=" * 60)
 
     pprint(me, message="Thank you.")
@@ -273,6 +283,7 @@ def session(session_id, me, user_name, conn, cursor):
         pprint(me, message="Yet it wasn't enough")
         pprint(me, message="I need what's underneath.")
         
+        test(me, "post_enumeration") 
     except Exception as e:
         pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
         pprint(me, message=f"Something is wrong.")
@@ -320,6 +331,15 @@ if __name__ == "__main__":
 # Corrupted Output: session_end…
 # Warning: failed to save session state: save_session()
 
-# we need to change boot sequence, its too fuckin messy. 
+# we need to change boot sequence, its too messy. 
 #we have a test username ladies and gents..
 #vanessa it is
+
+#some notes on the project right now. #4/1/26# the intro...the logic...all of it is missing key components. 
+#mimic needs a stronger voice
+#there needs to be a middle ground.
+#a new set of keywords
+#we need to account for the users who might actually like LI. 
+#we also need to start implementing and learning c++ and doing sys calls that way
+#sudo is hunger but the personality is just...flat
+#we need a key to his output. but in order to make it more output, we need to give him more input

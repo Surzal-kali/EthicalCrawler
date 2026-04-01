@@ -1,0 +1,73 @@
+Comprehensive Mechanics Sheet
+
+Launch flow
+
+Beginner entrypoint is runme.py.
+
+Runtime orchestration lives in LIMain.py.
+
+Expected startup path: runme intro -> LIMain boot sequence -> consent -> session stages.
+
+Session lifecycle
+
+Boot sequence initializes DB and narrator state in LIMain.py.
+
+Consent is collected through consentform.py.
+
+If consent is false, flow returns early from boot in LIMain.py:197.
+
+If consent is true, session executes profiling and services collection in LIMain.py.
+
+Data collection mechanics
+
+System profile snapshot assembled in LIMain.py.
+
+Service/process detection runs in services.py.
+
+Collected stage outputs are fed into equip-style narration in theatrics.py.
+
+Narration and persona engine
+
+Persona state object is Me in theatrics.py.
+
+Quip lookup and fallback logic combines catalog and DB-backed rows in theatrics.py and quips.py.
+
+Instability and slip behavior are handled in theatrics.py.
+
+Persona escalation is driven by closeness/slip thresholds in theatrics.py.
+
+Persistence mechanics
+
+SQLite schema/init/session persistence is in database.py.
+
+Buffered write behavior and retry flow are in autosave.py.
+
+Session save/load contract is in database.py.
+
+Stage contract for future modules
+
+Collect data into a flat key-value mapping.
+
+Log through existing helpers where needed.
+
+Pass narrator-friendly flat payload into equip-compatible flow.
+
+Preserve autosave compatibility by passing autosave object through stage calls.
+References: LIMain.py, theatrics.py, copilot-instructions.md
+
+Current operational constraints
+
+Main path is interactive and consent-gated.
+
+Automated test suite is not established yet.
+
+Session internals are intentionally debug/testing-oriented for now.
+References: copilot-instructions.md, README.md
+
+Dependencies (current runtime set)
+
+Faker
+
+psutil
+
+rich

@@ -1,152 +1,61 @@
-# LI — Executive Summary
+# LI - Executive Summary
 
-# LI is a narrative‑driven system enumerator that behaves like a character rather than a tool.
+LI is a narrative-driven system enumerator that behaves like a character rather than a plain tool.
 
-# It profiles the host machine, reacts to what it finds, and evolves its persona based on the data it collects.
+Act I (the currently implemented phase) focuses on host profiling with theatrical narration. Future acts are planned for user-facing review and personality rebirth.
 
-# 
+## Beginner Entry Point
 
-# Act I (the only implemented phase) focuses on enumeration with theatrical narration.
+Use this as your first run path:
 
-# Future phases will introduce user‑driven data review and a final “rebirth” of LI into a new personality.
+- Install dependencies: `pip install -r requirements.txt`
+- Start LI: `python runme.py`
 
-# 
+`runme.py` is the recommended beginner entry point. It handles intro framing, then forwards into the Act I orchestration flow.
 
-# What LI Does (Act I)
+## What LI Does In Act I
 
-# Profiles the operating system, hardware, and running services
+- Profiles operating system and hardware basics
+- Enumerates common running services/process signals
+- Logs findings to SQLite evidence/log tables
+- Reacts with persona-driven quips, mood shifts, and instability effects
+- Tracks session state across runs
+- Requires interactive consent before collection continues
 
-# 
+## Architecture Overview
 
-# Logs findings into a structured SQLite evidence database
+- `runme.py`: Beginner-friendly launch path and narrative prelude
+- `LIMain.py`: Main orchestration (boot sequence, consent gate, session lifecycle, stage ordering)
+- `database.py`: SQLite setup, logging, session load/save, evidence directory handling
+- `theatrics.py`: Persona model, normalization, quip logic, rendering, slip mechanics
+- `services.py`: Process/service detection stage for Act I
+- `autosave.py`: Buffered persistence with retry/partial-save support
+- `consentform.py`: Consent workflow and out-of-scope capture
+- `quips.py`: Quip catalog and key normalization helpers
 
-# 
+## Current Status
 
-# Reacts with dynamic quips, moods, and instability effects
+Act I is functional but still evolving.
 
-# 
+- Implemented: boot ritual, consent gate, profiling, service stage, quip/mood/slip systems, persistence
+- In progress: scanner modularization, deeper stages, schema cleanup, stronger act boundaries
+- Planned: Act II (user data review flow), Act III (rebirth/profile synthesis)
 
-# Evolves its persona based on “closeness” and collected data
+## Practical Notes
 
-# 
+- The main flow is interactive and blocks on consent input.
+- Validation is currently targeted/manual rather than CI-driven.
+- Session internals currently favor debug/testing transparency and may be refined as the project stabilizes.
 
-# Persists session state between runs
+## Why This Exists
 
-# 
+LI is an experiment at the intersection of:
 
-# Establishes tone through a boot sequence and consent ritual
+- system enumeration
+- persistent state
+- narrative design
+- persona evolution
+- ethical tension in tooling
 
-# 
-
-# Act I is the “facehugger” stage — LI attaches to the host and begins collecting pieces.
-
-# 
-
-# Project Structure
-
-# main.py — Boot sequence, consent flow, session handling, enumeration entrypoint
-
-# 
-
-# theatrics.py — Persona system, mood engine, slip mechanics, narrative voice
-
-# 
-
-# database.py — SQLite schema, evidence logging, session persistence
-
-# 
-
-# quips.py — Quip catalogs, keyword mapping, persona‑specific reactions
-
-# 
-
-# Current Status
-
-# Act I is functional but incomplete.
-
-# Acts II and III are planned but not implemented.
-
-# 
-
-# Checklist
-
-# Act I (Current Work)
-
-# \[x] Boot sequence + consent ritual
-
-# 
-
-# \[x] System profiling
-
-# 
-
-# \[x] Service enumeration
-
-# 
-
-# \[x] Quip + mood + slip engines
-
-# 
-
-# \[x] Session persistence
-
-# 
-
-# \[ ] Replace "basic" persona with "foothold"
-
-# 
-
-# \[ ] Modular scanner pipeline
-
-# 
-
-# \[ ] Additional scanners (ports, configs, history, secrets)
-
-# 
-
-# \[ ] Unified evidence API
-
-# 
-
-# \[ ] Clear Act I completion condition
-
-# 
-
-# Future Acts (Not Implemented)
-
-# \[ ] Act II: GUI for reviewing/deleting collected data
-
-# 
-
-# \[ ] Act III: Generate final personality profile based on user choices
-
-# 
-
-# Why This Exists
-
-# LI is an experiment in blending:
-
-# 
-
-# system enumeration
-
-# 
-
-# persistent state
-
-# 
-
-# narrative design
-
-# 
-
-# persona evolution
-
-# 
-
-# horror‑themed interaction
-
-# 
-
-# It’s part tool, part character, part story engine.
+It is intentionally part tool, part character, and part story engine.
 

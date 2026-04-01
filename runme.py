@@ -29,11 +29,13 @@ def dev_forward():
     time.sleep(3)   
     dev_comment("theres a clause in this")
     time.sleep(3)
-    sudo(me,message="During the session, you will have the ability to list anything and everything you want to keep out of LI's reach. You can also delete or change any data LI collects about you. ")
+    sudo(me,message="During the session, you will have the ability to list anything and everything you want to keep out of LI's reach.\n" \
+    " You can also delete or change any data LI collects about you. ")
     time.sleep(1)
     test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
-    pprint(me, message="The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. It's designed to be unsettling. To make you question what you're doing. To make you question the ethics of it all. ")
+    print("The slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase. \n" \
+    "It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
     dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
     time.sleep(3)
     dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
