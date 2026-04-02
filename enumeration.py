@@ -20,7 +20,7 @@ class FileCrawler:
         root.attributes("-topmost", True)
         file_path = filedialog.askopenfilename(
             title="My Bin",
-            filetypes=[ ("All files", "*.*")], #we can customize this to look for specific file types if we want. for now, we'll just let the user pick any file.
+            filetypes=[ ("All files", "*.*")], 
         )
         root.destroy()
         return file_path
@@ -40,8 +40,8 @@ class FileCrawler:
             "enumeration_file_name": selected.name,
             "enumeration_file_extension": selected.suffix.lower() or "<none>",
             "enumeration_file_size_bytes": size_bytes,
-            "enumeration_file_preview": preview[:30] or "<empty_or_binary>" + (" (truncated)" if len(preview) > 30 else ""),
-        }
+            "enumeration_file_preview": preview or "<empty_or_binary>" + (" *" if preview else "") 
+        } #its getting rid of the newlines and tabs and stuff which is good for display purposes but we should be aware of that. maybe we can add a note in the description that the preview is sanitized for display?
     def collect(self):
         if not self.consent_given:
             return {}

@@ -41,5 +41,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
             services_list = [row[0] for row in cursor.fetchall()]
 
+    for service in services_list:
+        dev_comment(f"Services enumerator collected: {service}")    
     return services_list
-

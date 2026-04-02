@@ -32,19 +32,24 @@ MIN_SLIP_INTENSITY = 1.0
 def decay_slip_intensity(saved_intensity, last_accessed, decay_per_day=SLIP_DECAY_PER_DAY, floor=MIN_SLIP_INTENSITY):
     """Decay slip intensity by time-away so long absences cool instability."""
     try:
+        floor_value = float(floor)
+    except (TypeError, ValueError):
+        floor_value = MIN_SLIP_INTENSITY
+
+    try:
         current = float(saved_intensity)
     except (TypeError, ValueError):
-        current = floor
+        current = floor_value
 
     try:
         last_seen = float(last_accessed)
     except (TypeError, ValueError):
-        return max(floor, current)
+        return max(current, floor_value)
 
     elapsed_seconds = max(0.0, time.time() - last_seen)
     elapsed_days = elapsed_seconds / 86400.0
     decayed = current - (elapsed_days * decay_per_day)
-    return round(max(floor, decayed), 2)
+    return round(max(decayed, floor_value), 2)
 
 
 def get_session_dir(session_id: str) -> Path:
@@ -72,10 +77,8 @@ def process_findings(session_id, me, cursor, payload, context, autosave=None):
             me,
             context=context,
             normalized_key=detail["normalized_key"],
-            quip_text=detail["quip_text"],
         )
 
-    # Render theatrical output and buffer to autosave
     equip(me, payload, cursor=cursor, autosave=autosave, descriptions=descriptions)
 #it all comes out a jumble but we need to see what
 def ethical_boot_sequence():
@@ -206,12 +209,16 @@ def ethical_boot_sequence():
     consent_form = ConsentKey()
     try:
         consent_form.display()
+        consent_result = consent_form.get_consent()  # This will block until valid input is received
     except Exception as e:
         speak(me, message="I tried to show you the consent form, but something went wrong.")
         if DEBUG_MODE:
             print(f"[DEBUG][LIMain] Error displaying consent form: {e}")
             traceback.print_exc()
-    consent_result = consent_form.get_consent()  # This will block until valid input is received
+        if conn:
+            conn.close()
+        return None, None, None, None, None, None
+
     if not consent_result.get("consent_given"):
         speak(me, message="Understood. I will not collect anything.")
         speak(me, message="Session terminated before enumeration.")
@@ -285,25 +292,27 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
                 dev_comment("File enumeration failed. Check debug logs for details.")
                 print(f"[DEBUG] FileCrawler error: {e}")
                 traceback.print_exc()
-        
+        #helper has to be sudo at this point lmfao. 
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
-        process_findings(session_id, me, cursor, profile,  context="system_profiler", autosave=autosave)#this is whats causing the sql error. we need to check the logs and see what the 
+        process_findings(session_id, me, cursor, profile,  context="system_profiler", autosave=autosave)
+        for field, value in system_profiler(conn, cursor, session_id, me, user_name).items():
+            dev_comment(f"System Profiler collected {field}: {value}") 
+        #this is whats causing the sql error. we need to check the logs and see what the 
         services_list = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
+        for service in services_list:
+            dev_comment(f"Services enumerator collected: {service}")
         process_findings(session_id, me, cursor, {"services": services_list}, context="services", autosave=autosave)
+        for field, value in profile.items():
+            dev_comment(f"System Profiler collected {field}: {value}")
+        #` Li learns and evolves based on what it finds`
+        # we can develop his personality more. test suit? #first fix services detected. 
 
-         
-        # Flush buffered data; retry any failures
-        save_status = autosave.flush(allow_partial=True)
-        if save_status["failed"]:
-            if DEBUG_MODE:
-                print(f"[DEBUG][session] Autosave partial failure: {save_status['failed']}")
-            autosave.retry_failed()
         # TODO: change boot sequence to be more...narratively cohesive
         #act 1
-        # TODO:# Create a fetch function for crawling. oh...................................need to add a loading screen here. maybe some ascii art of a crawler or something idkhehehee
+        # TODO:# Create a fetch function for crawling. oh...................................need to add a loading screen here. maybe some ascii art of a crawler or something
 #act 2
         # TODO: Find shell history
         # TODO: Find files
@@ -313,8 +322,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         # TODO: Aggregate Variables under generated db schema for easier access and correlation.
         # TODO: Show the user what we learned. 
         # TODO: User Data Perusal Interface.
-        # TODO: Regenerate LI based on user changes to data....no more probing after this poitn. LI becomes what the user made him.
-        #li as a blue team defense mechanism?
+        # TODO: Regenerate LI based on user changes to data..we should focus on blue team ai development based on user agggregated data. or give the user an option to simulate external attacks with li using the same aggregated data.
         # TODO: Get a shrink lol
         
         speak(me, message="I have collected the surface.")
@@ -328,6 +336,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         print(f"Error: {e}")
         if DEBUG_MODE:
             traceback.print_exc()
+    finally:
+        save_status = autosave.flush(allow_partial=True)
+        if save_status["failed"]:
+            if DEBUG_MODE:
+                print(f"[DEBUG][session] Autosave partial failure: {save_status['failed']}")
+            retry_status = autosave.retry_failed()
+            if retry_status["failed"] and DEBUG_MODE:
+                print(f"[DEBUG][session] Autosave retry failure: {retry_status['failed']}")
 def main():
     result = ethical_boot_sequence()
     if result[0] is None:  # Check if session_id is None
