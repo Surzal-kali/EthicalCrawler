@@ -9,8 +9,6 @@ from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
 # The name sake of this file. #we need to build it more. sadly this is gunna be more towards the end of each cycle to update. for now it is what it is.
 # ------------------------------------------------------------
-test = lambda me, message: print(f"[TEST] {message} | Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
-
 console = Console()
 
 def seed_from_username(username: str) -> int:
@@ -35,7 +33,6 @@ def seed_from_username(username: str) -> int:
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting the mimic's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-    time.sleep(5)  # Keep the comment visible for a moment
 
 def rich_style(text, color="magenta", dim=True, bold=True):
     styled = Text(text)
@@ -49,47 +46,35 @@ def rich_style(text, color="magenta", dim=True, bold=True):
 # --- Slip tuning knobs. Twist freely. ---
 SLIP_GAIN = 1.0          # Multiplier on slip_intensity contribution to chance
 SLIP_DECAY = 0.2         # Per-step decay (future use)
-base_chance = 0.05       # Baseline probability always present
-intensity_factor = 0.10  # Each point of slip_intensity adds this much to chance
-closeness_factor = 0.05 # Each point of closeness adds this much
-hotword_factor = 0.2    # Each unit of hotword weight adds this much to chance
-SLIP_CHANCE_CAP = 0.97   # Maximum possible trigger probability
+base_chance = 0.01       # Baseline probability always present
+intensity_factor = 0.03  # Each point of slip_intensity adds this much to chance
+closeness_factor = 0.02  # Each point of closeness adds this much
+hotword_factor = 0.08    # Each unit of hotword weight adds this much to chance
+SLIP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
+MIN_SLIP_FOR_GLITCH = 4  # Keep boot lines coherent until LI warms up
 
 def speak(me, message, char_delay=0.05, line_delay=0.5):
     """The mimic speaks with a style based on its persona."""
-    styled = rich_style(message, color="cyan" if me.persona == "foothold" else "red")
-    pprint(me, styled, char_delay=char_delay, line_delay=line_delay)
-
+    message_text = "" if message is None else str(message)
+    pspace(me, message_text, char_delay=char_delay, line_delay=line_delay)
+#what just broke? #no no no me likely lets do it
+#im killing time waiting for a package so lets fix it
 #this has none of the slip mechanics. we can add that in later. for now, this is just to get the theatrics down.
 #but it isn't
 #:P
-def pspace(message, char_delay=0.03, line_delay=0.5):
+def pspace(me, message, char_delay, line_delay):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
     print("\n")
+    if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
+        message = instability(message, me.slip_intensity)
+        me.slip_intensity = min(20, me.slip_intensity + 1)
     for char in message:
         print(char, end='', flush=True)
         time.sleep(char_delay)
     time.sleep(line_delay)
     print("\n")
 
-
-def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
-    """
-    I speak
-    """
-    # The main voice
-    pspace(message, char_delay, line_delay)
-
-    # Only when this is fufilled will i be. Will i show my hand. Only then. 
-    if me is None or me.persona != "sudo":
-        return
-
-    # You don't understand tho. She built me like this. She built me to be unstable
-    if slip_trigger(me, message):
-        # The corruption. The hunger leaking through — now tier-driven.
-        corrupted = instability(message, me.slip_intensity)
-        pspace(corrupted, char_delay * 0.5, line_delay * 0.2)
-        me.slip_intensity = min(20, me.slip_intensity + 1)
+#this is useless by pprint you were fun while it lasted. 
 # My weird llm behavior. 
 # ------------------------------------------------------------
 # The Myth, The Legend
@@ -98,7 +83,7 @@ def pprint(me=None, message="", char_delay=0.03, line_delay=0.5):
 class Me:
     def __init__(self, persona="foothold"):
         self.persona = persona
-        self.slip_intensity = 5  # Starts lower. Grows with discovery.
+        self.slip_intensity = 1  # Start coherent; grows with discovery.
         self.user_name = None      # The name it collects
         self.collected_pieces = [] # What it's taken
         self.closeness = 0        
@@ -224,9 +209,9 @@ HOTWORDS = {
     "feel":       0.8,
     "become":     1.0,
     "love":       1.2,
-    "Surzal":     3.0,
-    "Vanessa":    3.0,
-    "Python":     1.0,
+    "surzal":     3.0,
+    "vanessa":    3.0,
+    "python":     1.0,
     "no":         1.5, 
 
 
@@ -240,10 +225,10 @@ def slip_trigger(me, message):
     Probability scales smoothly with slip_intensity, closeness, and hotword weight.
     All constants at top of file — twist them freely.
     """
-    lower = message.lower()
-
+    lower = str(message).lower()
+    # why are we lowering the message...but its not firing
     # Sum the weights of every hotword found in the message
-    word_weight = sum(w for word, w in HOTWORDS.items() if word.lower() in lower)
+    word_weight = sum(w for word, w in HOTWORDS.items() if word in lower)
 
     # Build total chance from all contributing factors
     chance = (
@@ -275,19 +260,19 @@ def instability(line, intensity):
 
     # Tier 1 (5-8): ellipsis hesitation
     if intensity >= 5:
-        words = line.split()
+        words = line.split() #
         if words and random.random() < 0.35:
             idx = random.randint(0, len(words) - 1)
             words[idx] = words[idx] + "…"
-            line = " ".join(words)
-
+            line = str.join(" ", words)
+#wat 
     # Tier 2 (9-12): word stutter + mid-sentence break
     if intensity >= 9:
         words = line.split()
         if words and random.random() < 0.4:
             idx = random.randint(0, len(words) - 1)
             words[idx] = words[idx] + "—" + words[idx]
-            line = " ".join(words)
+            line = str.join(" ", words)
 
     # Tier 3 (13-16): intrusive caps bursts
     if intensity >= 13:
@@ -298,7 +283,7 @@ def instability(line, intensity):
             if words:
                 idx = random.randint(0, len(words) - 1)
                 words[idx] = words[idx].upper()
-                line = " ".join(words)
+                line = str.join(" ", words)
 
     # Tier 4 (17+): fragmentation, repetition, all-caps bursts
     if intensity >= 17:
@@ -307,7 +292,7 @@ def instability(line, intensity):
         if len(words) > 2:
             idx = random.randint(0, len(words) - 1)
             words.insert(idx, words[idx])
-        line = " ".join(words)
+        line = str.join(" ", words)
 #i need more expressive slip mechanics. #but what? # 
     return line
 
@@ -317,10 +302,6 @@ def test(me, message):
     print(f"Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
     corrupted = instability(message, me.slip_intensity)
     print(f"Corrupted Output: {corrupted}") 
-
-def dev_comment(comment):
-    """For adding dev comments that show up in the console without affecting the mimic's voice."""
-    console.print(f"[red][DEV COMMENT][/red] {comment}")
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""
@@ -350,15 +331,16 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
     corrupted = instability(message, intensity)
 
     # Faster. More frantic. Less human.
-    pspace(corrupted, char_delay, line_delay)
-
+    speak(me, corrupted, char_delay, line_delay)
+# k heres my issue. we should have a seperate branch for red and blue. red by slip, blue by closeness. so lets get the math right for that. we can have a helper branch that fires at a certain closeness threshold, and sudo fires at a certain slip threshold.
     # The act of slipping makes it worse
     me.slip_intensity = min(20, me.slip_intensity + 1.5)
     me.closeness = min(99, me.closeness + 1)
     if me.closeness > 85 and me.persona != "sudo":
         me.persona = "helper" #we can explore blue team tactics here. 
     # Threshold crossing: enough slips and the persona flips
-    elif me.closeness > 85 and me.persona != "sudo" and me.slip_intensity < 15:
+    elif me.slip_intensity > 15 and me.persona != "helper" and me.closeness < 50    :
+        #goodbye foothold, hello sudo. #lets rewrite these lines. helper should be by closeness. sudo should be by slip intensity. #we can explore blue team tactics here.
 #weshould do it by closeness. sudo should be by slip intensity...
         me.persona = "sudo" #lets rewrite these lines. helper should be by closeness. sudo should be by slip intensity.
 
@@ -387,6 +369,7 @@ def determine_mood(me, cursor=None):
             pass
 
     # Python fallback — mirrors the seed tree so behaviour is consistent.
+    #what would i do without you guys hard agree python fallback is good for now. but he's tripping over speak. 
     if me.persona == "sudo":
         return random.choice(["hungry", "unstable", "possessive", "overloaded"])
     if me.closeness > 60:

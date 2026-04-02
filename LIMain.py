@@ -18,7 +18,7 @@ from pathlib import Path
 from consentform import ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session
 from enumeration import FileCrawler #but its not firing.... #
-from theatrics import Me, describe_findings, equip, get_catalog_quip, pprint, speak, dev_comment, seed_from_username, slip_trigger, test
+from theatrics import Me, describe_findings, equip, get_catalog_quip, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
