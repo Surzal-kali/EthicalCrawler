@@ -4,8 +4,8 @@ import random
 from datetime import datetime, timedelta
 import os
 import time
-import tempfile
 from pathlib import Path
+import re
 
 from quips import get_catalog_quip, iter_catalog_quips
 from tkinter import filedialog
@@ -13,17 +13,35 @@ from theatrics import Me, dev_comment, test, pprint, sudo, equip #oh yeah thanks
 from consentform import ConsentKey
 
 def get_evidence_dir() -> Path:
-    """
-    Get platform-aware directory for evidence database.
-    Uses system temp directory by default.
-    On Windows: C:\\Users\\<user>\\AppData\\Local\\Temp\\ethical_crawler
-    On Unix: /tmp/ethical_crawler or similar
-    """
-    temp_dir = Path(tempfile.gettempdir()) / "ethical_crawler"
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    return temp_dir
+    """Return the project-scoped data directory used for runtime artifacts."""
+    configured = os.getenv("ETHICAL_CRAWLER_DATA_DIR", "").strip()
+    if configured:
+        data_dir = Path(configured).expanduser()
+    else:
+        data_dir = Path(__file__).resolve().parent / "data"
 
-DATABASE_PATH = get_evidence_dir() / "li_evidence.db"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir
+
+
+def get_session_state_dir() -> Path:
+    """Directory where per-user JSON session state is stored."""
+    state_dir = get_evidence_dir() / "session_states"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    return state_dir
+
+
+def _safe_username_slug(username: str) -> str:
+    canonical = _canonical_username(username)
+    slug = re.sub(r"[^a-z0-9._-]", "_", canonical)
+    return slug or "anonymous"
+
+
+def _session_state_path(username: str) -> Path:
+    return get_session_state_dir() / f"{_safe_username_slug(username)}.json"
+
+
+DATABASE_PATH = get_evidence_dir() / "db" / "li_evidence.db"
 DEBUG_ENV_VAR = "ETHICAL_CRAWLER_DEBUG"
 
 
@@ -112,6 +130,7 @@ def init_db(debug=False):
     debug_mode = _debug_enabled(debug)
     conn = None
     try:
+        DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''   
@@ -347,8 +366,29 @@ def log(cursor, session_id, field, raw_value, narrator, context="system_profiler
     cursor.connection.commit()
 
 def load_session(cursor, username: str):
-    """Load existing session state by username. Returns dict or None if not found."""
+    """Load existing session state by username from JSON, with DB fallback."""
     canonical_username = _canonical_username(username)
+    state_file = _session_state_path(canonical_username)
+
+    if state_file.exists():
+        try:
+            payload = json.loads(state_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            payload = None
+
+        if isinstance(payload, dict):
+            return {
+                'id': payload.get('id', f"LI:{canonical_username}"),
+                'username': canonical_username,
+                'persona': payload.get('persona', 'foothold'),
+                'closeness': float(payload.get('closeness', 0)),
+                'slip_intensity': float(payload.get('slip_intensity', 5)),
+                'created_at': float(payload.get('created_at', time.time())),
+                'last_accessed': float(payload.get('last_accessed', time.time())),
+                'session_count': int(payload.get('session_count', 1)),
+            }
+
+    # Fallback for older persisted states that still live in SQLite.
     cursor.execute(
         """
         SELECT id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count
@@ -358,7 +398,7 @@ def load_session(cursor, username: str):
     )
     row = cursor.fetchone()
     if row:
-        return {
+        session_payload = {
             'id': row[0],
             'username': row[1],
             'persona': row[2],
@@ -368,37 +408,43 @@ def load_session(cursor, username: str):
             'last_accessed': row[6],
             'session_count': row[7]
         }
+        try:
+            state_file.write_text(json.dumps(session_payload, indent=2), encoding="utf-8")
+        except OSError:
+            pass
+        return session_payload
+
     return None
 
 def save_session(cursor, session_id, username, persona, closeness, slip_intensity):
-    """Save or update session state. Called at session end."""
+    """Save or update session state JSON. Called at session end."""
     current_time = time.time()
     canonical_username = _canonical_username(username)
-    # Keep a stable per-user row id so users do not collide on the primary key.
     row_id = f"{session_id}:{canonical_username}"
-    
-    # Try to update existing
-    cursor.execute(
-        """
-        UPDATE sessions 
-        SET persona = ?, closeness = ?, slip_intensity = ?, last_accessed = ?, session_count = session_count + 1
-        WHERE LOWER(username) = ?
-        """,
-        (persona, closeness, slip_intensity, current_time, canonical_username)
-    )
-    
-    if cursor.rowcount == 0:
-        cursor.execute(
-            """
-            INSERT INTO sessions (id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (row_id, canonical_username, persona, closeness, slip_intensity, current_time, current_time, 1)
-        )
-    else:
-        
-        pass  
-    cursor.connection.commit()
+    state_file = _session_state_path(canonical_username)
+
+    previous = None
+    if state_file.exists():
+        try:
+            previous = json.loads(state_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            previous = None
+
+    created_at = float(previous.get("created_at", current_time)) if isinstance(previous, dict) else current_time
+    prior_count = int(previous.get("session_count", 0)) if isinstance(previous, dict) else 0
+
+    payload = {
+        "id": row_id,
+        "username": canonical_username,
+        "persona": persona,
+        "closeness": float(closeness),
+        "slip_intensity": float(slip_intensity),
+        "created_at": created_at,
+        "last_accessed": current_time,
+        "session_count": prior_count + 1,
+    }
+
+    state_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 def get_quip(cursor, key: str, persona: str) -> str:
     """ #shoudln't this be intheatrics? 

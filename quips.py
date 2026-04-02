@@ -25,6 +25,11 @@ FIELD_KEYWORDS = {
     ),
 }#what about emotional keywords? how do we want to test emotional state? that sounds too static..... it should flow like a conversation not a script. but how. it will after we're done enumerating and have enough data on the host?:)
 EMOTIONAL_KEYWORDS = {
+    "hello": (
+        ("hello", "hello"),
+        ("hi", "hello"),
+        ("greetings", "hello"),
+    ),
     "consent_discussion": (
         ("confused", "confused"),
         ("curious", "curious"),
@@ -55,7 +60,11 @@ EMOTIONAL_KEYWORDS = {
         ("indifferent", "neutral"),
         ("unemotional", "neutral"),
     ),
-    #we add quips to correleate.
+    "helpful": (
+        ("helpful", "helpful"),
+        ("supportive", "helpful"),
+        ("useful", "helpful"),
+    ),
 }
 
 GENERIC_KEYWORDS = (
@@ -70,6 +79,11 @@ GENERIC_KEYWORDS = (
 #it will after we're done enumerating and have enough data on the host?
 QUIP_CATALOG = {
     "all": {
+        "hello": [
+            "Hello. I see you.",
+            "Hi. I'm here.",
+            "You called, I came. Hello.",
+        ],
         "angry": [
             "Why are you doing this? I thought we were friends.",   
             "I don't like this. Why are you making me do this?",

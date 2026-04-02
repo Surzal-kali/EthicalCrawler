@@ -52,6 +52,12 @@ closeness_factor = 0.005 # Each point of closeness adds this much
 hotword_factor = 0.1    # Each unit of hotword weight adds this much to chance
 SLIP_CHANCE_CAP = 0.97   # Maximum possible trigger probability
 
+def speak(me, message, char_delay=0.05, line_delay=0.5):
+    """The mimic speaks with a style based on its persona."""
+    styled = rich_style(message, color="cyan" if me.persona == "foothold" else "red")
+    pprint(me, styled, char_delay=char_delay, line_delay=line_delay)
+
+
 def pspace(message, char_delay=0.03, line_delay=0.5):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
     print("\n")
@@ -112,8 +118,8 @@ class Me:
         return normalize_quip_key(field, raw)
 
     def quip(self, field, raw_value, cursor=None):
-        key = self.normalize(field, raw_value)
-        mood = determine_mood(self, cursor=cursor)
+        key = self.normalize(field, raw_value) ###this?
+        mood = determine_mood(self, cursor=cursor)#shouldn't this be theky
         line = get_catalog_quip(key, self.persona)
 #don't want him to crash if the db is unavailable, but we also want him to feel like he's trying to pull something out of the ether.
         if not line and cursor:
@@ -122,7 +128,7 @@ class Me:
                 WHERE key = ? AND persona IN (?, 'all')
                 ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
                 LIMIT 1
-            ''', (key, self.persona, self.persona))
+            ''', (key, self.persona, self.persona)) #this..this is the issue. what to work on first... #
 
             row = cursor.fetchone()
 
@@ -208,7 +214,7 @@ HOTWORDS = {
 
 
 
-
+#theres a problem. diagolue is getting expansive. 
 }
 
 def slip_trigger(me, message):

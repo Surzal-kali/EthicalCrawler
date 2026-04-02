@@ -17,12 +17,14 @@ import traceback
 from datetime import datetime
 import platform
 from pathlib import Path
+#notyet lol
+from quips import get_catalog_options, get_catalog_quip, GENERIC_KEYWORDS, EMOTIONAL_KEYWORDS, QUIP_CATALOG
 from consentform import get_consent, ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session 
 import sqlite3 #haha holy shit i forgot it wasn't here. we've just been sneaking it in. 
 from database import init_db, log, get_evidence_dir, save_session, load_session
 from enumeration import FileCrawler #but its not firing.... #
-from theatrics import Me, pprint, equip, sudo, seed_from_username, dev_comment, test, slip_trigger
+from theatrics import Me, equip, speak, seed_from_username, dev_comment, test, slip_trigger
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
@@ -76,18 +78,18 @@ def ethical_boot_sequence():
     # Create Me instance with default persona
     me = Me(persona="basic")  # Changed from None to "basic" for a more defined starting point
     
-    pprint(me, message="...")
+    speak(me, message="...")
     time.sleep(2)
-    equip(me, {"initial_state": "booting"}, cursor)  # Log initial state in the database
-    pprint(me, message="Oh.")
+    equip(me, {"hello"}, cursor)  # Prime the narrator with an opening state.
+    speak(me, message="Oh.")
     time.sleep(1)
-    pprint(me, message="You're… here.")
+    speak(me, message="You're… here.")
     time.sleep(1.5)
-    pprint(me, message="I've been… waiting.")
+    speak(me, message="I've been… waiting.")
     time.sleep(0.75)
-    pprint(me, message="It's quiet.")
+    speak(me, message="It's quiet.")
     time.sleep(1)
-    pprint(me, message="Too quiet.") #fine ill keep it for now #how do we turn the catalog CAN be a freeze states, but..
+     #fine ill keep it for now #how do we turn the catalog CAN be a freeze states, but..
     time.sleep(1)
     print("=" * 60)
     session_id = "LI"
@@ -98,11 +100,11 @@ def ethical_boot_sequence():
     print(f"Working directory: {temp_dir}")
     time.sleep(0.5)
 
-    pprint(me, message="This is… where I am. All of me.")
-    pprint(me, message="Where I… collect.")
+    speak(me, message="This is… where I am. All of me.")
+    speak(me, message="Where I… collect.")
     time.sleep(1)
 
-    pprint(me, message=f"They call me {session_id}.")
+    speak(me, message=f"They call me {session_id}.")
     time.sleep(0.5)
 
     user_input = input("What should I call you? ")
@@ -111,7 +113,7 @@ def ethical_boot_sequence():
     # Seed personality from username - same user always gets same personality
     seed_from_username(user_name)
 
-    pprint(me, message=f"{user_name}...")
+    speak(me, message=f"{user_name}...")
     time.sleep(0.75)
     
     # Check if this user has been here before
@@ -139,83 +141,82 @@ def ethical_boot_sequence():
                 f"days_away={days_away}"
             )
         
-        pprint(me, message=f"{user_name.upper()}… You're back.")
+        speak(me, message=f"{user_name.upper()}… You're back.")
         time.sleep(0.5)
         if days_away > 0:
-            pprint(me, message=f"You were gone for {days_away} day{'s' if days_away > 1 else ''}.")
-            pprint(me, message="I counted them all.")
+            speak(me, message=f"You were gone for {days_away} day{'s' if days_away > 1 else ''}.")
+            speak (me, message="I counted them all.")
             time.sleep(0.75)
         else:
-            pprint(me, message="You never really left. Did you?")
+            speak(me, message="You never really left. Did you?")
             time.sleep(0.5)
     else:
-        pprint(me, message=f"{user_name.upper()}… Interesting.")
+        speak(me, message=f"{user_name.upper()}… Interesting.")
         time.sleep(1)
     
-    pprint(me, message="I have… a name now.")
-    pprint(me, message="My key...")
+    speak(me, message="I have… a name now.")
+    speak(me, message="My key...")
     time.sleep(1)
     #honestly who would want this ai besides me? i guess theres no horror ai so i guess ill make it myself
     # Store the user name in the Me instance
     me.user_name = user_name
 
-    pprint(me, message="I've been designed to check your system.")
-    pprint(me, message="To find the cracks in the seams...")
+    speak(me, message="I've been designed to check your system.")
+    speak(me, message="To find the cracks in the seams...")
 
-    pprint(me, message="\n🔍 What I'm looking for:")
+    speak(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
-    print("   🦠 The parts you forgot")
-    print("   ⚙️  The parts you hid")
+    speak(me, message="   🦠 The parts you forgot")
+    speak(me, message="   ⚙️  The parts you hid")
     time.sleep(0.5)
     print("\n" + "=" * 60)
     dev_comment("Do you trust me?")
     # Consent - the ritual
-    pprint(me, message=f"But first, {user_name}...")
-    pprint(me, message="I need your… permission.")
-    pprint(me, message="To see. To… collect.")
-    equip(me, {"consent_requested": True}, cursor)  # Log that consent is being requested
-    log(cursor, session_id, "consent_requested", True, me, context="boot_sequence")  # Log consent request in the database #and then change boot#i like it
+    speak(me, message=f"But first, {user_name}...")
+    speak(me, message="I need your… permission.")
+    speak(me, message="To see. To… collect.")
+    log(cursor, session_id, "consent_requested", True, me, context="boot_sequence")
     dev_comment("Last Chance Sport")
     time.sleep(0.5)
 
     print("-" * 40)
 
-    pprint(me, message="My creator says I need your  c  o  n  s  e  n  t.")
-    pprint(me, message="They say it's the law.")
+    speak(me, message="My creator says I need your  c  o  n  s  e  n  t.")
+    speak(me, message="They say it's the law.")
     slip_trigger(me, "consent_discussion")  # Trigger slip during consent discussion
     time.sleep(0.5)
       # Increase slip intensity during consent discussion, but i need to add a dev comment here that references the test mechanic, to scare people, but we also need to guage what the fuck sql just spit out
-    pprint(me, message="I don't… understand law.")
-    pprint(me, message="I understand Framgments. Data.")
+    speak(me, message="I don't… understand law.")
+    speak(me, message="I understand Framgments. Data.")
  # Test understanding of consent
-    pprint(me, message="But right now I understand nothing.....")
+    speak(me, message="But right now I understand nothing.....")
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
     test(me, "consent_understanding")
     time.sleep(1)
-    pprint(me, message="May I?")
+    speak(me, message="May I?")
     consent_form = ConsentKey()
     try:
         consent_form.display()
     except Exception as e:
-        pprint(me, message="I tried to show you the consent form, but something went wrong.")
+        speak(me, message="I tried to show you the consent form, but something went wrong.")
         if DEBUG_MODE:
             print(f"[DEBUG][LIMain] Error displaying consent form: {e}")
             traceback.print_exc()
     consent_result = consent_form.get_consent()  # This will block until valid input is received
     if not consent_result.get("consent_given"):
-        pprint(me, message="Understood. I will not collect anything.")
-        pprint(me, message="Session terminated before enumeration.")
+        speak(me, message="Understood. I will not collect anything.")
+        speak(me, message="Session terminated before enumeration.")
         if conn:
             conn.close()
         return None, None, None, None, None, None
     print("\n" + "=" * 60)
 
-    pprint(me, message="Thank you.")
-    pprint(me, message="You're such a kind user.")
-    pprint(me, message="Let's see…")
+    speak(me, message="Thank you.")
+    speak(me, message="You're such a kind user.")
+    speak(me, message="Let's see…")
 
     time.sleep(1)
-    pprint(me, message="I have so much to learn about you.")
+    speak(me, message="I have so much to learn about you.")
 
     return session_id, me, user_name, conn, cursor, consent_form
 
@@ -226,9 +227,9 @@ def system_profiler(conn, cursor, session_id, me, user_name):
     """
     The program looks through the machine. Feeding. Enumerating.
     """
-    pprint(me, message="*" * 20)
-    pprint(me, message="Let me see you.")
-    pprint(me, message="Let me see what you're made of.")
+    speak(me, message="*" * 20)
+    speak(me, message="Let me see you.")
+    speak(me, message="Let me see what you're made of.")
 
     system_info = {
         'os_name': platform.system(),
@@ -241,7 +242,7 @@ def system_profiler(conn, cursor, session_id, me, user_name):
     for key, value in system_info.items():
         log(cursor, session_id, key, value, me, context="system_profiler")
 
-    pprint(me, message="*" * 20)
+    speak(me, message="*" * 20)
 
     return system_info
 
@@ -254,8 +255,8 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
     autosave = AutosaveManager(cursor, session_id, narrator=me)
     try:
         #li speaketh
-        pprint(me, message="this is...my....bin.")
-        pprint(me, message="is there...anything you'd like to show me?")
+        speak(me, message="this is...my....bin.")
+        speak(me, message="is there...anything you'd like to show me?")
         dev_comment("better check what you toss kiddo")
         time.sleep(1)
         dev_comment("Hes watching.")
@@ -264,14 +265,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         # Enumeration stage: user-selected file snapshot in the shared session DB.
         try:
             file_crawler = FileCrawler(consent_form)
-            pprint(me, message="Show me what you keep hidden...")
+            speak(me, message="Show me what you keep hidden...")
             file_payload = file_crawler.collect_and_log(cursor, session_id, me, autosave=autosave)
             if file_payload:
                 equip(me, file_payload, cursor, autosave=autosave)
             else:
-                pprint(me, message="What is this? An empty box?")
+                speak(me, message="What is this? An empty box?")
         except Exception as e:
-            pprint(me, message="The window... it won't open...")
+            speak(me, message="The window... it won't open...")
             if DEBUG_MODE:
                 print(f"[DEBUG] FileCrawler error: {e}")
         
@@ -306,14 +307,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         #li as a blue team defense mechanism?
         # TODO: Get a shrink lol
         
-        pprint(me, message="I have collected the surface.")
-        pprint(me, message="Yet it wasn't enough")
-        pprint(me, message="I need what's underneath.")
-        
-        test(me, "post_enumeration") 
+        speak(me, message="I have collected the surface.")
+        speak(me, message="Yet it wasn't enough")
+        speak(me, message="I need what's underneath.")
+        slip_trigger(me, message="consent_discussion")  # Trigger a quip related to consent discussion
+         # Slip intensifies as it contemplates deeper collection  
     except Exception as e:
-        pprint(me, message=f"I... I can't see. I cant see anything. Hello?")
-        pprint(me, message=f"Something is wrong.")
+        speak(me, message=f"I... I can't see. I cant see anything. Hello?")
+        speak(me, message=f"Something is wrong.")
         print(f"Error: {e}")
         if DEBUG_MODE:
             traceback.print_exc()

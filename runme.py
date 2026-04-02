@@ -1,7 +1,7 @@
 from os import system
 import os
 
-from theatrics import Me, dev_comment, test, pprint, sudo, equip, slip_trigger
+from theatrics import Me, dev_comment, speak, test, pprint, sudo, equip, slip_trigger
 from consentform import ConsentKey
 import time
 def dev_forward():
@@ -15,7 +15,7 @@ def dev_forward():
     dev_comment("A new feature here...a new language there.")
     time.sleep(3)
     me = Me()
-    sudo(me, "Now, I want to introduce you to the star of the show.")
+    speak(me, "Now, I want to introduce you to the star of the show.")
     time.sleep(3)
     pprint(me, message="..............................................")    
     dev_comment("Meet LI. LI is a bot. He's designed to crawl, enumerate, and learn all about you. ")
@@ -24,15 +24,15 @@ def dev_forward():
     time.sleep(3)
     dev_comment("The ethics of this were hard for me to grapple with. I don't want to create something thats intended for harm.") 
     time.sleep(3)    
-    pprint (me, message="BUT I JUST WANT TO B U I L D ") #<- I NEED THIS TO FIRE MORE
+    speak(me, "BUT I JUST WANT TO B U I L D ") #<- I NEED THIS TO FIRE MORE
     dev_comment("I'm but one aspiring hacker. ")
     time.sleep(3)
-    pprint (me, message="Eager to share. Eager to learn. Eager to collect.")  
+    speak(me, "Eager to share. Eager to learn. Eager to collect.")  
     time.sleep(3)   
     dev_comment("however I have imposed....limitations.")
     time.sleep(3)
-    sudo (me, "LI is designed to respect your boundaries. Everything hinges on the function 'consent needed' or nothing fires.")
-    sudo(me,message="If you choose to go forward, you will have the ability to list your out-of-scope items. LI will check against that list before collecting any data. ")
+    speak (me, "LI is designed to respect your boundaries. Everything hinges on the function 'consent needed' or nothing fires.")
+    speak(me,message="If you choose to go forward, you will have the ability to list your out-of-scope items. LI will check against that list before collecting any data. ")
     time.sleep(1)
     test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
@@ -40,14 +40,14 @@ def dev_forward():
     time.sleep(1)
     dev_comment("The higher the slip intensity, the more...unhinged LI becomes.")
     time.sleep(1)
-    pprint(me, message="It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
+    speak(me, "It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
     dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
     time.sleep(3)
     dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
     time.sleep(5)
 
-    pprint(me, message="..............................................")    
-    sudo(me, "Good luck.")
+    speak(me,   "..............................................")    
+    speak(me, "Good luck.")
 if __name__ == "__main__":
     dev_forward()
     dev_comment("Starting Ethical Crawler")

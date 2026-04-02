@@ -6,67 +6,79 @@ Beginner entrypoint is runme.py.
 
 Runtime orchestration lives in LIMain.py.
 
-Expected startup path: runme intro -> LIMain boot sequence -> consent -> session stages.
+Expected startup path: runme intro -> LIMain.ethical_boot_sequence() -> consentform -> LIMain.session() -> shutdown save in LIMain.main().
 
 Session lifecycle
 
-Boot sequence initializes DB and narrator state in LIMain.py.
+Boot sequence initializes SQLite through database.init_db() and constructs the narrator as Me(persona="basic").
 
-Consent is collected through consentform.py.
+The boot sequence asks for a username, seeds deterministic personality variance with theatrics.seed_from_username(), and attempts to reload prior persona, closeness, and slip state through database.load_session().
 
-If consent is false, flow returns early from boot in LIMain.py:197.
+Slip intensity decays by elapsed time away before the next run begins.
 
-If consent is true, session executes profiling and services collection in LIMain.py.
+Consent is collected through ConsentKey.display() and ConsentKey.get_consent() in consentform.py.
+
+If consent is denied, LIMain closes the DB connection and returns before any collection stage begins.
+
+If consent is granted, LIMain.session() runs the collection stages in this order: file enumeration, system profiling, service/process detection, autosave flush, end-of-session state save.
 
 Data collection mechanics
 
-System profile snapshot assembled in LIMain.py.
+File enumeration is attempted first through enumeration.FileCrawler.collect_and_log().
 
-Service/process detection runs in services.py.
+System profile snapshot is assembled in LIMain.system_profiler().
 
-Collected stage outputs are fed into equip-style narration in theatrics.py.
+Service/process detection runs in services.prog().
+
+Collected stage outputs are narrated through theatrics.equip(...), which adds pieces to the persona and can buffer flat fields into autosave.
 
 Narration and persona engine
 
 Persona state object is Me in theatrics.py.
 
-Quip lookup and fallback logic combines catalog and DB-backed rows in theatrics.py and quips.py.
+Quip lookup and fallback logic combine catalog-backed lookup with DB-backed rows in theatrics.py and quips.py.
 
 Instability and slip behavior are handled in theatrics.py.
 
-Persona escalation is driven by closeness/slip thresholds in theatrics.py.
+Persona escalation is driven by closeness and slip thresholds in theatrics.py.
 
 Persistence mechanics
 
-SQLite schema/init/session persistence is in database.py.
+SQLite schema, evidence directory handling, session load, and session save live in database.py.
+
+Session rows are keyed by canonicalized username, with the stored row id derived from session_id plus the normalized username.
 
 Buffered write behavior and retry flow are in autosave.py.
 
-Session save/load contract is in database.py.
+End-of-session state persistence happens in LIMain.main() inside the finally block so normal exits still attempt a save.
 
 Stage contract for future modules
 
-Collect data into a flat key-value mapping.
+Return a flat key-value mapping when a stage wants to feed narration/autosave directly.
 
-Log through existing helpers where needed.
+Log through existing helpers where a stage owns its own DB writes.
 
-Pass narrator-friendly flat payload into equip-compatible flow.
+Pass the autosave object through stage calls when incremental persistence is desired.
 
-Preserve autosave compatibility by passing autosave object through stage calls.
-References: LIMain.py, theatrics.py, copilot-instructions.md
+Keep new stage outputs compatible with theatrics.equip(...), which expects a flat mapping.
+
+Current boot-sequence notes
+
+The opening hello state is still narrative state, not a direct log row; theatrics.equip(...) narrates and autosaves when an autosave object is present.
+
+The consent-request event is intentionally logged once through a single explicit log(...) call in LIMain.ethical_boot_sequence().
 
 Current operational constraints
 
 Main path is interactive and consent-gated.
 
-Automated test suite is not established yet.
+Validation is currently targeted/manual rather than CI-driven.
 
 Session internals are intentionally debug/testing-oriented for now.
-References: copilot-instructions.md, README.md
 
 Dependencies (current runtime set)
 
-Faker
+faker
 
 psutil
 
