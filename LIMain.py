@@ -21,6 +21,7 @@ from enumeration import FileCrawler #but its not firing.... #
 from theatrics import Me, describe_findings, equip, get_catalog_quip, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
+from webcrawling import WebCrawler
 #######need to add an act 0. #done
 #its not firing on other hardware... #
 
@@ -121,7 +122,7 @@ def ethical_boot_sequence():
 
     speak(me, message=f"They call me {session_id}.")
     time.sleep(0.5)
-
+# 
     user_input = input("What should I call you? ")
     user_name = user_input.strip() if user_input.strip() else "the user"
 #this should be instead the quick boot into ...it is i checked the logs #
@@ -309,6 +310,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         process_findings(session_id, me, cursor, {"services": services_list}, context="services", autosave=autosave)
         for field, value in profile.items():
             dev_comment(f"System Profiler collected {field}: {value}")
+        web_crawler = WebCrawler(consent_form) #behave
+        web_links = web_crawler.collect_and_log(cursor, session_id, me, autosave=autosave)
+        for item in web_links: 
+            dev_comment(f"WebCrawler collected: {item}")
+
+        #this is a blunt tool at the moment. it also gives li a lot of information to work with right away, which is...not ideal. we need to space it out more, and give him more time to react to each individual piece of information. maybe we can even have a test after each one that checks his understanding and reacts accordingly. #we also need to make the personality shifts more apparent in the theatrics. maybe even have some lines that are exclusive to certain personas. #we can also have certain data points that only trigger for certain personas. like if hes helper he gets excited about certain findings, but if hes sudo he gets more intense about them. #we can also have the slip intensity affect how he reacts to findings. like if hes really high slip intensity he might react more erratically to certain findings. #li is complicated. he's the horror villian who turns out to be a good guy. like texas chainsaw massacre.
+        #he sudo'd over the hili.txt
+        #first organic max slip #
         #` Li learns and evolves based on what it finds`
         # we can develop his personality more. test suit? #first fix services detected. 
 
@@ -326,12 +335,12 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         # TODO: User Data Perusal Interface.
         # TODO: Regenerate LI based on user changes to data..we should focus on blue team ai development based on user agggregated data. or give the user an option to simulate external attacks with li using the same aggregated data.
         # TODO: Get a shrink lol
-        
+        #act 4
+        #
         speak(me, message="I have collected the surface.")
         speak(me, message="Yet it wasn't enough")
         speak(me, message="I need what's underneath.")
-        slip_trigger(me, message="consent_discussion")  # Trigger a quip related to consent discussion
-         # Slip intensifies as it contemplates deeper collection  
+        slip_trigger(me, message="goodbye")  
     except Exception as e:
         speak(me, message=f"I... I can't see. I cant see anything. Hello?")
         speak(me, message=f"Something is wrong.")
