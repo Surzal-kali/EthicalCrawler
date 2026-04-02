@@ -13,9 +13,8 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             "steam", "spotify", "discord", "slack", "teams", "zoom", "skype", "dropbox", "google drive", "onedrive",
             "chrome", "firefox", "edge", "opera", "brave", "vivaldi", "tor", "thunderbird", "outlook", "evolution",
             "calibre", "vlc", "itunes", "gimp", "photoshop", "illustrator", "blender", "autocad", "visual studio",
-            "code", "notepad++", "pycharm", "firefox", "postman", "wireshark", "virtualbox", "vmware", "hyper-v", "docker", "kubernetes", "ansible", "terraform", "jenkins", "git", "github desktop", "bitbucket", "gitlab", "aws cli", "azure cli", "gcloud sdk", "kali linux", "parrot os", "backbox", "blackarch", "metasploit", "nmap", "nessus", "burp suite", "owasp zap", "sqlmap", "john the ripper", "hashcat", "aircrack-ng",
+            "code", "notepad++", "pycharm", "firefox", "postman", "vmware", "wireshark", "virtualbox", "vmware", "hyper-v", "docker", "kubernetes", "ansible", "terraform", "jenkins", "git", "github desktop", "bitbucket", "gitlab", "aws cli", "azure cli", "gcloud sdk", "tailscale", "ollama", "lm studio", "obs",  "xbox", "epic", "gog", "origin", "uplay", "battle.net", "riot client", "blizzard app", "nvidia geforce experience", "amd radeon software", "intel graphics command center"
         ]
-
         running_process_names = set()
         for proc in psutil.process_iter(['name']):
             try:
@@ -44,6 +43,3 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
 
     return services_list
 
-#["code", "discord", "edge", "onedrive", "spotify", "steam", "teams", "tor"]
-#:))))))))
-#IM SO EXCITED 

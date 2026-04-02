@@ -332,10 +332,17 @@ def save_evidence(cursor, session_id, module, data, quip):
 #i see what you mean
 def cleanup(cursor):
     """Remove entries older than 30 days to prevent database bloat."""
-    cutoff_time = time.time() - (30 * 24 * 60 * 60) 
+    cutoff_time = time.time() - (30 * 24 * 60 * 60)
     cursor.execute("DELETE FROM logs WHERE timestamp < ?", (cutoff_time,))
-    cursor.execute("DELETE FROM sessions WHERE last_accessed < ?", (cutoff_time,))
     cursor.connection.commit()
+    # Purge stale session state JSON files (sessions live in JSON, not SQLite).
+    for state_file in get_session_state_dir().glob("*.json"):
+        try:
+            data = json.loads(state_file.read_text(encoding="utf-8"))
+            if float(data.get("last_accessed", 0)) < cutoff_time:
+                state_file.unlink()
+        except (json.JSONDecodeError, OSError, ValueError):
+            pass
  
 def log(cursor, session_id, field, raw_value, narrator, context="system_profiler", normalized_key=None, quip_text=None):
     """Store a fully annotated log entry for debugging and introspection."""

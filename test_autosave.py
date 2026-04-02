@@ -26,6 +26,9 @@ def setup_test_db():
             session_id TEXT,
             field TEXT,
             raw_value TEXT,
+            normalized_key TEXT,
+            persona TEXT,
+            quip_text TEXT,
             context TEXT,
             timestamp REAL
         )

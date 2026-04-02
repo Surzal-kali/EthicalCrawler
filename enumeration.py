@@ -54,8 +54,7 @@ class FileCrawler:
             return {}
 
         return self._build_payload(selected_file)
-#what can sql realistically not handle?" why would we protect against sqli injection when we *want* the user to utilize the database? 
-# you have a good point"
+
     def collect_and_log(self, cursor, session_id, me, autosave=None):
         """Compatibility wrapper; orchestration now owns logging and narration."""
         log_data = self.collect()

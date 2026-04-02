@@ -13,11 +13,12 @@ import sys
 import time
 import traceback
 import platform
+import datetime as dt_module
 from pathlib import Path
 from consentform import ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session
 from enumeration import FileCrawler #but its not firing.... #
-from theatrics import Me, describe_findings, equip, speak, dev_comment, seed_from_username, slip_trigger, test
+from theatrics import Me, describe_findings, equip, pprint, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
@@ -74,8 +75,9 @@ def process_findings(session_id, me, cursor, payload, context, autosave=None):
             quip_text=detail["quip_text"],
         )
 
+    # Render theatrical output and buffer to autosave
     equip(me, payload, cursor=cursor, autosave=autosave, descriptions=descriptions)
-
+#it all comes out a jumble but we need to see what
 def ethical_boot_sequence():
     """
     The initial sequence that establishes the tone and narrative.
@@ -138,7 +140,6 @@ def ethical_boot_sequence():
         me.closeness = existing_session['closeness']
         
         # Calculate time since last visit
-        import datetime as dt_module
         last_visited = dt_module.datetime.fromtimestamp(existing_session['last_accessed'])
         now = dt_module.datetime.now()
         time_diff = now - last_visited
@@ -176,8 +177,8 @@ def ethical_boot_sequence():
 
     speak(me, message="\n🔍 What I'm looking for:")
     time.sleep(0.5)
-    speak(me, message="   🦠 The parts you forgot")
-    speak(me, message="   ⚙️  The parts you hid")
+    speak(me, message="   ⚙️  The parts you forgot")
+    speak(me, message="   🦠  The parts you hid")
     time.sleep(0.5)
     print("\n" + "=" * 60)
     # Consent - the ritual
@@ -273,6 +274,8 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
             file_payload = file_crawler.collect()
             if file_payload:
                 process_findings(session_id, me, cursor, file_payload, context="enumeration", autosave=autosave)
+                for field, value in file_payload.items():
+                    dev_comment(f"FileCrawler collected {field}: {value}")
                 test(me, "file_understanding")
             else:
                 speak(me, message="What is this? An empty box?")
@@ -287,7 +290,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
-        process_findings(session_id, me, cursor, profile, context="system_profiler", autosave=autosave)
+        process_findings(session_id, me, cursor, profile,  context="system_profiler", autosave=autosave)#this is whats causing the sql error. we need to check the logs and see what the 
         services_list = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
         process_findings(session_id, me, cursor, {"services": services_list}, context="services", autosave=autosave)
 
@@ -325,21 +328,11 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         print(f"Error: {e}")
         if DEBUG_MODE:
             traceback.print_exc()
-def save_session_state(cursor, session_id, user_name, persona, slip_intensity, closeness):
-    """Helper function to save session state."""
-    try:
-        save_session(session_id, user_name, persona, closeness, slip_intensity)
-    except Exception as e:
-        print(f"Warning: failed to save session state: {e}")
-        if DEBUG_MODE:
-            traceback.print_exc()
-
-
 def main():
     result = ethical_boot_sequence()
     if result[0] is None:  # Check if session_id is None
         return
-    
+
     session_id, me, user_name, conn, cursor, consent_form = result
     try:
         session(session_id, me, user_name, conn, cursor, consent_form)
@@ -347,11 +340,11 @@ def main():
     finally:
         test(me, "session_end")  # Final test at the end of the session
         # Persist state and close DB in one place for all main-path exits.
-        if cursor and user_name:
+        if user_name:
             try:
-                save_session_state(cursor, session_id, user_name, me.persona, me.slip_intensity, me.closeness)
-            except Exception as exc:
-                print(f"Warning: failed to save session state: {exc}")
+                save_session(session_id, user_name, me.persona, me.closeness, me.slip_intensity)
+            except Exception as e:
+                print(f"Warning: failed to save session state: {e}")
                 if DEBUG_MODE:
                     traceback.print_exc()
 
