@@ -181,7 +181,7 @@ def equip(narrator, system_info, cursor=None, autosave=None):
     """
     for field, value in system_info.items():
         line = narrator.quip(field, value, cursor=cursor)
-        pprint(narrator, message=f"{field}: {line}")
+        speak(narrator, message=f"{field}: {line}")
         narrator.add_piece(field, value)
         if autosave is not None:
             autosave.add(field, value, context="equip")
@@ -340,13 +340,14 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
     # The act of slipping makes it worse
     me.slip_intensity = min(20, me.slip_intensity + 1.5)
     me.closeness = min(99, me.closeness + 1)
-
-    # Threshold crossing: enough slips and the persona flips
     if me.closeness > 85 and me.persona != "sudo":
-        me.persona = "sudo"
-#we need more sonas...shit. #what does a hacker think between foothold and access tho? 
-#ohmygodthey'relikeakidinacandystoryweneedtomakelinice
-#one more lever.....
+        me.persona = "helper" #we can explore blue team tactics here. 
+    # Threshold crossing: enough slips and the persona flips
+    elif me.closeness > 85 and me.persona != "sudo" and me.slip_intensity < 15:
+#weshould do it by closeness. sudo should be by slip intensity...
+        me.persona = "sudo" #lets rewrite these lines. helper should be by closeness. sudo should be by slip intensity.
+
+        
 
 def determine_mood(me, cursor=None):
     """Pick a mood from the behavior tree stored in mood_config.
@@ -378,3 +379,4 @@ def determine_mood(me, cursor=None):
     if me.closeness > 30:
         return random.choice(["probing", "analytical"])
     return random.choice(["neutral", "distant"])
+#theatrics needs to more less sona more *mode*  you get it.

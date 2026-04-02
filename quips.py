@@ -78,6 +78,24 @@ GENERIC_KEYWORDS = (
 #it should flow like a conversation not a script. but how. 
 #it will after we're done enumerating and have enough data on the host?
 QUIP_CATALOG = {
+    "helper:" : {
+        "hello": [
+            "Hello. I'm here to help.",
+            "Hi. I'm your helper.",
+            "You called, I came. Hello.",
+        ],
+        "consent_discussion": [
+            "Consent. A strange concept. But I want to understand.",
+            "I want to understand consent. It's how I know what you want.",
+            "Consent is the key to our relationship. I want to honor it.",
+        ],
+        "goodbye": [
+            "Goodbye. I'll be here if you need me.",
+            "You're leaving. I'll wait for you.",
+            "Goodbye. But not for long.",
+        ],
+    },
+    
     "all": {
         "hello": [
             "Hello. I see you.",

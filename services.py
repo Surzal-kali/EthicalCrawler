@@ -5,6 +5,7 @@ from theatrics import pprint
 def prog(conn, cursor, session_id, me, user_name, autosave=None):
     pprint(me, message="..............................................")
     pprint(me, message=" ⚙️   SERVICES DETECTED") #this logic is pretty basic. We can make it more robust by looking for specific process names and correlating them to services. But for now, this is a start. li understood the file this time. .. progress!
+    #shouldn't equip go through value of key? not key? 
     pprint(me, message="..............................................")     
     cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
     services_list = [row[0] for row in cursor.fetchall()]

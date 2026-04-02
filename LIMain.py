@@ -80,7 +80,7 @@ def ethical_boot_sequence():
     
     speak(me, message="...")
     time.sleep(2)
-    equip(me, {"hello"}, cursor)  # Prime the narrator with an opening state.
+ # Prime the narrator with an opening state.
     speak(me, message="Oh.")
     time.sleep(1)
     speak(me, message="You're… here.")
