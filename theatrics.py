@@ -7,7 +7,7 @@ from rich.text import Text
 import json
 from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
-# The name sake of this file. #we need to build it more.
+# The name sake of this file. #we need to build it more. sadly this is gunna be more towards the end of each cycle to update. for now it is what it is.
 # ------------------------------------------------------------
 test = lambda me, message: print(f"[TEST] {message} | Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
 

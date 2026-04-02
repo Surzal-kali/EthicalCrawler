@@ -1,5 +1,5 @@
 import random
-
+#i hate this thing. its too, static. miles long. like he's reading a book. its a start tho. 
 
 FIELD_KEYWORDS = {
     ("os_name", "os_version"): (
@@ -79,11 +79,6 @@ GENERIC_KEYWORDS = (
 #it will after we're done enumerating and have enough data on the host?
 QUIP_CATALOG = {
     "helper:" : {
-        "hello": [
-            "Hello. I'm here to help.",
-            "Hi. I'm your helper.",
-            "You called, I came. Hello.",
-        ],
         "consent_discussion": [
             "Consent. A strange concept. But I want to understand.",
             "I want to understand consent. It's how I know what you want.",
@@ -350,7 +345,7 @@ def get_catalog_options(key, persona):
 
     return list(dict.fromkeys(options))
 
-
+#interesting. i fed him an epub and closeness and understanding went drasticaly down, then bounced back to 20 after enumeration. 
 def iter_catalog_quips():
     for persona, key_map in QUIP_CATALOG.items():
         for key, texts in key_map.items():

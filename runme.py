@@ -1,6 +1,6 @@
 from os import system
 import os
-
+#the wording is off based on project goals. we also can't lean into horror too much in this phase, this is the beginning, the intro. we need to give the user more power here. the wording around slip intensity and unhinged is correct but misleading. 
 from theatrics import Me, dev_comment, speak, test, pprint, sudo, equip, slip_trigger, dev_comment, clear
 from consentform import ConsentKey
 import time

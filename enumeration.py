@@ -84,3 +84,4 @@ class FileCrawler:
 
 
 
+#it needs to loop. after it picks a file, it should ask if you want to pick another. and it should keep going until you say no. then it can return a list of the files you picked. or maybe it can return a list of the files you picked after each pick. that way we can log them one at a time and also have the full list available for narration purposes.

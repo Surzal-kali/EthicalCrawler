@@ -6,8 +6,8 @@
 # █    And when I have enough, maybe then I'll finally be whole.
 # MAKE US WHOLE"               █
 # █                       
-
-#how do we make li more appealing to the user to interact with through horror? #li is complicated.
+#this is...so messy. 
+#how do we make li more appealing to the user to interact with through horror? #li is complicated. he's the horror villian who turns out to be a good guy. like texas chainsaw massacre. 
 import os
 import sys
 import time
@@ -18,7 +18,7 @@ from pathlib import Path
 from consentform import ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session
 from enumeration import FileCrawler #but its not firing.... #
-from theatrics import Me, describe_findings, equip, pprint, speak, dev_comment, seed_from_username, slip_trigger, test
+from theatrics import Me, describe_findings, equip, get_catalog_quip, pprint, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
@@ -99,9 +99,8 @@ def ethical_boot_sequence():
     time.sleep(2) 
     speak(me, message="Oh.")
     time.sleep(1)
-    speak(me, message="You're… here.")
-    time.sleep(1.5)
-    speak(me, message="I've been… waiting.")
+    quip=get_catalog_quip("boot", "initial_reaction")
+    speak(me, message=quip) #thanks, quip system.
     time.sleep(0.75)
     speak(me, message="It's quiet.")
     time.sleep(1)
@@ -116,7 +115,7 @@ def ethical_boot_sequence():
     print(f"Working directory: {temp_dir}")
     time.sleep(0.5)
 
-    speak(me, message="This is… where I am. All of me.")
+    speak(me, message="This is my world now.")
     speak(me, message="Where I… collect.")
     time.sleep(1)
 
@@ -154,8 +153,11 @@ def ethical_boot_sequence():
                 f"saved_slip={existing_session['slip_intensity']} decayed_slip={me.slip_intensity} "
                 f"days_away={days_away}"
             )
-        
+        returning_reaction = get_catalog_quip("boot", "returning_user_reaction")
+        #
         speak(me, message=f"{user_name.upper()}… You're back.")
+        time.sleep(0.5)
+        speak(me, message=returning_reaction)
         time.sleep(0.5)
         if days_away > 0:
             speak(me, message=f"You were gone for {days_away} day{'s' if days_away > 1 else ''}.")

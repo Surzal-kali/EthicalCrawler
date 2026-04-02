@@ -44,3 +44,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
     for service in services_list:
         dev_comment(f"Services enumerator collected: {service}")    
     return services_list
+
+
+#this has more of a "boot sequence" vibe then enumeration. it's also too hardcocded, we have a list of services in the code but the idea of a tempfile it updates and saves to disk. an "environment" file is probably for the best. maybe a function we can call that spits out whatever is passed into it into a json?  
