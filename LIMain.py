@@ -278,8 +278,10 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
                 speak(me, message="What is this? An empty box?")
         except Exception as e:
             speak(me, message="The window... it won't open...")
-            if DEBUG_MODE:
+            if DEBUG_MODE: #oh
+                dev_comment("File enumeration failed. Check debug logs for details.")
                 print(f"[DEBUG] FileCrawler error: {e}")
+                traceback.print_exc()
         
         # Li looks at the surface
         profile = system_profiler(conn, cursor, session_id, me, user_name)

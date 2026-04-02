@@ -9,3 +9,6 @@
 # 6. generate reports for stakeholders
 
 #i have this book of malware,,,,, to feed it ioc knowledge. how tho??? 
+
+
+#we need easy ways to dev test the capabilities of our detection logic 

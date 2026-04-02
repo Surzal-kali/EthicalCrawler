@@ -4,8 +4,7 @@ from theatrics import pprint, clear, dev_comment, test
 
 def prog(conn, cursor, session_id, me, user_name, autosave=None):
     pprint(me, message="..............................................")
-    pprint(me, message=" ⚙️   SERVICES DETECTED") #this logic is pretty basic. We can make it more robust by looking for specific process names and correlating them to services. But for now, this is a start. li understood the file this time. .. progress!
-    #shouldn't equip go through value of key? not key? 
+    pprint(me, message=" ⚙️   SERVICES DETECTED")  
     pprint(me, message="..............................................")     
     cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
     services_list = [row[0] for row in cursor.fetchall()]
@@ -14,7 +13,7 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             "steam", "spotify", "discord", "slack", "teams", "zoom", "skype", "dropbox", "google drive", "onedrive",
             "chrome", "firefox", "edge", "opera", "brave", "vivaldi", "tor", "thunderbird", "outlook", "evolution",
             "calibre", "vlc", "itunes", "gimp", "photoshop", "illustrator", "blender", "autocad", "visual studio",
-            "code", "notepad++", "pycharm",
+            "code", "notepad++", "pycharm", "firefox", "postman", "wireshark", "virtualbox", "vmware", "hyper-v", "docker", "kubernetes", "ansible", "terraform", "jenkins", "git", "github desktop", "bitbucket", "gitlab", "aws cli", "azure cli", "gcloud sdk", "kali linux", "parrot os", "backbox", "blackarch", "metasploit", "nmap", "nessus", "burp suite", "owasp zap", "sqlmap", "john the ripper", "hashcat", "aircrack-ng",
         ]
 
         running_process_names = set()
@@ -32,7 +31,7 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             service_name = service.lower()
             if any(service_name in proc_name for proc_name in running_process_names):
                 detected_services.append(service)
-##brainbreaking: we want to be able to detect services that are running, but we also want to be able to detect services that have been used in the past. maybe we can look for artifacts of those services? like config files, logs, etc? this is where the ioc knowledge could come in handy. if we know what to look for, we can find evidence of past usage even if the service isn't currently running. this would be a more comprehensive approach to enumeration. it would give us a better picture of the user's habits and potential attack surface.
+
         if detected_services:
             for service in detected_services:
                 cursor.execute(
@@ -45,3 +44,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
 
     return services_list
 
+#["code", "discord", "edge", "onedrive", "spotify", "steam", "teams", "tor"]
+#:))))))))
+#IM SO EXCITED 
