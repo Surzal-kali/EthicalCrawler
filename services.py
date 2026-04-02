@@ -1,5 +1,5 @@
 import psutil
-from theatrics import pprint
+from theatrics import pprint, clear, dev_comment, test
 
 
 def prog(conn, cursor, session_id, me, user_name, autosave=None):
@@ -32,7 +32,7 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             service_name = service.lower()
             if any(service_name in proc_name for proc_name in running_process_names):
                 detected_services.append(service)
-
+##brainbreaking: we want to be able to detect services that are running, but we also want to be able to detect services that have been used in the past. maybe we can look for artifacts of those services? like config files, logs, etc? this is where the ioc knowledge could come in handy. if we know what to look for, we can find evidence of past usage even if the service isn't currently running. this would be a more comprehensive approach to enumeration. it would give us a better picture of the user's habits and potential attack surface.
         if detected_services:
             for service in detected_services:
                 cursor.execute(
@@ -42,9 +42,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
             conn.commit()
             cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
             services_list = [row[0] for row in cursor.fetchall()]
-
-    if autosave is not None and services_list:
-        autosave.add("services_detected", services_list, context="services")
 
     return services_list
 

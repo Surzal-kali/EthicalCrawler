@@ -1,16 +1,13 @@
 import sqlite3
 import json
 import random
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 import time
 from pathlib import Path
 import re
 
 from quips import get_catalog_quip, iter_catalog_quips
-from tkinter import filedialog
-from theatrics import Me, dev_comment, test, pprint, sudo, equip #oh yeah thanks. 
-from consentform import ConsentKey
 
 def get_evidence_dir() -> Path:
     """Return the project-scoped data directory used for runtime artifacts."""
@@ -340,10 +337,10 @@ def cleanup(cursor):
     cursor.execute("DELETE FROM sessions WHERE last_accessed < ?", (cutoff_time,))
     cursor.connection.commit()
  
-def log(cursor, session_id, field, raw_value, narrator, context="system_profiler"):
+def log(cursor, session_id, field, raw_value, narrator, context="system_profiler", normalized_key=None, quip_text=None):
     """Store a fully annotated log entry for debugging and introspection."""
-    normalized = narrator.normalize(field, raw_value)
-    quip_text = narrator.quip(field, raw_value, cursor=cursor)
+    normalized = normalized_key if normalized_key is not None else narrator.normalize(field, raw_value)
+    quip_text = quip_text if quip_text is not None else narrator.quip(field, raw_value, cursor=cursor)
 
 
 
@@ -365,8 +362,8 @@ def log(cursor, session_id, field, raw_value, narrator, context="system_profiler
     )
     cursor.connection.commit()
 
-def load_session(cursor, username: str):
-    """Load existing session state by username from JSON, with DB fallback."""
+def load_session(username: str, cursor=None):
+    """Load existing session state by username from JSON, with optional DB fallback."""
     canonical_username = _canonical_username(username)
     state_file = _session_state_path(canonical_username)
 
@@ -389,6 +386,9 @@ def load_session(cursor, username: str):
             }
 
     # Fallback for older persisted states that still live in SQLite.
+    if cursor is None:
+        return None
+
     cursor.execute(
         """
         SELECT id, username, persona, closeness, slip_intensity, created_at, last_accessed, session_count
@@ -416,7 +416,7 @@ def load_session(cursor, username: str):
 
     return None
 
-def save_session(cursor, session_id, username, persona, closeness, slip_intensity):
+def save_session(session_id, username, persona, closeness, slip_intensity):
     """Save or update session state JSON. Called at session end."""
     current_time = time.time()
     canonical_username = _canonical_username(username)
@@ -498,8 +498,6 @@ class DatabaseManager:
             self.conn.close()
         self.conn = None
         self.cursor = None
-        self.close = None   
-        #halp
 
 
     def __enter__(self):

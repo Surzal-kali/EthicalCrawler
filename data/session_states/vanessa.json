@@ -1,10 +1,10 @@
 {
   "id": "LI:vanessa",
   "username": "vanessa",
-  "persona": "basic",
-  "closeness": 22.0,
-  "slip_intensity": 6.0,
+  "persona": "foothold",
+  "closeness": 20.0,
+  "slip_intensity": 6.97,
   "created_at": 1775088983.729643,
-  "last_accessed": 1775088983.729643,
-  "session_count": 1
+  "last_accessed": 1775094825.4617043,
+  "session_count": 2
 }

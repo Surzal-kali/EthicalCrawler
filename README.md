@@ -19,14 +19,14 @@ Use this as your first run path:
 - Enumerates common running services/process signals
 - Logs findings to SQLite evidence/log tables
 - Reacts with persona-driven quips, mood shifts, and instability effects
-- Tracks session state across runs
+- Tracks session state across runs via per-user JSON files in the project data folder
 - Requires interactive consent before collection continues
 
 ## Architecture Overview
 
 - `runme.py`: Beginner-friendly launch path and narrative prelude
 - `LIMain.py`: Main orchestration (boot sequence, consent gate, session lifecycle, stage ordering)
-- `database.py`: SQLite setup, logging, session load/save, evidence directory handling
+- `database.py`: SQLite setup, project data paths, JSON session state load/save, evidence/log handling
 - `theatrics.py`: Persona model, normalization, quip logic, rendering, slip mechanics
 - `services.py`: Process/service detection stage for Act I
 - `autosave.py`: Buffered persistence with retry/partial-save support

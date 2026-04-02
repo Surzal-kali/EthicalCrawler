@@ -2,9 +2,6 @@ from pathlib import Path
 from tkinter import filedialog
 import tkinter as tk
 
-from database import log
-from theatrics import test
-
 
 class FileCrawler:
     def __init__(self, consent_form):
@@ -23,7 +20,7 @@ class FileCrawler:
         root.attributes("-topmost", True)
         file_path = filedialog.askopenfilename(
             title="My Bin",
-            filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            filetypes=[ ("All files", "*.*")], #we can customize this to look for specific file types if we want. for now, we'll just let the user pick any file.
         )
         root.destroy()
         return file_path
@@ -43,26 +40,25 @@ class FileCrawler:
             "enumeration_file_name": selected.name,
             "enumeration_file_extension": selected.suffix.lower() or "<none>",
             "enumeration_file_size_bytes": size_bytes,
-            "enumeration_file_preview": preview or "<empty_or_binary>",
+            "enumeration_file_preview": preview[:30] or "<empty_or_binary>" + (" (truncated)" if len(preview) > 30 else ""),
         }
-
-    def collect_and_log(self, cursor, session_id, me, autosave=None):
+    def collect(self):
         if not self.consent_given:
             return {}
 
-        if self._is_out_of_scope("files"):
+        if self._is_out_of_scope("files"): #this needs refinement. we should be able to specify specific file types or directories as out of scope. for now, this is just a blanket "no files" option.
             return {}
 
         selected_file = self._pick_file()
         if not selected_file:
             return {}
 
-        payload = self._build_payload(selected_file)
-        for field, value in payload.items():
-            log(cursor, session_id, field, value, me, context="enumeration")
-            if autosave is not None:
-                autosave.add(field, value, context="enumeration")
+        return self._build_payload(selected_file)
+#what can sql realistically not handle?" why would we protect against sqli injection when we *want* the user to utilize the database? 
+# you have a good point"
+    def collect_and_log(self, cursor, session_id, me, autosave=None):
+        """Compatibility wrapper; orchestration now owns logging and narration."""
+        return self.collect()
 
-        test(me, "file_understanding")
-        return payload
+
 

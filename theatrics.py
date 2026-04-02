@@ -1,9 +1,7 @@
 import os
-import sys
 import time
 import random
 import hashlib
-import faker
 from rich.console import Console
 from rich.text import Text
 import json
@@ -11,6 +9,7 @@ from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
 # The name sake of this file. #we need to build it more.
 # ------------------------------------------------------------
+test = lambda me, message: print(f"[TEST] {message} | Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
 
 console = Console()
 
@@ -33,6 +32,10 @@ def seed_from_username(username: str) -> int:
     # Seed the random module
     random.seed(seed_int)
     return seed_int
+def dev_comment(comment):
+    """For adding dev comments that show up in the console without affecting the mimic's voice."""
+    console.print(f"[red][DEV COMMENT][/red] {comment}")
+    time.sleep(5)  # Keep the comment visible for a moment
 
 def rich_style(text, color="magenta", dim=True, bold=True):
     styled = Text(text)
@@ -47,9 +50,9 @@ def rich_style(text, color="magenta", dim=True, bold=True):
 SLIP_GAIN = 1.0          # Multiplier on slip_intensity contribution to chance
 SLIP_DECAY = 0.2         # Per-step decay (future use)
 base_chance = 0.05       # Baseline probability always present
-intensity_factor = 0.03  # Each point of slip_intensity adds this much to chance
-closeness_factor = 0.005 # Each point of closeness adds this much
-hotword_factor = 0.1    # Each unit of hotword weight adds this much to chance
+intensity_factor = 0.10  # Each point of slip_intensity adds this much to chance
+closeness_factor = 0.05 # Each point of closeness adds this much
+hotword_factor = 0.2    # Each unit of hotword weight adds this much to chance
 SLIP_CHANCE_CAP = 0.97   # Maximum possible trigger probability
 
 def speak(me, message, char_delay=0.05, line_delay=0.5):
@@ -57,7 +60,9 @@ def speak(me, message, char_delay=0.05, line_delay=0.5):
     styled = rich_style(message, color="cyan" if me.persona == "foothold" else "red")
     pprint(me, styled, char_delay=char_delay, line_delay=line_delay)
 
-
+#this has none of the slip mechanics. we can add that in later. for now, this is just to get the theatrics down.
+#but it isn't
+#:P
 def pspace(message, char_delay=0.03, line_delay=0.5):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
     print("\n")
@@ -174,17 +179,29 @@ class Me:
         return False
 
 
-def equip(narrator, system_info, cursor=None, autosave=None):
+def describe_findings(narrator, system_info, cursor=None):
+    """Compute normalized keys and spoken lines for a payload once."""
+    descriptions = {}
+    for field, value in system_info.items():
+        descriptions[field] = {
+            "value": value,
+            "normalized_key": narrator.normalize(field, value),
+            "quip_text": narrator.quip(field, value, cursor=cursor),
+        }
+    return descriptions
+
+
+def equip(narrator, system_info, cursor=None, autosave=None, descriptions=None):
     """
     The mimic comments on what it finds.
     Each discovery is a piece of the user.
     """
-    for field, value in system_info.items():
-        line = narrator.quip(field, value, cursor=cursor)
-        speak(narrator, message=f"{field}: {line}")
-        narrator.add_piece(field, value)
+    details = descriptions or describe_findings(narrator, system_info, cursor=cursor)
+    for field, detail in details.items():
+        speak(narrator, message=f"{field}: {detail['quip_text']}")
+        narrator.add_piece(field, detail["value"])
         if autosave is not None:
-            autosave.add(field, value, context="equip")
+            autosave.add(field, detail["value"], context="equip")
 
 
 # Hotwords with weights — heavier words pull harder.
@@ -304,8 +321,6 @@ def test(me, message):
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting the mimic's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-    time.sleep(5)  # Keep the comment visible for a moment
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
     """The mimic's hunger makes everything more likely."""
@@ -380,3 +395,7 @@ def determine_mood(me, cursor=None):
         return random.choice(["probing", "analytical"])
     return random.choice(["neutral", "distant"])
 #theatrics needs to more less sona more *mode*  you get it.
+
+
+def clear ():
+    os.system('cls' if os.name == 'nt' else 'clear')

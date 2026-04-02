@@ -11,20 +11,13 @@
 import os
 import sys
 import time
-import socket
-import json
 import traceback
-from datetime import datetime
 import platform
 from pathlib import Path
-#notyet lol
-from quips import get_catalog_options, get_catalog_quip, GENERIC_KEYWORDS, EMOTIONAL_KEYWORDS, QUIP_CATALOG
-from consentform import get_consent, ConsentKey
-from database import init_db, log, get_evidence_dir, save_session, load_session 
-import sqlite3 #haha holy shit i forgot it wasn't here. we've just been sneaking it in. 
+from consentform import ConsentKey
 from database import init_db, log, get_evidence_dir, save_session, load_session
 from enumeration import FileCrawler #but its not firing.... #
-from theatrics import Me, equip, speak, seed_from_username, dev_comment, test, slip_trigger
+from theatrics import Me, describe_findings, equip, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
 #######need to add an act 0. #done
@@ -62,7 +55,26 @@ def get_session_dir(session_id: str) -> Path:
     session_dir.mkdir(parents=True, exist_ok=True)
     return session_dir
 
-SESSION_STATE_FILE = get_evidence_dir() / "li_session_state.json"
+
+def process_findings(session_id, me, cursor, payload, context, autosave=None):
+    """Log and narrate a payload through one shared orchestration path."""
+    if not payload:
+        return
+
+    descriptions = describe_findings(me, payload, cursor=cursor)
+    for field, detail in descriptions.items():
+        log(
+            cursor,
+            session_id,
+            field,
+            detail["value"],
+            me,
+            context=context,
+            normalized_key=detail["normalized_key"],
+            quip_text=detail["quip_text"],
+        )
+
+    equip(me, payload, cursor=cursor, autosave=autosave, descriptions=descriptions)
 
 def ethical_boot_sequence():
     """
@@ -79,8 +91,7 @@ def ethical_boot_sequence():
     me = Me(persona="basic")  # Changed from None to "basic" for a more defined starting point
     
     speak(me, message="...")
-    time.sleep(2)
- # Prime the narrator with an opening state.
+    time.sleep(2) 
     speak(me, message="Oh.")
     time.sleep(1)
     speak(me, message="You're… here.")
@@ -109,17 +120,16 @@ def ethical_boot_sequence():
 
     user_input = input("What should I call you? ")
     user_name = user_input.strip() if user_input.strip() else "the user"
-
+#this should be instead the quick boot into ...it is i checked the logs #
     # Seed personality from username - same user always gets same personality
     seed_from_username(user_name)
 
     speak(me, message=f"{user_name}...")
     time.sleep(0.75)
-    
     # Check if this user has been here before
-    existing_session = load_session(cursor, user_name)
+    existing_session = load_session(user_name, cursor=cursor)
     if existing_session:
-        # Load persisted state
+        # Load persisted state. we REALLY need to make the contract go ONCE. this is exhausting. 
         me.persona = existing_session['persona']
         me.slip_intensity = decay_slip_intensity(
             existing_session['slip_intensity'],
@@ -170,7 +180,6 @@ def ethical_boot_sequence():
     speak(me, message="   ⚙️  The parts you hid")
     time.sleep(0.5)
     print("\n" + "=" * 60)
-    dev_comment("Do you trust me?")
     # Consent - the ritual
     speak(me, message=f"But first, {user_name}...")
     speak(me, message="I need your… permission.")
@@ -191,7 +200,6 @@ def ethical_boot_sequence():
  # Test understanding of consent
     speak(me, message="But right now I understand nothing.....")
     me.slip_intensity += 1  # Slip intensifies as it contemplates consent
-    test(me, "consent_understanding")
     time.sleep(1)
     speak(me, message="May I?")
     consent_form = ConsentKey()
@@ -238,10 +246,6 @@ def system_profiler(conn, cursor, session_id, me, user_name):
         'processor': platform.processor()
     }
 
-    # Log everything. Every piece.
-    for key, value in system_info.items():
-        log(cursor, session_id, key, value, me, context="system_profiler")
-
     speak(me, message="*" * 20)
 
     return system_info
@@ -266,9 +270,10 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         try:
             file_crawler = FileCrawler(consent_form)
             speak(me, message="Show me what you keep hidden...")
-            file_payload = file_crawler.collect_and_log(cursor, session_id, me, autosave=autosave)
+            file_payload = file_crawler.collect()
             if file_payload:
-                equip(me, file_payload, cursor, autosave=autosave)
+                process_findings(session_id, me, cursor, file_payload, context="enumeration", autosave=autosave)
+                test(me, "file_understanding")
             else:
                 speak(me, message="What is this? An empty box?")
         except Exception as e:
@@ -280,9 +285,9 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         profile = system_profiler(conn, cursor, session_id, me, user_name)
         #services = services_profile(conn, cursor, session_id, me, user_name)
         # It comments on what it finds
-        equip(me, profile, cursor, autosave=autosave)
+        process_findings(session_id, me, cursor, profile, context="system_profiler", autosave=autosave)
         services_list = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
-        equip(me, {"services": services_list}, cursor, autosave=autosave)
+        process_findings(session_id, me, cursor, {"services": services_list}, context="services", autosave=autosave)
 
          
         # Flush buffered data; retry any failures
@@ -321,7 +326,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
 def save_session_state(cursor, session_id, user_name, persona, slip_intensity, closeness):
     """Helper function to save session state."""
     try:
-        save_session(cursor, session_id, user_name, persona, closeness, slip_intensity)
+        save_session(session_id, user_name, persona, closeness, slip_intensity)
     except Exception as e:
         print(f"Warning: failed to save session state: {e}")
         if DEBUG_MODE:

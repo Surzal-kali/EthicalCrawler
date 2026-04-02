@@ -1,36 +1,40 @@
-import sqlite3
-from pathlib import Path
+import os
 import tempfile
+import unittest
+from pathlib import Path
 
-print("Testing DB initialization...")
-
-try:
-    temp_dir = Path(tempfile.gettempdir()) / "ethical_crawler"
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    db_path = temp_dir / "li_evidence.db"
-    
-    print(f"DB Path: {db_path}")
-    
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    
-    # Try creating a simple table
-    cursor.execute("CREATE TABLE IF NOT EXISTS test (id INTEGER)")
-    conn.commit()
-    
-    print("✅ Database connection successful!")
-    
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = cursor.fetchall()
-    print(f"Existing tables: {[t[0] for t in tables]}")
-    
-    conn.close()
-    
-except Exception as e:
-    print(f"❌ Database error: {e}")
+import database
 
 
+class DatabaseInitializationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.prev_data_dir = os.environ.get("ETHICAL_CRAWLER_DATA_DIR")
+        os.environ["ETHICAL_CRAWLER_DATA_DIR"] = self.temp_dir.name
+        database.DATABASE_PATH = Path(self.temp_dir.name) / "db" / "li_evidence.db"
+
+    def tearDown(self):
+        if self.prev_data_dir is None:
+            os.environ.pop("ETHICAL_CRAWLER_DATA_DIR", None)
+        else:
+            os.environ["ETHICAL_CRAWLER_DATA_DIR"] = self.prev_data_dir
+        self.temp_dir.cleanup()
+
+    def test_init_db_uses_runtime_paths_and_creates_expected_tables(self):
+        conn, cursor = database.init_db(debug=True)
+
+        self.assertIsNotNone(conn)
+        self.assertIsNotNone(cursor)
+        self.assertTrue(database.DATABASE_PATH.exists())
+        self.assertEqual(database.get_session_state_dir(), Path(self.temp_dir.name) / "session_states")
+
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        table_names = {row[0] for row in cursor.fetchall()}
+
+        self.assertTrue({"users", "personalities", "quips", "mood_config", "services", "sessions", "logs", "evidence"}.issubset(table_names))
+
+        conn.close()
 
 
-# c++ into python. let's say we have a c++ code that needs to be executed, we can create a python wrapper that compiles the c++ code and executes it. This way, we can leverage the performance of c++ while still using python for higher-level logic and orchestration.
-#headsortails? #well come on #tails then
+if __name__ == "__main__":
+    unittest.main()

@@ -1,7 +1,7 @@
 from os import system
 import os
 
-from theatrics import Me, dev_comment, speak, test, pprint, sudo, equip, slip_trigger
+from theatrics import Me, dev_comment, speak, test, pprint, sudo, equip, slip_trigger, dev_comment, clear
 from consentform import ConsentKey
 import time
 def dev_forward():
@@ -14,6 +14,7 @@ def dev_forward():
     time.sleep(3)
     dev_comment("A new feature here...a new language there.")
     time.sleep(3)
+    clear()
     me = Me()
     speak(me, "Now, I want to introduce you to the star of the show.")
     time.sleep(3)
@@ -23,6 +24,7 @@ def dev_forward():
     dev_comment("Li is also designed to use every ounce of cybersecurity knowledge I have. ")
     time.sleep(3)
     dev_comment("The ethics of this were hard for me to grapple with. I don't want to create something thats intended for harm.") 
+    clear()
     time.sleep(3)    
     speak(me, "BUT I JUST WANT TO B U I L D ") #<- I NEED THIS TO FIRE MORE
     dev_comment("I'm but one aspiring hacker. ")
@@ -31,9 +33,13 @@ def dev_forward():
     time.sleep(3)   
     dev_comment("however I have imposed....limitations.")
     time.sleep(3)
+    clear()
     speak (me, "LI is designed to respect your boundaries. Everything hinges on the function 'consent needed' or nothing fires.")
     speak(me,message="If you choose to go forward, you will have the ability to list your out-of-scope items. LI will check against that list before collecting any data. ")
     time.sleep(1)
+    clear()
+    speak(me, "LI is also designed to be...well, a little unsettling. The theatrics are intentional. I want you to feel the weight of what you're doing. I want you to question it. ")
+    time.sleep(3)
     test(me, "li_completeness")  # Test for completeness of LI's knowledge base
     time.sleep(3)
     print("This slip intensity is purely at the moment theatrics. But as you see LI crawl and enumerate, it will increase.  ")
@@ -41,8 +47,10 @@ def dev_forward():
     dev_comment("The higher the slip intensity, the more...unhinged LI becomes.")
     time.sleep(1)
     speak(me, "It's designed to be unsettling.    To make you question what you're doing. To make you question the ethics of it all. ")
+    clear()
     dev_comment("Not enough people in the world think about their digital footprint. I'd like to show you why you should. ")   
     time.sleep(3)
+    clear()
     dev_comment("In between sessions I highly suggest checking the data LI has. LI's documentation is not uniform, but the code is there. If you know where to look. ")
     time.sleep(5)
 
