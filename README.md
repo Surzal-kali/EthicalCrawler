@@ -25,7 +25,7 @@ Use this as your first run path:
 ## Architecture Overview
 
 - `runme.py`: Beginner-friendly launch path and narrative prelude
-- `LIMain.py`: Main orchestration (boot sequence, consent gate, session lifecycle, stage ordering)
+- `chattin.py`: Main orchestration (boot sequence, consent gate, session lifecycle, stage ordering)
 - `database.py`: SQLite setup, project data paths, JSON session state load/save, evidence/log handling
 - `theatrics.py`: Persona model, normalization, quip logic, rendering, slip mechanics
 - `services.py`: Process/service detection stage for Act I
