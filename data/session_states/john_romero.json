@@ -1,0 +1,14 @@
+{
+  "id": "LI:john romero",
+  "username": "john romero",
+  "persona": "foothold",
+  "closeness": 10.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775189420.578561,
+  "created_at_display": "02/04/26",
+  "last_accessed": 1775199147.2401435,
+  "last_accessed_display": "03/04/26",
+  "session_count": 13,
+  "consented_at": null,
+  "out_of_scope": []
+}

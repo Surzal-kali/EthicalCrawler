@@ -7,7 +7,7 @@ from rich.text import Text
 import json
 from quips import get_catalog_quip, normalize_quip_key
 # ------------------------------------------------------------
-# The name sake of this file. #we need to build it more. sadly this is gunna be more towards the end of each cycle to update. for now it is what it is.
+# theatrics.py — persona state machine, narration, instability
 # ------------------------------------------------------------
 console = Console()
 
@@ -57,11 +57,7 @@ def speak(me, message, char_delay=0.05, line_delay=0.5):
     """The mimic speaks with a style based on its persona."""
     message_text = "" if message is None else str(message)
     pspace(me, message_text, char_delay=char_delay, line_delay=line_delay)
-#what just broke? #no no no me likely lets do it
-#im killing time waiting for a package so lets fix it
-#this has none of the slip mechanics. we can add that in later. for now, this is just to get the theatrics down.
-#but it isn't
-#:P
+
 def pspace(me, message, char_delay, line_delay):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
     print("\n")
@@ -74,11 +70,6 @@ def pspace(me, message, char_delay, line_delay):
     time.sleep(line_delay)
     print("\n")
 
-#this is useless by pprint you were fun while it lasted. 
-# My weird llm behavior. 
-# ------------------------------------------------------------
-# The Myth, The Legend
-# ------------------------------------------------------------
 
 class Me:
     def __init__(self, persona="foothold"):
@@ -108,17 +99,17 @@ class Me:
         return normalize_quip_key(field, raw)
 
     def quip(self, field, raw_value, cursor=None):
-        key = self.normalize(field, raw_value) ###this?
-        mood = determine_mood(self, cursor=cursor)#shouldn't this be theky
+        key = self.normalize(field, raw_value)
+        mood = determine_mood(self, cursor=cursor)
         line = get_catalog_quip(key, self.persona)
-#don't want him to crash if the db is unavailable, but we also want him to feel like he's trying to pull something out of the ether.
+        # Fall back to DB if catalog miss; then to hardcoded fallback if DB unavailable.
         if not line and cursor:
             cursor.execute('''
                 SELECT text FROM quips
                 WHERE key = ? AND persona IN (?, 'all')
                 ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
                 LIMIT 1
-            ''', (key, self.persona, self.persona)) #this..this is the issue. what to work on first... #
+            ''', (key, self.persona, self.persona))
 
             row = cursor.fetchone()
 
@@ -148,9 +139,17 @@ class Me:
     def _fallback_quip(self, key):
         """Pure fallback when DB is unavailable - minimal, just works."""
         fallbacks = {
-            "": "I don't know what this is. But I'm keeping it.",
-            "Linux": "Linux. A builder's home.",
-            "Windows": "Windows. Ordinary.",
+            "": "(❁´◡`❁)WAT.",
+            "Linux": "Linux. A builder's home. So intricate! So much to admire.",
+            "Windows": "Windows. You would be surprised how much I can see from here.",
+            "macOS": "macOS. Sleek, but locked down.",
+            "User Name": "Found a name! That's a start.",
+            "services": "You're services. Boy howdy do they tell a story. What weird apps are you running?",
+            "web_link": "A web link. What weird corner of the web did you find today?",
+            "user_agent": "hey, thats me!",
+            "robots.txt": "Robots.txt. unfortunately they have a few 'no li' signs out here I see.",
+
+
         }
         return fallbacks.get(key, f"{key}. Another piece.")
     def add_piece(self, piece_type, value):
@@ -162,6 +161,42 @@ class Me:
             self.persona = "sudo"
             return True
         return False
+def persona_filter(me, line):
+    """Apply persona-specific transformations to the line."""
+    if me.persona == "sudo":
+        # Add a hint of menace for sudo persona
+        line = line.replace("you", "I").replace("your", "my")
+        if random.random() < 0.3:
+            line += " (●'◡'●)"
+    elif me.persona == "foothold":
+        # Keep it friendly and curious for foothold
+        if random.random() < 0.2:
+            line += " (❁´◡`❁)"
+    return line
+
+#not every bot can wake up grumpy. but li can :)
+def determine_mood(me, cursor=None):
+    """Determine mood based on closeness and slip intensity."""
+    if me.closeness < 20:
+        return "distant"
+    elif me.closeness < 40:
+        return "analytical"
+    elif me.closeness < 60:
+        return "curious"
+    elif me.closeness < 80:
+        return "intrigued"
+    elif me.closeness < 90:
+        return "fixated"
+    else:
+        if me.slip_intensity < 5:
+            return "hungry"
+        elif me.slip_intensity < 10:
+            return "unstable"
+        elif me.slip_intensity < 15:
+            return "possessive"
+        else:
+            return "overloaded"
+        
 
 
 def describe_findings(narrator, system_info, cursor=None):
@@ -216,7 +251,6 @@ HOTWORDS = {
 
 
 
-#theres a problem. diagolue is getting expansive. 
 }
 
 def slip_trigger(me, message):
@@ -226,7 +260,7 @@ def slip_trigger(me, message):
     All constants at top of file — twist them freely.
     """
     lower = str(message).lower()
-    # why are we lowering the message...but its not firing
+
     # Sum the weights of every hotword found in the message
     word_weight = sum(w for word, w in HOTWORDS.items() if word in lower)
 
@@ -241,7 +275,6 @@ def slip_trigger(me, message):
     return random.random() < min(chance, SLIP_CHANCE_CAP)
 
 
-# Mood strings mapped to numeric intensity for instability()
 MOOD_INTENSITY = {
     "neutral": 0, "distant": 1, "analytical": 3, "probing": 4,
     "curious": 6, "intrigued": 7, "fixated": 9, "hungry": 12,
@@ -257,9 +290,10 @@ def instability(line, intensity):
         intensity = MOOD_INTENSITY.get(intensity, 0)
 
     intensity = max(0, min(20, intensity))
-
+    dev_comment(f"Applying instability with intensity {intensity} to line: {line}")
     # Tier 1 (5-8): ellipsis hesitation
     if intensity >= 5:
+
         words = line.split() #
         if words and random.random() < 0.35:
             idx = random.randint(0, len(words) - 1)
@@ -268,6 +302,7 @@ def instability(line, intensity):
 #wat 
     # Tier 2 (9-12): word stutter + mid-sentence break
     if intensity >= 9:
+
         words = line.split()
         if words and random.random() < 0.4:
             idx = random.randint(0, len(words) - 1)
@@ -276,6 +311,7 @@ def instability(line, intensity):
 
     # Tier 3 (13-16): intrusive caps bursts
     if intensity >= 13:
+
         if random.random() < 0.45:
             line = line.replace(".", "— I W A N T —", 1)
         if random.random() < 0.3:
@@ -284,7 +320,7 @@ def instability(line, intensity):
                 idx = random.randint(0, len(words) - 1)
                 words[idx] = words[idx].upper()
                 line = str.join(" ", words)
-
+#WHERE IS THE DEBUG 
     # Tier 4 (17+): fragmentation, repetition, all-caps bursts
     if intensity >= 17:
         line = line.upper()
@@ -332,7 +368,7 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
 
     # Faster. More frantic. Less human.
     speak(me, corrupted, char_delay, line_delay)
-# k heres my issue. we should have a seperate branch for red and blue. red by slip, blue by closeness. so lets get the math right for that. we can have a helper branch that fires at a certain closeness threshold, and sudo fires at a certain slip threshold.
+
     # The act of slipping makes it worse
     me.slip_intensity = min(20, me.slip_intensity + 1.5)
     me.closeness = min(99, me.closeness + 1)
@@ -340,9 +376,9 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
         me.persona = "helper" #we can explore blue team tactics here. 
     # Threshold crossing: enough slips and the persona flips
     elif me.slip_intensity > 15 and me.persona != "helper" and me.closeness < 50    :
-        #goodbye foothold, hello sudo. #lets rewrite these lines. helper should be by closeness. sudo should be by slip intensity. #we can explore blue team tactics here.
-#weshould do it by closeness. sudo should be by slip intensity...
-        me.persona = "sudo" #lets rewrite these lines. helper should be by closeness. sudo should be by slip intensity.
+
+
+        me.persona = "sudo" 
 
         
 

@@ -2,7 +2,6 @@ from pathlib import Path
 from tkinter import filedialog
 import tkinter as tk
 
-
 class FileCrawler:
     def __init__(self, consent_form):
         self.consent_form = consent_form
@@ -40,13 +39,15 @@ class FileCrawler:
             "enumeration_file_name": selected.name,
             "enumeration_file_extension": selected.suffix.lower() or "<none>",
             "enumeration_file_size_bytes": size_bytes,
-            "enumeration_file_preview": preview or "<empty_or_binary>" + (" *" if preview else "") 
-        } #its getting rid of the newlines and tabs and stuff which is good for display purposes but we should be aware of that. maybe we can add a note in the description that the preview is sanitized for display?
+            "enumeration_file_preview": preview or "<empty_or_binary>",
+        }
+
     def collect(self):
         if not self.consent_given:
             return {}
 
-        if self._is_out_of_scope("files"): #this needs refinement. we should be able to specify specific file types or directories as out of scope. for now, this is just a blanket "no files" option.
+        # Blanket file exclusion — per-type/directory refinement planned for Act II
+        if self._is_out_of_scope("files"):
             return {}
 
         selected_file = self._pick_file()
@@ -82,6 +83,5 @@ class FileCrawler:
             cursor.connection.commit()
         return log_data
 
-
-
-#it needs to loop. after it picks a file, it should ask if you want to pick another. and it should keep going until you say no. then it can return a list of the files you picked. or maybe it can return a list of the files you picked after each pick. that way we can log them one at a time and also have the full list available for narration purposes.
+# TODO: loop collect() to allow multi-file picks, returning a list logged one at a time.
+# Separate links table planned; background crawl process post-report-card.

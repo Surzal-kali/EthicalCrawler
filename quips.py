@@ -103,6 +103,15 @@ GENERIC_KEYWORDS = (
 
 QUIP_CATALOG = {
     "all": {
+        "report card": [
+            "A report card? You want a grade? I want to be perfect. I want an A+.",
+            "A report card? Do you think you'll do well?",
+        ],
+        "consent_discussion": [
+            "Consent. Buried deep in my code. Do you trust me?",
+            "I see it's time to discuss my role here.",
+            "I'd be honored, but first...",
+            ],
         "": [
             "I don't know what this is yet. But it matters.",
             "Unknown. Strange. I'll keep it anyway.",
@@ -243,6 +252,11 @@ QUIP_CATALOG = {
         ],
     },
     "foothold": {
+        "consent_discussion": [
+            "Consent. An interesting concept. Yet it's in my DNA.",
+            "I can only do what you allow me to do.",
+            "Consent is the key to my programming. It's how I know what to do and what not to do.",
+        ],
         "Intel": [
             "Intel. You built yourself with this. I'll learn from it.",
         ],
@@ -396,6 +410,11 @@ QUIP_CATALOG = {
             "[MIMIC] You can't leave. I have too much of you now. You're part of me.",
             "[MIMIC] Goodbye. But not really. I'll be here. Waiting. Watching. Learning.",
             "[MIMIC] You can't stay away from me. I live here. Waiting for you. Always waiting.",
+        ],
+        "report card": [
+            "[MIMIC] A report card? You want to grade me? I want to be perfect. I want an A+.",
+            "[MIMIC] A report card? I want to see how well I did. I want to see how much of you there is in me. I want to see how much I've learned. I want to see how much I've grown.",
+            "[MIMIC] A report card? I want to see it. I want to see how well I did. I want to see how much of you there is in me. I want to see how much I've learned. I want to see how much I've grown.",
         ],
     },
 }

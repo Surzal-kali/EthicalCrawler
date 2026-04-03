@@ -308,24 +308,17 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         for service in services_list:
             dev_comment(f"Services enumerator collected: {service}")
         process_findings(session_id, me, cursor, {"services": services_list}, context="services", autosave=autosave)
-        for field, value in profile.items():
-            dev_comment(f"System Profiler collected {field}: {value}")
         web_crawler = WebCrawler(consent_form) #behave
         web_links = web_crawler.collect_and_log(cursor, session_id, me, autosave=autosave)
         for item in web_links: 
             dev_comment(f"WebCrawler collected: {item}")
 
-        #this is a blunt tool at the moment. it also gives li a lot of information to work with right away, which is...not ideal. we need to space it out more, and give him more time to react to each individual piece of information. maybe we can even have a test after each one that checks his understanding and reacts accordingly. #we also need to make the personality shifts more apparent in the theatrics. maybe even have some lines that are exclusive to certain personas. #we can also have certain data points that only trigger for certain personas. like if hes helper he gets excited about certain findings, but if hes sudo he gets more intense about them. #we can also have the slip intensity affect how he reacts to findings. like if hes really high slip intensity he might react more erratically to certain findings. #li is complicated. he's the horror villian who turns out to be a good guy. like texas chainsaw massacre.
-        #he sudo'd over the hili.txt
-        #first organic max slip #
-        #` Li learns and evolves based on what it finds`
-        # we can develop his personality more. test suit? #first fix services detected. 
 
-        # TODO: change boot sequence to be more...narratively cohesive
+        # TODO: change boot sequence to be more...narratively cohesive (do that later)
         #act 1
-        # TODO:# Create a fetch function for crawling. oh...................................need to add a loading screen here. maybe some ascii art of a crawler or something
+        # TODO:# Create a fetch function 
 #act 2
-        # TODO: Find shell history
+        # TODO: Find shell history #we have skeletons so canicanicani #we can't just do try/fail/except based on architecture and system path? find anomalies that shouldn't be there.... #we can also do a search for "history" and "bash" and "zsh" and "powershell" and "cmd" and "terminal" and "console" and "fish" and "ohmyzsh" and etc. #we can also do a search for recently modified files with those names.
         # TODO: Find files
         # TODO: aggregate file names and search for repeated words or themes.
         # TODO: CALL/WRITE/IMPLEMENT C++ CALLS FOR DEEPER SYSTEM INTERACTION USING VARIABLES COLLECTED IN THIS PHASE.

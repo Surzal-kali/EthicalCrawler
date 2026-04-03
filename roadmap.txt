@@ -1,0 +1,119 @@
+EthicalCrawler — Act I Demo Roadmap
+Deadline: April 26, 2026
+====================================
+
+GOAL: Coherent, runnable Act I with a clear start/end.
+      Submittable for Python Final Project.
+
+====================================
+PHASE 1 — Bug Triage (Days 1-4)
+====================================
+Make what exists run without errors or silent failures.
+
+[ ] Fix speak(me, message="goodbye")
+      — literally outputs the word "goodbye" instead of a quip
+      — add goodbye key to quip catalog, call speak() correctly
+
+[ ] Fix slip_trigger standalone call at session end
+      — returns a bool, currently unused
+      — gate it: if slip_trigger(...): speak(instability_line)
+
+[ ] Fix DevConsentKey missing consented_at attribute
+      — getattr always returns None → returning users re-see the consent form every time
+      — add: self.consented_at = datetime.datetime.utcnow().isoformat()
+
+[ ] Fix services stage narration crash
+      — process_findings({"services": [list]}) passes a list to quip() → breaks
+      — fix: serialize list to string OR log each service individually in a loop
+
+[ ] Verify save/load session round-trip
+      — manually confirm persona/closeness/slip persist across two runs
+      — confirm consented_at persists so returning user skips the form
+
+
+====================================
+PHASE 2 — Defined Ending (Days 5-9)
+====================================
+Give Act I a real closing beat.
+
+[ ] Build session_summary() in chattin.py
+      — query SQLite logs table for session_id entries
+      — print clean table: field | value | context
+
+[ ] Add goodbye quips to quips.py
+      — entries for all, foothold, helper, sudo personas
+      — should escalate in tone if slip_intensity is high
+
+[ ] Wire session summary + goodbye into session()
+      — replace broken speak(me, message="goodbye") with:
+          1. session_summary() print
+          2. persona-appropriate goodbye quip via speak()
+          3. optional sudo() beat if slip_intensity > 10
+      — this is the official Act I ending
+
+
+====================================
+PHASE 3 — Multi-File Loop (Days 10-13)
+====================================
+Implement the FileCrawler TODO. Covers loops + exception handling visibly.
+
+[ ] Update FileCrawler.collect() to loop
+      — pick file → build payload → ask "add another? (yes/no)" → break on no
+      — exception handling around picker (OSError, cancel, encoding errors)
+      — returns list of payloads
+
+[ ] Update chattin.py to process the list
+      — iterate returned list, call process_findings() per file
+
+
+====================================
+PHASE 4 — Code Cleanup (Days 14-15)
+====================================
+
+[ ] Mark LIMain.py as legacy
+      — add a comment at the top explaining it's superseded by chattin.py
+      — do not delete (may have grade context)
+
+[ ] Explain or remove digestion.py
+      — currently empty — either stub comment or delete
+
+[ ] Clean up commented-out WebCrawler block in chattin.py
+      — replace with clean: # Stage: Web (Act II)
+
+[ ] Update README.md
+      — clear demo run steps (python runme.py, what to expect, where data saves)
+      — add Requirements Mapping table (see below)
+
+
+====================================
+PHASE 5 — Testing & Submission (Days 16-17)
+====================================
+
+[ ] Run python test_autosave.py — confirm all 12 pass
+[ ] Run python -m unittest test_db — confirm no regressions
+[ ] Full manual run as new user
+[ ] Full manual run as returning user (confirm session state restores)
+[ ] Final narrative review — does the session feel complete?
+[ ] Package for submission
+
+
+====================================
+REQUIREMENTS MAPPING (for the grade)
+====================================
+
+a. Loops & conditionals       — multi-file loop, persona state machine, service detection loop
+b. Exception handling         — FileCrawler errors, autosave retry, boot DB failure path
+c. Save & retrieve data       — SQLite evidence log + JSON session state (persona/closeness/slip)
+d. User input                 — name prompt, consent gate, tkinter file picker, scope exclusion menu
+e. Display information        — Rich console narration, typed-character output, session summary table
+f. Reasonable complexity      — persona state machine, mood system, quip catalog, instability renderer
+g. Degree-related             — cybersecurity: digital footprint enumeration, ethical consent model
+
+
+====================================
+OUT OF SCOPE THIS SPRINT
+====================================
+- Web crawling (WebCrawler) — stays commented out
+- Act II (user data review flow)
+- Act III (rebirth / profile synthesis)
+- ReportCard class — session_summary() replaces it for Act I

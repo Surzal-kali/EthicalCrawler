@@ -1,3 +1,4 @@
+
 """
 Autosave Manager — buffered persistence with error recovery.
 Pass instance through function calls to accumulate and save incrementally.
@@ -124,7 +125,7 @@ class AutosaveManager:
         # Commit successful saves
         if results["saved"]:
             try:
-                self.cursor.execute("COMMIT")
+                self.cursor.connection.commit()
             except Exception:
                 pass  # Connection may handle commits automatically
         
@@ -175,8 +176,6 @@ class AutosaveManager:
         self.buffer.clear()
         self.failed_fields.clear()
         self.failed_payloads.clear()
-#we'll expand on this later in act 3 #
-
 class AutosaveCheckpoint:
     """
     Lightweight checkpoint: save state and restore on error recovery.

@@ -8,7 +8,7 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
     if not services_list:
         common_services = [
             "steam", "spotify", "discord", "slack", "teams", "zoom", "skype", "dropbox", "google drive", "onedrive",
-            "chrome", "firefox", "edge", "opera", "brave", "vivaldi", "tor", "thunderbird", "outlook", "evolution",
+            "chrome", "firefox", "edge", "opera", "brave", "vivaldi", "thunderbird", "outlook", "evolution",
             "calibre", "vlc", "itunes", "gimp", "photoshop", "illustrator", "blender", "autocad", "visual studio",
             "code", "notepad++", "pycharm", "firefox", "postman", "vmware", "wireshark", "virtualbox", "vmware", "hyper-v", "docker", "kubernetes", "ansible", "terraform", "jenkins", "git", "github desktop", "bitbucket", "gitlab", "aws cli", "azure cli", "gcloud sdk", "tailscale", "ollama", "lm studio", "obs",  "xbox", "epic", "gog", "origin", "uplay", "battle.net", "riot client", "blizzard app", "nvidia geforce experience", "amd radeon software", "intel graphics command center"
         ]
@@ -18,7 +18,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
                 proc_name = (proc.info.get('name') or '').lower()
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 continue
-
             if proc_name:
                 running_process_names.add(proc_name)
 
@@ -42,5 +41,6 @@ def prog(conn, cursor, session_id, me, user_name, autosave=None):
         dev_comment(f"Services enumerator collected: {service}")    
     return services_list
 
-
-#this has more of a "boot sequence" vibe then enumeration. it's also too hardcocded, we have a list of services in the code but the idea of a tempfile it updates and saves to disk. an "environment" file is probably for the best. maybe a function we can call that spits out whatever is passed into it into a json?  
+# NOTE: matching is substring-based against a known list — not exhaustive.
+# Some processes run under different names; false positives possible.
+# Refinement planned for Act II alongside out_of_scope enforcement.

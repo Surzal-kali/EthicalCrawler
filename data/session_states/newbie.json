@@ -1,0 +1,19 @@
+{
+  "id": "LI:newbie",
+  "username": "newbie",
+  "persona": "basic",
+  "closeness": 10.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775202803.4343371,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775202803.4343371,
+  "last_accessed_display": "03/04/26",
+  "session_count": 1,
+  "consented_at": "2026-04-03T07:52:44.377887",
+  "out_of_scope": [
+    "files",
+    "system",
+    "services",
+    "web"
+  ]
+}

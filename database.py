@@ -6,7 +6,11 @@ import os
 import time
 from pathlib import Path
 import re
-
+    # # from reportcard import ReportCard
+    # from webcrawling import WebCrawler 
+from autosave import AutosaveManager
+from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, dev_comment, clear
+from consentform import ConsentKey
 from quips import get_catalog_quip, iter_catalog_quips
 
 def get_evidence_dir() -> Path:
@@ -60,8 +64,18 @@ def _json_default(value):
         return str(value)
     if isinstance(value, (set, tuple)):
         return list(value)
+    # if isinstance(value, ReportCard):
+    #     return {
+    #         "session_id": value.session_id,
+    #         "persona": value.persona,
+    #         "services_used": value.services_used,
+    #         "data_collected": value.data_collected,
+    #         "timestamp": value.timestamp,
+    #     } 
     if isinstance(value, bytes):
         return value.decode("utf-8", errors="replace")
+    if isinstance(value, Exception):
+        return f"{type(value).__name__}: {str(value)}" #good catch
     return str(value)
 
 
@@ -125,18 +139,32 @@ def seed_mood_config(cursor):
 
 def init_db(debug=False):
     debug_mode = _debug_enabled(debug)
-    conn = None
+    conn = None #is it pragma? #
     try:
         DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-        cursor.execute('''   
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                created_at REAL DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+        cursor.execute('PRAGMA journal_mode=WAL')
+        cursor.execute('PRAGMA synchronous=NORMAL')
+        cursor.execute('PRAGMA temp_store=MEMORY')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS web_links (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            session_id TEXT,
+                            url TEXT,
+                            persona TEXT,
+                            context TEXT,
+                            timestamp REAL
+                        )''')
+        cursor.execute ('''
+                        CREATE TABLE IF NOT EXISTS reports (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            session_id TEXT,
+                            persona TEXT,
+                            services_used TEXT,
+                            data_collected TEXT,
+                            timestamp REAL
+                            )
+                        ''')
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS personalities (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -390,6 +418,8 @@ def load_session(username: str, cursor=None):
                 'created_at': float(payload.get('created_at', time.time())),
                 'last_accessed': float(payload.get('last_accessed', time.time())),
                 'session_count': int(payload.get('session_count', 1)),
+                'consented_at': payload.get('consented_at'),
+                'out_of_scope': payload.get('out_of_scope', []),
             }
 
     # Fallback for older persisted states that still live in SQLite.
@@ -423,7 +453,7 @@ def load_session(username: str, cursor=None):
 
     return None
 
-def save_session(session_id, username, persona, closeness, slip_intensity):
+def save_session(session_id, username, persona, closeness, slip_intensity, consented_at=None, out_of_scope=None):
     """Save or update session state JSON. Called at session end."""
     current_time = time.time()
     canonical_username = _canonical_username(username)
@@ -440,6 +470,13 @@ def save_session(session_id, username, persona, closeness, slip_intensity):
     created_at = float(previous.get("created_at", current_time)) if isinstance(previous, dict) else current_time
     prior_count = int(previous.get("session_count", 0)) if isinstance(previous, dict) else 0
 
+    # Preserve consent from first session if not explicitly passed
+    if consented_at is None and isinstance(previous, dict):
+        consented_at = previous.get("consented_at")
+    if out_of_scope is None and isinstance(previous, dict):
+        out_of_scope = previous.get("out_of_scope", [])
+
+    from datetime import datetime as _dt
     payload = {
         "id": row_id,
         "username": canonical_username,
@@ -447,8 +484,12 @@ def save_session(session_id, username, persona, closeness, slip_intensity):
         "closeness": float(closeness),
         "slip_intensity": float(slip_intensity),
         "created_at": created_at,
+        "created_at_display": _dt.fromtimestamp(created_at).strftime("%d/%m/%y"),
         "last_accessed": current_time,
+        "last_accessed_display": _dt.fromtimestamp(current_time).strftime("%d/%m/%y"),
         "session_count": prior_count + 1,
+        "consented_at": consented_at,
+        "out_of_scope": out_of_scope or [],
     }
 
     state_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")

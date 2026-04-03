@@ -1,74 +1,133 @@
 #this is as valid of an excuse i can come up with to write red team tactics in peace
 #IT ALSO STOPS (i mean you sweetie) FROM COMPLAINING ABOUT THE LACK OF A CONSENT FORM, WHICH I KNOW YOU'VE BEEN DYING TO SEE.
 
-#should we move runme around?
-#i meant structually. story beats.
-#it needs to have some flair. can we add the class to a gui? more like an ibm mainframe terminal. #you should watch sneakers 
+
+import tkinter as tk
+import time
+import datetime
+
+SCOPE_CATEGORIES = {
+    "files":    "File system access (documents, downloads, desktop)",
+    "system":   "System profile (OS, hardware, architecture)",
+    "services": "Running processes and services",
+    "web":      "Web crawling and link extraction",
+}
+
 
 class ConsentKey:
     def __init__(self):
         self.consent_given = False
         self.out_of_scope_items = []
-    def annoyingmessage(self):
-        print("This is a consent form. Please read carefully.")
-        print("By giving consent, you allow this session to proceed.")
-        print("You may withdraw consent at any time by ending the session.")
+        self.consented_at = None
+
     def __str__(self):
         return f"ConsentForm(consent_given={self.consent_given}, out_of_scope_items={self.out_of_scope_items})"
+
     def display(self):
-        print("Welcome to the Ethical Crawler Consent Form.")
-        print("By giving consent, you allow this session to proceed.")
-        print("You may withdraw consent at any time by ending the session.")
+        print()
+        print("  ┌─────────────────────────────────────────────────┐")
+        print("  │           ETHICAL CRAWLER — USER AGREEMENT      │")
+        print("  └─────────────────────────────────────────────────┘")
+        print()
+        print("  By continuing, you authorize this session to collect")
+        print("  data from your system for enumeration and analysis.")
+        print()
+        print("  You retain the right to exclude any category below.")
+        print("  Excluded categories will not be accessed this session")
+        print("  or any future session unless you renegotiate.")
+        print()
+        print("  This agreement is stored locally. You will not be")
+        print("  asked again.")
         print()
 
     def get_consent(self):
-        while True:
-            response = input("Do you give your consent? (yes/no): ").strip().lower()
+        response = input("  Do you authorize this session? (yes/no): ").strip().lower()
+        if response != "yes":
+            self.consent_given = False
+            self.out_of_scope_items = []
+            print()
+            print("  Understood. Nothing will be collected.")
+            print("  Session terminated.")
+            return {"consent_given": False, "out_of_scope_items": []}
 
-            if response == "yes":
-                self.consent_given = True
-                raw_items = input(
-                    "Please list out-of-scope items, separated by commas: "
-                ).strip()
+        self.consent_given = True
+        self.consented_at = datetime.datetime.utcnow().isoformat()
+        self.out_of_scope_items = self._show_scope_menu()
 
-                self.out_of_scope_items = [
-                    item.strip()
-                    for item in raw_items.split(",")
-                    if item.strip()
-                ] if raw_items else []
+        print()
+        if self.out_of_scope_items:
+            print("  Out-of-scope noted: " + ", ".join(self.out_of_scope_items))
+        else:
+            print("  No restrictions. Full access authorized.")
+        print()
+        time.sleep(0.5)
 
-                print("Thank you. The show may begin.")
-                if self.out_of_scope_items:
-                    print(
-                        "Out-of-scope items noted: "
-                        + ", ".join(self.out_of_scope_items)
-                    )
-                else:
-                    print("No out-of-scope items were provided.")
+        return {
+            "consent_given": self.consent_given,
+            "out_of_scope_items": self.out_of_scope_items,
+        }
 
-                return {
-                    "consent_given": self.consent_given,
-                    "out_of_scope_items": self.out_of_scope_items,
-                }
+    def _show_scope_menu(self):
+        root = tk.Tk()
+        root.withdraw()
 
-            if response == "no":
-                self.consent_given = False
-                self.out_of_scope_items = []
-                print("Understood. I will not collect anything.")
-                print("Session terminated.")
-                return {
-                    "consent_given": self.consent_given,
-                    "out_of_scope_items": self.out_of_scope_items,
-                }
+        win = tk.Toplevel(root)
+        win.title("Ethical Crawler")
+        win.configure(bg="black")
+        win.resizable(False, False)
+        win.attributes("-topmost", True)
 
-            print("Invalid response. Please enter 'yes' or 'no'.")
+        font_mono = ("Courier New", 11)
+        font_header = ("Courier New", 13, "bold")
+
+        tk.Label(
+            win, text="SELECT ITEMS TO EXCLUDE FROM THIS SESSION",
+            bg="black", fg="#00ff00", font=font_header, pady=12
+        ).pack()
+
+        tk.Label(
+            win, text="Checked items will NOT be accessed.",
+            bg="black", fg="#00cc00", font=font_mono
+        ).pack(pady=(0, 10))
+
+        vars_ = {}
+        for key, description in SCOPE_CATEGORIES.items():
+            var = tk.BooleanVar(value=False)
+            vars_[key] = var
+            tk.Checkbutton(
+                win, text=f"  {key:<12} — {description}",
+                variable=var,
+                bg="black", fg="#00ff00",
+                selectcolor="black",
+                activebackground="black", activeforeground="#00ff00",
+                font=font_mono, anchor="w"
+            ).pack(fill="x", padx=20, pady=2)
+
+        var_all = tk.BooleanVar(value=False)
+
+
+        result = []
+
+        def confirm():
+            if var_all.get():
+                result.extend(SCOPE_CATEGORIES.keys())
+            else:
+                result.extend(k for k, v in vars_.items() if v.get())
+            root.destroy()
+
+        tk.Button(
+            win, text="[ CONFIRM ]",
+            command=confirm,
+            bg="black", fg="#00ff00",
+            activebackground="#003300", activeforeground="#00ff00",
+            font=font_header, relief="flat", pady=8
+        ).pack(pady=16)
+
+        root.mainloop()
+        return result
 
 
 def get_consent():
     consent_form = ConsentKey()
     consent_form.display()
-    result = consent_form.get_consent()
-    print()
-    print("Consent summary:")
-    print(result)
-    return result
+    return consent_form.get_consent()
