@@ -24,7 +24,7 @@ class AutosaveManager:
     5. Retry: if status["failed"], autosave.retry_failed()
     """
     
-    def __init__(self, cursor: sqlite3.Cursor, session_id: str, narrator=None):
+    def __init__(self, cursor: sqlite3.Cursor, session_id: str, narrator=None, user_name: str = None):
         """
         Initialize autosave manager.
         
@@ -32,10 +32,12 @@ class AutosaveManager:
             cursor: SQLite cursor (from database.init_db())
             session_id: Session identifier (e.g., "LI")
             narrator: Optional Me instance for logging commentary
+            user_name: Optional username for per-user log filtering
         """
         self.cursor = cursor
         self.session_id = session_id
         self.narrator = narrator
+        self.user_name = (user_name or "").strip().lower() or None
         self.buffer: Dict[str, Dict[str, Any]] = {}  # field -> {value, context}
         self.failed_fields: Dict[str, str] = {}  # field -> error_reason
         self.failed_payloads: Dict[str, Dict[str, Any]] = {}  # field -> original buffered data
@@ -91,10 +93,11 @@ class AutosaveManager:
         for field, data in list(self.buffer.items()):
             try:
                 self.cursor.execute("""
-                    INSERT INTO logs (session_id, field, raw_value, normalized_key, persona, quip_text, context, timestamp)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO logs (session_id, user_name, field, raw_value, normalized_key, persona, quip_text, context, timestamp)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     self.session_id,
+                    self.user_name,
                     field,
                     self._serialize_value(data["value"]),
                     None,  # normalized_key - not tracked in autosave

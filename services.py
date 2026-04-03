@@ -3,6 +3,7 @@ from theatrics import clear, dev_comment, speak, test
 
 
 def prog(conn, cursor, session_id, me, user_name, consent_form=None, autosave=None):    
+    """Enumerate running services by checking the database for previously logged services and then scanning currently running processes against a list of common applications. takes database connection, cursor, session_id, me, user_name, optional consent_form, and optional autosave manager as parameters. Returns a list of detected services."""
     cursor.execute("SELECT DISTINCT name FROM services WHERE session_id = ?", (session_id,))
     services_list = [row[0] for row in cursor.fetchall()]
     if not services_list:

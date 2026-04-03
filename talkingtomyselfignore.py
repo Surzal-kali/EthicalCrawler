@@ -139,4 +139,21 @@
 
 #here is where i talk to the inline suggestions directly. pay no attention to the fact that this is a chat interface, its just easier to test out code snippets here and then move them over to the actual files.
 
-#what should we work on first, web, files, or services? i like it thank you :)) 
+#good morning to you too, ethical crawler. # ok so we need to think architectually. what the hell is the end goal? a blue team ai that can crawl and enumerate and then report on what it found? or a red team ai that can do the same but also exploit? or both?....a grey hat? then grey is as far as we can go. but even then, we need to be careful about how we design it. we don't want to create something that can be easily weaponized. we want to create something that can be used for good. so maybe we start with a blue team ai that can crawl and enumerate and then report on what it found. and then we can add in some red team capabilities later on. but for now, let's focus on the blue team aspect. red team is soon tho! #lets list some good blue team aspects
+#good enviroment reading and easy configuration for host
+#crawl and enumerate the local system #update the logs, im thinking the logic right now we have is a little vague.
+#crawl and enumerate the network :)
+#identify vulnerabilities and misconfigurations
+#monitor for suspicious activity
+#provide recommendations for remediation
+
+#lets list some red team capabilities
+#reconnaissance and target profiling
+#vulnerability scanning and exploitation
+#post‑exploitation activities (lateral movement, privilege escalation)
+#social engineering simulation
+#payload generation and delivery #:_)
+#command and control simulation
+
+
+#i've added dec threads to EVERYTHING. hopefully that will make it more responsive and less likely to crash my poor pi. also added a lot of error handling and logging to try to catch any issues before they cause a crash.

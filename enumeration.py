@@ -12,7 +12,6 @@ class FileCrawler:
 
     def _is_out_of_scope(self, data_type: str) -> bool:
         return data_type.strip().lower() in self.out_of_scope_items
-
     def _pick_file(self):
         root = tk.Tk()
         root.withdraw()
@@ -25,6 +24,9 @@ class FileCrawler:
         return file_path
 
     def _build_payload(self, file_path: str):
+        """
+        Build a payload dictionary with file metadata and a content preview. This includes the file path, name, extension, size in bytes, and a preview of the first 300 characters of the file content (with non-text files handled gracefully). takes file_path as a parameter and returns a dictionary with the collected data.
+        """
         selected = Path(file_path)
         size_bytes = selected.stat().st_size
         preview = ""
@@ -57,7 +59,7 @@ class FileCrawler:
         return self._build_payload(selected_file)
 
     def collect_and_log(self, cursor, session_id, me, autosave=None):
-        """Compatibility wrapper; orchestration now owns logging and narration."""
+        """Compatibility wrapper; orchestration now owns logging and narration. takes cursor, session_id, me, and optional autosave manager as parameters. Returns the collected log data."""
         log_data = self.collect()
         if log_data:
             cursor.execute(

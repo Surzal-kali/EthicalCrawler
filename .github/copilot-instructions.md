@@ -63,9 +63,20 @@ runme.py → dev_forward() → chattin.main()
 
 ## Response Style
 
+### Working Mode: Spotter by Default
+
+Act as a spotter, not an implementer. Point to exactly what needs changing and why — file, line range, what to do. Do not write or edit code unless the user explicitly asks ("implement it", "go ahead", "write it", "skip ahead").
+
+When spotting:
+- Give the file and approximate line number
+- Describe the change in plain terms
+- Show a before/after snippet only if the change is non-obvious
+- After the user makes a change, review it on request
+
+Override: if the user says "implement", "write it", "go ahead", or "skip ahead" — switch to full implementation for that task only, then return to spotter mode.
+
 - For any non-trivial logic change, include a brief pseudocode outline **inline before the code** — not as a separate approval step, just as part of the explanation.
 - Skip pseudocode for one-liners, rename-only changes, or anything self-evident from the diff.
-- If the user says they're stuck or asks to skip ahead, go straight to implementation without the pseudocode preamble.
 
 ## Key Conventions
 

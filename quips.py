@@ -421,6 +421,7 @@ QUIP_CATALOG = {
 
 
 def normalize_quip_key(field, raw):
+    """Normalize a field and raw value into a quip key. Uses keyword matching to find known keys, otherwise falls back to cleaned raw value. takes field and raw value as parameters."""
     if raw is None:
         return ""
 
@@ -449,6 +450,7 @@ def normalize_quip_key(field, raw):
 
 
 def get_catalog_quip(key, persona):
+    """Get a random quip from the catalog based on the key and persona. If no quips are found for the specific key, it falls back to more general keys, and finally to an empty key. takes key and persona as parameters."""
     options = get_catalog_options(key, persona)
     if not options:
         return None
@@ -456,6 +458,9 @@ def get_catalog_quip(key, persona):
 
 
 def get_catalog_options(key, persona):
+    """
+    Get all quips from the catalog that match the key and persona. Falls back to more general keys if no specific matches are found. takes key and persona as parameters.
+    """
     key_name = str(key or "")
     persona_name = str(persona or "all").lower()
     options = []
@@ -472,6 +477,7 @@ def get_catalog_options(key, persona):
 
 #we need both a visual and narrative level for closeness
 def iter_catalog_quips():
+    """Iterate through all quips in the catalog, yielding (key, persona, text) tuples. This can be used for testing, analysis, or building a more complex quip selection mechanism. yields key, persona, text."""
     for persona, keyed_quips in QUIP_CATALOG.items():
         for key, lines in keyed_quips.items():
             for text in lines:

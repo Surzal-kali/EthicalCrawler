@@ -10,7 +10,7 @@ from pathlib import Path
 import autosave
 from consentform import ConsentKey, get_consent
 import consentform
-from database import init_db, log, get_evidence_dir, save_session, load_session
+from database import init_db, log, get_evidence_dir, save_session, load_session, canonical_username
 from enumeration import FileCrawler #but its not firing.... #
 from theatrics import Me, describe_findings, equip, get_catalog_quip, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
@@ -20,12 +20,15 @@ from reportcard import ReportCard
 
 
 
-
+""" Ethical Crawler: A personal data enumerator and narrator."""
 DEBUG_MODE = "--debug" in sys.argv or os.getenv("ETHICAL_CRAWLER_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
 SLIP_DECAY_PER_DAY = 0.5
 MIN_SLIP_INTENSITY = 1.0
+
+
+
 def decay_slip_intensity(saved_intensity, last_accessed, decay_per_day=SLIP_DECAY_PER_DAY, floor=MIN_SLIP_INTENSITY):
-    """Decay slip intensity by time-away so long absences cool instability."""
+    """Decay slip intensity by time-away so long absences cool instability. takes saved_intensity, last_accessed timestamp, optional decay_per_day rate, and optional floor value as parameters. Returns the decayed slip intensity."""
     try:
         floor_value = float(floor)
     except (TypeError, ValueError):
@@ -57,7 +60,7 @@ def get_session_dir(session_id: str) -> Path:
     return session_dir
 
 
-def process_findings(session_id, me, cursor, payload, context, autosave=None):
+def process_findings(session_id, me, cursor, payload, context, autosave=None, user_name=None):
     """Log and narrate a payload through one shared orchestration path."""
     if not payload:
         return
@@ -72,10 +75,15 @@ def process_findings(session_id, me, cursor, payload, context, autosave=None):
             me,
             context=context,
             normalized_key=detail["normalized_key"],
+            user_name=user_name,
         )
 
     equip(me, payload, cursor=cursor, autosave=autosave, descriptions=descriptions)
+    """Narration via payload. takes me, payload, cursor, autosave, and descriptions as parameters. Narrates findings based on the provided descriptions and updates the character's state accordingly."""
+
+
 class DevConsentKey:
+    """Development consent key that bypasses actual consent for testing purposes. Always returns consent given with no out-of-scope items."""
 
     def __init__(self):
         self.consent_given = True
@@ -86,6 +94,7 @@ class DevConsentKey:
 
 
 def boot():
+    """Boot the Ethical Crawler, handling database initialization, user greeting, session resumption, and consent management. Returns session_id, me, user_name, conn, cursor, and consent_form for use in the main session orchestration."""
     conn, cursor = init_db(debug=DEBUG_MODE)
     if conn is None or cursor is None:
         print("[BOOT] Database init failed. Exiting.")
@@ -138,6 +147,7 @@ def boot():
 
 
 def system_profiler(conn, cursor, session_id, me, user_name, consent_form, autosave=None, out_of_scope_key="system profile", name="system_profiler"):
+    """Collect system profile information, including OS name, version, architecture, and processor. takes database connection, cursor, session_id, me, user_name, optional consent_form, optional autosave manager, out_of_scope_key, and name as parameters. Returns a dictionary with the collected system profile data."""
     speak(me, "*" * 20)
     speak(me, "Let me see what you're made of.")
     profile = {
@@ -150,17 +160,18 @@ def system_profiler(conn, cursor, session_id, me, user_name, consent_form, autos
     return profile
 
 def goodbye(cursor, session_id, me, user_name, consent_form):
+    """Demo exit for report card findings. takes cursor, session_id, me, user_name, and consent_form as parameters. Returns nothing."""
     goodbye_quip = get_catalog_quip("goodbye", me.persona) or "Goodbye."
     speak(me, goodbye_quip)
     print()
     print("  ┌─────────────────────────────────────────────────┐")
     print("  │           ETHICAL CRAWLER — GOODBYE            │")
     print("  └─────────────────────────────────────────────────┘")
-    print()
+    print()#i don't get it. 
     if consent_form.consent_given:
         cursor.execute(
-            "SELECT field, raw_value, context FROM logs WHERE session_id = ? ORDER BY timestamp",
-            (session_id,)
+            "SELECT field, raw_value, context FROM logs WHERE user_name = ? ORDER BY timestamp",
+            (canonical_username(user_name),)
         )
         rows = cursor.fetchall()
         if rows:
@@ -171,8 +182,15 @@ def goodbye(cursor, session_id, me, user_name, consent_form):
             print()
     print(f"  Session ended. Thank you, {user_name}.")
     print()
+
+
+
+
+
+    #the main orchestration
 def session(session_id, me, user_name, conn, cursor, consent_form):
-    autosave = AutosaveManager(cursor, session_id, narrator=me)
+    """Main session orchestration for the Ethical Crawler. Handles the flow of enumeration, narration, and logging while respecting user consent and out-of-scope boundaries. takes session_id, me, user_name, database connection, cursor, and consent_form as parameters. Returns nothing."""
+    autosave = AutosaveManager(cursor, session_id, narrator=me, user_name=user_name ) 
     try:
         speak(me, "Let me see what you keep hidden...")
         dev_comment("He's watching.")
@@ -182,7 +200,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
             file_crawler = FileCrawler(consent_form)
             file_payload = file_crawler.collect()
             if file_payload:
-                process_findings(session_id, me, cursor, file_payload, context="enumeration", autosave=autosave)
+                process_findings(session_id, me, cursor, file_payload, context="enumeration", autosave=autosave, user_name=user_name)
                 for field, value in file_payload.items():
                     dev_comment(f"FileCrawler: {field} = {value}")
                 test(me, "file_understanding")
@@ -197,7 +215,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         # Stage: System profile
         if "system" not in consent_form.out_of_scope_items:
             profile = system_profiler(conn, cursor, session_id, me, user_name, consent_form)
-            process_findings(session_id, me, cursor, profile, context="system_profiler", autosave=autosave)
+            process_findings(session_id, me, cursor, profile, context="system_profiler", autosave=autosave, user_name=user_name)
             for field, value in profile.items():
                 dev_comment(f"SystemProfiler: {field} = {value}")
         else:
@@ -207,14 +225,14 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         if "services" not in consent_form.out_of_scope_items:
             services = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
             for service in services:
-                process_findings(session_id, me, cursor, {"service": service}, context="services", autosave=autosave)
+                process_findings(session_id, me, cursor, {"service": service}, context="services", autosave=autosave, user_name=user_name)
                 dev_comment(f"Services: {service}")
         else:
             speak(me, "Some doors stay closed.")
 
         speak(me, "I have collected the surface.")
         speak(me, "Yet it wasn't enough.")
-
+    #error handling
     except Exception as e:
         speak(me, "I can't see. Something is wrong.")
         print(f"[ERROR] Session error: {type(e).__name__}: {e}")
@@ -230,6 +248,7 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
 
 
 def main():
+    """Main entry point for the Ethical Crawler. Handles booting, session orchestration, and graceful shutdown with report card findings. Returns nothing."""
     result = boot()
     if result[0] is None:
         return
@@ -267,3 +286,4 @@ if __name__ == "__main__":
 
 
 
+#but narrative is kinda bare bones in this state

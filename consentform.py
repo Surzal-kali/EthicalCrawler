@@ -15,6 +15,7 @@ SCOPE_CATEGORIES = {
 
 
 class ConsentKey:
+    """Handles user consent for data collection with a clear agreement and an interactive scope selection menu. The user can choose to exclude specific categories of data from being accessed during the session. Consent and scope preferences are stored locally for future reference. Returns a dictionary with consent status and out-of-scope items."""
     def __init__(self):
         self.consent_given = False
         self.out_of_scope_items = []
@@ -68,6 +69,7 @@ class ConsentKey:
         }
 
     def _show_scope_menu(self):
+        """Display an interactive menu for the user to select categories of data to exclude from collection. The user can check multiple categories or select 'All' to exclude everything. Returns a list of selected out-of-scope categories."""
         root = tk.Tk()
         root.withdraw()
 
@@ -128,6 +130,7 @@ class ConsentKey:
 
 
 def get_consent():
+    """Convenience function to create a ConsentKey instance, display the agreement, and return the user's consent status and out-of-scope preferences. Returns a dictionary with consent_given boolean and out_of_scope_items list."""
     consent_form = ConsentKey()
     consent_form.display()
     return consent_form.get_consent()

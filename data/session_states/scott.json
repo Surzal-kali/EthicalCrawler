@@ -1,0 +1,14 @@
+{
+  "id": "LI:scott",
+  "username": "scott",
+  "persona": "basic",
+  "closeness": 24.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775218736.9380846,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775218736.9380846,
+  "last_accessed_display": "03/04/26",
+  "session_count": 1,
+  "consented_at": "2026-04-03T12:18:38.690761",
+  "out_of_scope": []
+}

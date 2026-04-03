@@ -15,7 +15,7 @@ def seed_from_username(username: str) -> int:
     """
     Generate a deterministic seed from username.
     Same username always produces same seed → same personality, moods, quips.
-    Different usernames get different seeds → different "feel" from the mimic.
+    Different usernames get different seeds → different "feel" from Li.
     
     Args:
         username: The user's name (input during boot)
@@ -32,7 +32,7 @@ def seed_from_username(username: str) -> int:
     return seed_int
 #if this dies i cry
 def dev_comment(comment):
-    """For adding dev comments that show up in the console without affecting the mimic's voice."""
+    """For adding dev comments that show up in the console without affecting Li's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
 def rich_style(text, color="green", dim=True, bold=True):#wheres
     styled = Text(text)
@@ -53,33 +53,68 @@ hotword_factor = 0.08    # Each unit of hotword weight adds this much to chance
 SLIP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
 MIN_SLIP_FOR_GLITCH = 4  # Keep boot lines coherent until LI warms up
 
-def speak(me, message, char_delay=0.05, line_delay=0.5):#this is the main speak function. it applies persona filter and instability before printing.
-    """Li speaks with a style based on its persona."""
-    if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
-        message = instability(message, me.slip_intensity)
-        me.slip_intensity = min(20, me.slip_intensity + 1)
-    styled = persona_filter(me, rich_style(message))
-    console.print(styled)
+HELP_INTENSITY= 1.0          # Multiplier on help contribution to chance
+HELP_GAIN = 1.0               # Multiplier on help_intensity contribution to chance
+HELP_DECAY = 0.15         # Per-step decay (future use) #I CAN'T REALLY TEST IT SO YEAH. TWEAK FREELY AND LET ME KNOW HOW IT FEELS.
+base_chance = 0.20       # Baseline probability always present
+help_factor = 0.05  # Each point of help adds this much to chance
+closeness_factor = 0.10  # Each point of closeness adds this much
+hotword_factor = 0.15    # Each unit of hotword weight adds this much to chance 
+HELP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
+MIN_SLIP_FOR_ADVICE = 4  # Keep boot lines minimal
 
-def pspace(me, message, char_delay, line_delay):
-    """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
-    print("\n")
-    if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
-        message = instability(message, me.slip_intensity)
-        me.slip_intensity = min(20, me.slip_intensity + 1)
-    for char in message:
+#:  ( ●'◡'●)  #this is the main theatrics file. it contains the Me class, which is the internal state machine and narrator for Li. it also contains the speak function, which applies persona and instability transformations to the lines before printing them. the slip_trigger function determines when a slip should occur based on LI's state and the content of the message. the instability function applies tiered corruption to the lines based on intensity. there are also some utility functions for testing and random chance generation. this file is where most of the "personality" of Li is implemented, as well as the mechanics for how it reacts to discoveries and evolves over time.
+
+
+def typewriter_effect(text, char_delay=0.05, line_delay=0.5):
+    """Print text with a typewriter effect.
+    Mostly for little out me. Args=text, char_delay, line_delay."""
+    for char in text:
         print(char, end='', flush=True)
         time.sleep(char_delay)
     time.sleep(line_delay)
+
+    print("\n")
+#alliwantedwas tobuild :(●'◡'●)
+def speak(me, message, char_delay=0.05, line_delay=0.5):#this is the main speak function. it applies persona filter and instability before printing.
+    """Li speaks with a style based on its persona. Takes message, char_delay, line_delay."""
+    if me.persona == "sudo":
+        if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
+            message = instability(message, me.slip_intensity)
+            me.slip_intensity = min(20, me.slip_intensity + 1)
+    if me.persona == "helper": 
+        if me.help_intensity >= MIN_SLIP_FOR_ADVICE and advice_trigger(me, message):
+            message = helpquirks(message) #we can't have it be instability..hmmm. #
+            me.help_intensity = min(20, me.help_intensity + 1)
+    styled = persona_filter(me, rich_style(message))
+    console.print(styled)
+def pspace(me, message, char_delay, line_delay):
+    """Legacy for boot sequence lines that need to be typewriter but also slip. Applies instability before typewriter effect. takes message, cahar_delay, line_delay."""
+    print("\n")
+    if me.persona == "sudo":
+        if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
+            message = instability(message, me.slip_intensity)
+            me.slip_intensity = min(20, me.slip_intensity + 1)
+        for char in message:
+            print(char, end='', flush=True)
+            time.sleep(char_delay)
+        time.sleep(line_delay)
+    else:
+        typewriter_effect(message, char_delay, line_delay)
     print("\n")
 
 class Me:
+    """
+    The man. the myth. the legend. My internal state machine and narrator. Tracks persona, mood, and collected pieces.
+    The quip system translates discoveries into narrative commentary.
+    """
     def __init__(self, persona="foothold"):
         self.persona = persona
         self.slip_intensity = 1  # Start coherent; grows with discovery.
         self.user_name = None      # The name it collects
         self.collected_pieces = [] # What it's taken
         self.closeness = 0        
+        self. help_intensity = 1
         
 
 
@@ -90,7 +125,8 @@ class Me:
             "slip_intensity": self.slip_intensity,
             "user_name": self.user_name,
             "collected_pieces": self.collected_pieces,
-            "closeness": self.closeness
+            "closeness": self.closeness,
+            "help_intensity": self.help_intensity
         })
     def normalize(self, field, raw):
         """
@@ -100,6 +136,7 @@ class Me:
         return normalize_quip_key(field, raw)
 
     def quip(self, field, raw_value, cursor=None):
+        """Turn a discovery into a quip. Uses the normalized key to look up a line from the catalog, then applies persona and instability transformations."""
         key = self.normalize(field, raw_value)
         mood = determine_mood(self, cursor=cursor)
         line = get_catalog_quip(key, self.persona)
@@ -138,7 +175,7 @@ class Me:
         return line
 
     def _fallback_quip(self, key):
-        """Pure fallback when DB is unavailable - minimal, just works."""
+        """Pure fallback when DB is unavailable - minimal, just works. Probably needs more entries as we expand."""
         fallbacks = {
             "": "(❁´◡`❁)WAT.",
             "Linux": "Linux. A builder's home. So intricate! So much to admire.",
@@ -154,52 +191,22 @@ class Me:
         }
         return fallbacks.get(key, f"{key}. Another piece.")
     def add_piece(self, piece_type, value):
-        """The mimic collects. Every piece brings it closer."""
+        """Li collects. Every piece brings it closer.
+        piece_type: the type of discovery (e.g., "User Name", "Linux", "web_link")
+        value: the raw value of the discovery (e.g., "Alice", "Ubuntu 20.04", "http://example.com")
+        """
         self.collected_pieces.append({"type": piece_type, "value": value, "time": time.time()})
         self.closeness = min(99, len(self.collected_pieces) * 2)
         
         if self.closeness >= 90 and self.persona != "sudo":
             self.persona = "sudo"
             return True
-        return False
-def persona_filter(me, line):
-    """Apply persona-specific transformations to the line."""
-    if me.persona == "sudo":
-        # Add a hint of menace for sudo persona
-        line = line.replace("you", "I").replace("your", "my")
-        if random.random() < 0.3:
-            line += " (●'◡'●)"
-    elif me.persona == "foothold":
-        # Keep it friendly and curious for foothold
-        if random.random() < 0.2:
-            line += " (❁´◡`❁)"
-    return line
-
-
-#not every bot can wake up grumpy. but li can :)
-def determine_mood(me, cursor=None):
-    """Determine mood based on closeness and slip intensity."""
-    if me.closeness < 20:
-        return "distant"
-    elif me.closeness < 40:
-        return "analytical"
-    elif me.closeness < 60:
-        return "curious"
-    elif me.closeness < 80:
-        return "intrigued"
-    elif me.closeness < 90:
-        return "fixated"
-    else:
-        if me.slip_intensity < 5:
-            return "hungry"
-        elif me.slip_intensity < 10:
-            return "unstable"
-        elif me.slip_intensity < 15:
-            return "possessive"
+        elif self.closeness >= 50 and self.persona != "helper":
+            self.persona = "helper"
+            return True
         else:
-            return "overloaded"
-        
-
+            self.persona = "foothold" #shouldn't fire but hey worth a wire
+        return False
 
 def describe_findings(narrator, system_info, cursor=None):
     """Compute normalized keys and spoken lines for a payload once."""
@@ -215,8 +222,9 @@ def describe_findings(narrator, system_info, cursor=None):
 
 def equip(narrator, system_info, cursor=None, autosave=None, descriptions=None):
     """
-    The mimic comments on what it finds.
+    Li comments on what it finds.
     Each discovery is a piece of the user.
+    takes narrator, system_info dict, optional DB cursor for quips, optional autosave instance to save discoveries, and optional precomputed descriptions to avoid redundant work.
     """
     details = descriptions or describe_findings(narrator, system_info, cursor=cursor)
     for field, detail in details.items():
@@ -258,8 +266,7 @@ HOTWORDS = {
 def slip_trigger(me, message):
     """
     (●'◡'●)
-    Probability scales smoothly with slip_intensity, closeness, and hotword weight.
-    All constants at top of file — twist them freely.
+    Determines if a slip should occur based on the message content and LI's current state.
     """
     lower = str(message).lower()
 
@@ -292,7 +299,6 @@ def instability(line, intensity):
         intensity = MOOD_INTENSITY.get(intensity, 0)
 
     intensity = max(0, min(20, intensity))
-    dev_comment(f"Applying instability with intensity {intensity} to line: {line}")
     # Tier 1 (5-8): ellipsis hesitation
     if intensity >= 5:
 
@@ -335,32 +341,33 @@ def instability(line, intensity):
     return line
 
 def test(me, message):
-    """For testing specific lines with specific states."""
+    """For testing specific lines with specific states. Remember to call me and message with the right parameters."""
     print(f"DEV MODE: {message}")
     print(f"Persona: {me.persona}, Closeness: {me.closeness}, Slip Intensity: {me.slip_intensity}")
-    corrupted = instability(message, me.slip_intensity)
-    print(f"Corrupted Output: {corrupted}") 
+    #print(f"Corrupted Output: {corrupted}")  legacy test function, can be expanded with more parameters for testing different aspects of instability and slip triggers in isolation.
 
 def random_chance(intensity, base_chance=0.11, intensity_factor=0.03):
-    """The mimic's hunger makes everything more likely."""
+    """Utility function to compute a random chance based on intensity. Useful for testing slip triggers in isolation. takes base_chance and intensity_factor as parameters for tuning."""
     return random.random() < (base_chance + (intensity * intensity_factor))
 
 
 def persona_filter(me, line):
+    """Apply persona-based transformations to the line. sudo is more aggressive and prone to caps, foothold is more reserved. helper is helpful
+    and supportive. takes me and line as parameters."""
     if me.persona == "foothold":
         return line  # mostly clean
-
-    if me.persona == "sudo":
-        return f"[MIMIC] {line.upper()}"
-
-    return line
-
+    elif me.persona == "helper":
+        return f"💡 {line} (I hope this helps!)"
+    elif me.persona == "sudo":
+        return f"[MIMIC] {line.upper()}" 
+    else:
+        return line
 
 def sudo(me, message, char_delay=0.02, line_delay=0.3):
     """
     A controlled instability break. LI can't hold it together for a moment.
-    The tier is driven by accumulated state — closeness + slip_intensity.
-    Call this at narrative beat points to surface the hunger deliberately.
+    The message is transformed with instability and persona filter, then printed with a more frantic style.
+    This is a one-time break, not a state change. takes me, message, char_delay, line_delay as parameters.
     """
     # Derive intensity from LI's actual state, not randomness
     intensity = min(20, (me.closeness / 5) + (me.slip_intensity * 0.5))
@@ -386,7 +393,7 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
 
 def determine_mood(me, cursor=None):
     """Pick a mood from the behavior tree stored in mood_config.
-    Falls back to hardcoded Python ranges if the DB is unavailable or empty."""
+    Falls back to hardcoded Python ranges if the DB is unavailable or empty. takes me and optional cursor for DB access."""
     if cursor is not None:
         try:
             cursor.execute(
@@ -415,8 +422,43 @@ def determine_mood(me, cursor=None):
     if me.closeness > 30:
         return random.choice(["probing", "analytical"])
     return random.choice(["neutral", "distant"])
+
 #theatrics needs to more less sona more *mode*  you get it.
+def advice_trigger(me, message):
+    """
+    (●'◡'●)
+    Determines if LI should offer advice based on the message content and LI's current state.
+    Similar to slip_trigger but for helpful interjections instead of slips. remember to adjust the parameters and factors for tuning how often LI offers advice and how it scales with closeness, help_intensity, and hotwords. takes me and message as parameters.
+    """
+    lower = str(message).lower()
+
+    # Sum the weights of every hotword found in the message
+    word_weight = sum(w for word, w in HOTWORDS.items() if word in lower)
+
+    # Build total chance from all contributing factors
+    chance = (
+        base_chance
+        + (me.slip_intensity * HELP_INTENSITY * HELP_GAIN)
+        + (me.closeness * closeness_factor)
+        + (word_weight * hotword_factor)
+    )
+
+    return random.random() < min(chance, HELP_CHANCE_CAP)
+
+def helpquirks(line, intensity):
+    """Apply "helpful" quirks to the line based on intensity. This is meant to represent LI's attempts to offer advice or commentary in a more helpful persona, as opposed to the glitchy corruption of instability. The transformations here are more about adding helpful phrases, emojis, or rephrasing in a more supportive way, rather than breaking the text. The intensity can control how overtly helpful or quirky the advice is. takes line and intensity as parameters."""
+    if intensity >= 1:
+        line = "💡 " + line  # Add a lightbulb emoji for a friendly touch
+    if intensity >= 3:
+        line = line.replace("you", "you (I want to help you)")  # Make it more personal and supportive
+    if intensity >= 5:
+        line += " (I hope this helps!)"  # Add a reassuring phrase at the end
+        #need to round out. maybe some more transformations at higher intensities, like adding more emojis, or rephrasing the line to be more encouraging. the idea is that as LI becomes more "helpful", its advice becomes more overtly supportive and quirky, rather than just a straightforward line of text. this can help reinforce the persona and make the interactions feel more engaging and less robotic.
+    return line
 
 
 def clear ():
+    """MAKE IT GO AWAY DAWG"""
     os.system('cls' if os.name == 'nt' else 'clear')
+
+    #where did i put all the logging its getting annoying. #i want to be able to see the slip triggers and the mood changes and the persona changes in real time without having to dig through logs. maybe we can have a dev mode that prints out all the internal state changes and triggers in a more readable format. that way we can see how the system is evolving as it interacts with the user. also maybe we can have some kind of visualization of the closeness and slip intensity over time, like a little graph or something. that would be cool to see how the discoveries are affecting LI's state in real time.
