@@ -1,0 +1,19 @@
+{
+  "id": "LI:jason vorhees",
+  "username": "jason vorhees",
+  "persona": "basic",
+  "closeness": 24.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775210984.7401102,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775210984.7401102,
+  "last_accessed_display": "03/04/26",
+  "session_count": 1,
+  "consented_at": "2026-04-03T10:09:39.328283",
+  "out_of_scope": [
+    "files",
+    "system",
+    "services",
+    "web"
+  ]
+}

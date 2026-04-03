@@ -42,4 +42,3 @@ class ReportCard:
         }
         print("Report card generated successfully.")
         return report_card
-    

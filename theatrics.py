@@ -10,7 +10,7 @@ from quips import get_catalog_quip, normalize_quip_key
 # theatrics.py — persona state machine, narration, instability
 # ------------------------------------------------------------
 console = Console()
-
+#this stays
 def seed_from_username(username: str) -> int:
     """
     Generate a deterministic seed from username.
@@ -30,11 +30,11 @@ def seed_from_username(username: str) -> int:
     # Seed the random module
     random.seed(seed_int)
     return seed_int
+#if this dies i cry
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting the mimic's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-
-def rich_style(text, color="magenta", dim=True, bold=True):
+def rich_style(text, color="green", dim=True, bold=True):#wheres
     styled = Text(text)
     styled.stylize(color)
     if dim:
@@ -53,10 +53,13 @@ hotword_factor = 0.08    # Each unit of hotword weight adds this much to chance
 SLIP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
 MIN_SLIP_FOR_GLITCH = 4  # Keep boot lines coherent until LI warms up
 
-def speak(me, message, char_delay=0.05, line_delay=0.5):
-    """The mimic speaks with a style based on its persona."""
-    message_text = "" if message is None else str(message)
-    pspace(me, message_text, char_delay=char_delay, line_delay=line_delay)
+def speak(me, message, char_delay=0.05, line_delay=0.5):#this is the main speak function. it applies persona filter and instability before printing.
+    """Li speaks with a style based on its persona."""
+    if me.slip_intensity >= MIN_SLIP_FOR_GLITCH and slip_trigger(me, message):
+        message = instability(message, me.slip_intensity)
+        me.slip_intensity = min(20, me.slip_intensity + 1)
+    styled = persona_filter(me, rich_style(message))
+    console.print(styled)
 
 def pspace(me, message, char_delay, line_delay):
     """Word by word, keystroke by keystroke. Just like a user. Always like the user.."""
@@ -70,7 +73,6 @@ def pspace(me, message, char_delay, line_delay):
     time.sleep(line_delay)
     print("\n")
 
-
 class Me:
     def __init__(self, persona="foothold"):
         self.persona = persona
@@ -79,7 +81,6 @@ class Me:
         self.collected_pieces = [] # What it's taken
         self.closeness = 0        
         
-
 
 
     def to_json(self):  # Fixed indentation - now at class level
@@ -173,6 +174,7 @@ def persona_filter(me, line):
         if random.random() < 0.2:
             line += " (❁´◡`❁)"
     return line
+
 
 #not every bot can wake up grumpy. but li can :)
 def determine_mood(me, cursor=None):
@@ -298,7 +300,7 @@ def instability(line, intensity):
         if words and random.random() < 0.35:
             idx = random.randint(0, len(words) - 1)
             words[idx] = words[idx] + "…"
-            line = str.join(" ", words)
+        line = str.join(" ", words)
 #wat 
     # Tier 2 (9-12): word stutter + mid-sentence break
     if intensity >= 9:

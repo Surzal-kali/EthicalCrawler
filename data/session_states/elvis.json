@@ -1,0 +1,14 @@
+{
+  "id": "LI:elvis",
+  "username": "elvis",
+  "persona": "basic",
+  "closeness": 34.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775211484.351502,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775211694.7387872,
+  "last_accessed_display": "03/04/26",
+  "session_count": 2,
+  "consented_at": "2026-04-03T10:21:20.057349",
+  "out_of_scope": []
+}
