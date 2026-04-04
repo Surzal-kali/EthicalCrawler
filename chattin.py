@@ -108,8 +108,10 @@ def boot():
     time.sleep(0.5)
 
     user_input = input("What should I call you? ").strip()
-    user_name = user_input or "the user"
-
+    try:
+        user_name = user_input if user_input else "the user"
+    except Exception:
+        user_name = "the user" #last minute edit
     seed_from_username(user_name)
     session_id = "LI"
     get_session_dir(session_id)
@@ -216,8 +218,6 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
         if "system" not in consent_form.out_of_scope_items:
             profile = system_profiler(conn, cursor, session_id, me, user_name, consent_form)
             process_findings(session_id, me, cursor, profile, context="system_profiler", autosave=autosave, user_name=user_name)
-            for field, value in profile.items():
-                dev_comment(f"SystemProfiler: {field} = {value}")
         else:
             speak(me, "I was told not to look there.")
 
@@ -226,7 +226,6 @@ def session(session_id, me, user_name, conn, cursor, consent_form):
             services = prog(conn, cursor, session_id, me, user_name, autosave=autosave)
             for service in services:
                 process_findings(session_id, me, cursor, {"service": service}, context="services", autosave=autosave, user_name=user_name)
-                dev_comment(f"Services: {service}")
         else:
             speak(me, "Some doors stay closed.")
 

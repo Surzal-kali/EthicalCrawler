@@ -1,0 +1,8 @@
+a.	Use of loops and conditionals (while loops and if then for example)
+b.	Use of exception handling when getting user input where applicable.
+c.	Ability to save and retrieve data using either files and/or databases. For example: if you make a game, save the high score.
+d.	Ability to get input from the user, either through a GUI, the console or other method.
+e.	Ability to display information, either through a GUI, the console or other method.
+f.	Exhibit a reasonable level of complexity. It should be comparable to the last few programing assignments you have completed. Don’t select too difficult a project!
+g.	Should, if possible, be related to your degree major.
+h.	Raspberry Pi and ArcGIS projects are highly encouraged! If you are doing a Raspberry Pi or ArcGIS project some of these requirements may not make sense. Speak with me if you need to modify requirements.

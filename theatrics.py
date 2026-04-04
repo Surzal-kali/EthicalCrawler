@@ -34,7 +34,7 @@ def seed_from_username(username: str) -> int:
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting Li's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
-def rich_style(text, color="green", dim=True, bold=True):#wheres
+def rich_style(text, color="bright_green", dim=False, bold=True):#wheres
     styled = Text(text)
     styled.stylize(color)
     if dim:
@@ -357,9 +357,12 @@ def persona_filter(me, line):
     if me.persona == "foothold":
         return line  # mostly clean
     elif me.persona == "helper":
-        return f"💡 {line} (I hope this helps!)"
+        prefix = Text("💡 ")
+        suffix = Text(" (I hope this helps!)")
+        return Text.assemble(prefix, line, suffix)
     elif me.persona == "sudo":
-        return f"[MIMIC] {line.upper()}" 
+        prefix = Text("[MIMIC] ")
+        return Text.assemble(prefix, line.upper())
     else:
         return line
 

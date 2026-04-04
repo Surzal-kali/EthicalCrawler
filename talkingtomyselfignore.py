@@ -55,7 +55,7 @@
 # Shell logic
 
 # LI Act I: boot sequence, mood table, encoded logs
-
+#we are here. this is the next step layed out directly above. we have the boot sequence, the mood table and the encoded logs. now we need to build out the actual enumeration logic and start feeding it into theatrics. we also need to start building out the report card logic so we can give feedback on what it finds.
 # FALL 2026 — RED TEAM TRANSITION / ACT II (Adversarial Expansion)
 
 # BUSA 1110 – Introduction to Business
@@ -157,3 +157,13 @@
 
 
 #i've added dec threads to EVERYTHING. hopefully that will make it more responsive and less likely to crash my poor pi. also added a lot of error handling and logging to try to catch any issues before they cause a crash.
+
+#k so this has been submitted to the final, we can build freely now. it hit all the right notes and its time to add more. right now li doesn't have a report card, no web crawling and no digestion.py to feed it anything. theatrics needs a hard pass over. its the beating heart of the experience and its, while long, somehow also shallow. 
+
+#step one: web crawling. we build it in a seperate dev enviroment so we can test feedback directly. 
+
+#step two: digestion. we *need* to feed it the variables its already logging back into theatrics
+
+#step two: build into theatrics with digestion and close the loop with the report card.
+
+#step four, do it all again. but more detailed. 

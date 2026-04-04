@@ -20,7 +20,7 @@ NARRATIVE_SIGNALS = [
     # Stage/act metaphors
     r'\b(stage|act|scene|boot sequence|ritual)\b',
     # LI-specific concepts
-    r'\b(equip|pprint|sudo)\b',
+    r'\b(equip|speak|sudo)\b',
 ]
 
 # Technical-only patterns (warning signals)

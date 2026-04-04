@@ -10,7 +10,7 @@ Before any `git commit` command executes, this hook checks the commit message fo
 - Character/persona language: persona, narrator, slip, instability, closeness, quip, theatrical
 - Emotional terms: mood, voice, character, dialogue, commentary  
 - Stage metaphors: stage, act, scene, boot sequence, ritual
-- LI-specific concepts: equip, pprint, sudo
+- LI-specific concepts: equip, speak, sudo
 
 ⚠️ **Technical-only patterns** (triggers review):
 - Pure conventional commits: `fix: update database`

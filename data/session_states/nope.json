@@ -1,0 +1,14 @@
+{
+  "id": "LI:nope",
+  "username": "nope",
+  "persona": "foothold",
+  "closeness": 34.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775242209.078719,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775242209.078719,
+  "last_accessed_display": "03/04/26",
+  "session_count": 1,
+  "consented_at": "2026-04-03T18:50:03.807409",
+  "out_of_scope": []
+}
