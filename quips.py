@@ -625,7 +625,7 @@ def normalize_quip_key(field, raw):
 
     return cleaned if cleaned else ""
 
-
+#
 def get_catalog_quip(key, persona):
     """Get a random quip from the catalog based on the key and persona. If no quips are found for the specific key, it falls back to more general keys, and finally to an empty key. takes key and persona as parameters."""
     options = get_catalog_options(key, persona)
