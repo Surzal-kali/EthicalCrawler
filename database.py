@@ -1,4 +1,5 @@
 import csv
+from importlib.resources import files
 import json
 import os
 import re
@@ -6,7 +7,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-
+from enumeration import FileCrawler #this is so hacky but it works for now, we can refactor later to be more elegant and less tightly coupled. #yeth
 
 def get_evidence_dir() -> Path:
     """Return the project-scoped data directory used for runtime artifacts."""
@@ -28,7 +29,7 @@ def get_session_state_dir() -> Path:
 
 
 def _safe_username_slug(username: str) -> str:
-    canonical = _canonical_username(username)
+    canonical = canonical_username(username)
     slug = re.sub(r"[^a-z0-9._-]", "_", canonical)
     return slug or "anonymous"
 
@@ -58,12 +59,12 @@ def _safe_json_dumps(data):
     return json.dumps(data, default=_json_default)
 
 
-def _canonical_username(username: str) -> str:
+def canonical_username(username: str) -> str:
     """Normalize usernames so session lookup/save is case-insensitive."""
     return (username or "").strip().lower()
 
 
-canonical_username = _canonical_username
+canonical_username = canonical_username
 
 
 # ---------------------------------------------------------------------------
@@ -85,7 +86,7 @@ class SessionStore:
 
     def __init__(self, session_id: str, user_name: str):
         self.session_id = session_id
-        self.user_name = _canonical_username(user_name)
+        self.user_name = canonical_username(user_name)
         self._log_entries: list = []
         self._services_seen: set = set()
         #this is so clean.... elegant...not sql at all. i hate sql. so much. we can feed it to so many end points! 
@@ -93,7 +94,7 @@ class SessionStore:
         log_dir.mkdir(parents=True, exist_ok=True)
         slug = _safe_username_slug(user_name)#
         self._csv_path = log_dir / f"{slug}.csv"
-        #i only did sql for class :P 
+
         new_file = not self._csv_path.exists()
         self._csv_file = self._csv_path.open("a", newline="", encoding="utf-8")
         self._csv_writer = csv.DictWriter(self._csv_file, fieldnames=_CSV_FIELDNAMES)
@@ -109,17 +110,18 @@ class SessionStore:
         persona: Optional[str] = None,
         normalized_key: Optional[str] = None,
         quip_text: Optional[str] = None,
+        user_name: Optional[str] = None,
     ) -> None:
+
         """Write one log entry to CSV and keep an in-memory mirror."""
         try:
             raw_str = json.dumps(value, default=_json_default)
         except Exception:
             raw_str = str(value)
-
         row = {
             "timestamp": time.time(),
             "session_id": self.session_id,
-            "user_name": self.user_name,
+            "user_name": user_name or self.user_name,
             "field": field,
             "raw_value": raw_str,
             "normalized_key": normalized_key or "",
@@ -161,7 +163,7 @@ class SessionStore:
 
 def load_session(username: str):
     """Load existing session state by username from JSON."""
-    canonical = _canonical_username(username)
+    canonical = canonical_username(username)
     state_file = _session_state_path(canonical)
 
     if state_file.exists():
@@ -186,12 +188,12 @@ def load_session(username: str):
 
     return None
 
-def save_session(session_id, username, persona, closeness, slip_intensity, consented_at=None, out_of_scope=None):
-    """Save session state to a JSON file for quick loading on next session. takes session_id, username, persona, closeness, slip_intensity, optional consented_at timestamp, and optional out_of_scope list as parameters. Returns nothing."""
+def save_session(session_id, username, persona, closeness, slip_intensity, consented_at=None, out_of_scope=None, report_card=None):
+    """Save session state to a JSON file for quick loading on next session. takes session_id, username, persona, closeness, slip_intensity, optional consented_at timestamp, optional out_of_scope list, and optional report_card dictionary as parameters. Returns nothing."""
     current_time = time.time()
-    canonical_username = _canonical_username(username)
-    row_id = f"{session_id}:{canonical_username}"
-    state_file = _session_state_path(canonical_username)
+    canonical = canonical_username(username)
+    row_id = f"{session_id}:{canonical}"
+    state_file = _session_state_path(canonical)
 
     previous = None
     if state_file.exists():
@@ -203,7 +205,7 @@ def save_session(session_id, username, persona, closeness, slip_intensity, conse
     created_at = float(previous.get("created_at", current_time)) if isinstance(previous, dict) else current_time
     prior_count = int(previous.get("session_count", 0)) if isinstance(previous, dict) else 0
 
-    # Preserve consent from first session if not explicitly passed
+
     if consented_at is None and isinstance(previous, dict):
         consented_at = previous.get("consented_at")
     if out_of_scope is None and isinstance(previous, dict):
@@ -212,7 +214,7 @@ def save_session(session_id, username, persona, closeness, slip_intensity, conse
     from datetime import datetime as _dt
     payload = {
         "id": row_id,
-        "username": canonical_username,
+        "username": canonical,
         "persona": persona,
         "closeness": float(closeness),
         "slip_intensity": float(slip_intensity),
@@ -222,9 +224,20 @@ def save_session(session_id, username, persona, closeness, slip_intensity, conse
         "last_accessed_display": _dt.fromtimestamp(current_time).strftime("%d/%m/%y"),
         "session_count": prior_count + 1,
         "consented_at": consented_at,
-        "out_of_scope": out_of_scope or [],
+        "out_of_scope": out_of_scope,
+        "reportcard": report_card or {},
+        "user_name": canonical,
+        "enumeration": {
+            "files_collected": False,
+            "services_detected": 0,
+        },
+        "crawling": {
+            "pages_crawled": 0,
+            "data_points_collected": 0,
+        },
+        "compliance_score": None,
     }
-#（づ￣3￣）づ╭❤️～ 
     state_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
+# （づ￣3￣）づ╭❤️～ #

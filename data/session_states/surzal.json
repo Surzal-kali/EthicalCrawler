@@ -2,13 +2,34 @@
   "id": "LI:surzal",
   "username": "surzal",
   "persona": "foothold",
-  "closeness": 38.0,
-  "slip_intensity": 19.56,
+  "closeness": 28.0,
+  "slip_intensity": 19.5,
   "created_at": 1775101956.441533,
   "created_at_display": "01/04/26",
-  "last_accessed": 1775288387.783757,
+  "last_accessed": 1775299355.0151167,
   "last_accessed_display": "04/04/26",
-  "session_count": 29,
-  "consented_at": "2026-04-04T07:39:06.984284",
-  "out_of_scope": []
+  "session_count": 33,
+  "consented_at": "2026-04-04T10:42:31.371381",
+  "out_of_scope": [],
+  "reportcard": {
+    "session_id": "LI",
+    "persona": "foothold",
+    "total_entries": 0,
+    "by_context": {
+      "enumeration": [],
+      "web_crawling": [],
+      "system_profiler": [],
+      "services": []
+    },
+    "timestamp": 1775299355.012324
+  },
+  "enumeration": {
+    "files_collected": false,
+    "services_detected": 0
+  },
+  "crawling": {
+    "pages_crawled": 0,
+    "data_points_collected": 0
+  },
+  "ethical_score": null
 }

@@ -86,3 +86,21 @@ timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,
 1775284082.748613,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
 1775284082.7486222,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
 1775284082.7486303,LI,vanessa,service,"""steam""",,foothold,,equip
+1775292679.2319522,LI,vanessa,os_name,"""Windows""",Windows,foothold,"Windows. A familiar shell, but you are not familiar.",system_profiler
+1775292679.232332,LI,vanessa,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775292679.232435,LI,vanessa,architecture,"""AMD64""",AMD64,foothold,AMD64. Broad shoulders. Plenty of room for more.,system_profiler
+1775292679.2324681,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. Fast. Sharp. Metallic thoughts.,system_profiler
+1775292679.2324965,LI,vanessa,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775292679.2325351,LI,vanessa,python_version,"""3.14.3""",3143,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775292679.232559,LI,vanessa,timezone,"""Mountain Standard Time""",MountainStandardTime,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775292679.2326558,LI,vanessa,cores,20,20,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775292679.232703,LI,vanessa,thread_count,1,1,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775292708.508522,LI,vanessa,os_name,"""Windows""",,foothold,,equip
+1775292708.5085917,LI,vanessa,os_version,"""10.0.26200""",,foothold,,equip
+1775292708.508605,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
+1775292708.5086138,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775292708.5086222,LI,vanessa,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775292708.5086298,LI,vanessa,python_version,"""3.14.3""",,foothold,,equip
+1775292708.508637,LI,vanessa,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775292708.508655,LI,vanessa,cores,20,,foothold,,equip
+1775292708.5087159,LI,vanessa,thread_count,1,,foothold,,equip

@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import threading
 import time
 import traceback
 import platform
@@ -8,18 +9,18 @@ import datetime as dt_module
 from pathlib import Path
 import autosave
 from consentform import ConsentKey, get_consent
-import consentform
+import consentform 
 from database import SessionStore, save_session, load_session, get_evidence_dir, canonical_username
 from enumeration import FileCrawler #but its not firing.... #
+from reportcard import report, ReportCard
 from theatrics import Me, describe_findings, equip, get_catalog_quip, speak, dev_comment, seed_from_username, slip_trigger, test
 from services import prog
 from autosave import AutosaveManager
 # from webcrawling import WebCrawler
-from reportcard import ReportCard
 from webcrawling import WebCrawler
-
-
-
+from digestion import Digestion
+#:) ill brb i need to save that
+#so how long will the payload printing take? 
 """ Ethical Crawler: A personal data enumerator and narrator."""
 DEBUG_MODE = "--debug" in sys.argv or os.getenv("ETHICAL_CRAWLER_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
 SLIP_DECAY_PER_DAY = 0.5
@@ -59,12 +60,12 @@ def get_session_dir(session_id: str) -> Path:
     session_dir.mkdir(parents=True, exist_ok=True)
     return session_dir
 
-#should we have decode quip in the process_findings function? maybe we should. #yeth
+
 def process_findings(session_id, me, store, payload, context, autosave=None, user_name=None):
     """Log and narrate a payload through one shared orchestration path."""
     if not payload:
         return
-
+#well theres the problem 
     descriptions = describe_findings(me, payload)
     for field, detail in descriptions.items():
         store.add_log(
@@ -74,8 +75,11 @@ def process_findings(session_id, me, store, payload, context, autosave=None, use
             persona=me.persona,
             normalized_key=detail["normalized_key"],
             quip_text=detail.get("quip_text"),
+            user_name=user_name,
+
+
         )
-        #the above is great work. we can use this for so much!
+        #where is the main problem, he keeps saying its an empty box :( 
 
     equip(me, payload, autosave=autosave, descriptions=descriptions)
 
@@ -152,13 +156,18 @@ def system_profiler(session_id, me, user_name, consent_form, autosave=None, out_
         "os_version":   platform.version(),
         "architecture": platform.machine(),
         "processor":    platform.processor(),
+        "platform":     platform.platform(),   
+        "python_version": platform.python_version(), 
+        "timezone":     time.tzname[0], #there its done
+        "cores": os.cpu_count(),
+        "thread_count": threading.active_count(),
     }
     speak(me, "*" * 20)
     return profile
 
-def goodbye(store, session_id, me, user_name, consent_form):
-    """Demo exit for report card findings. takes store, session_id, me, user_name, and consent_form as parameters. Returns nothing."""
-    goodbye_quip = get_catalog_quip("goodbye", me.persona) or "Goodbye."
+def goodbye(store, session_id, me, user_name, consent_form, consented_at=None, out_of_scope=None, prog=None, save_session_func=None, report_func=None, report_card=None):
+    """Demo exit for report card findings. takes store, session_id, me, user_name, and consent_form, consented_at, out_of_scope, prog, save_session_func, report_func, and report_card as parameters. Returns nothing."""
+    goodbye_quip = "Goodbye." #lets take it out for now bc we need to work on digestion and theatrics first, but we can bring it back for flavor later.
     speak(me, goodbye_quip)
     print()
     print("  ┌─────────────────────────────────────────────────┐")
@@ -175,8 +184,8 @@ def goodbye(store, session_id, me, user_name, consent_form):
             print()
     print(f"  Session ended. Thank you, {user_name}.")
     print()
-
-
+    store.close()
+#this needs a rewrite. #but it also needs testing with the report card, and new digestion scripting, and more quips. #yeth
 
 
 
@@ -204,12 +213,10 @@ def session(session_id, me, user_name, store, consent_form):
         if "files" not in consent_form.out_of_scope_items:
             try:
                 file_crawler = FileCrawler(consent_form)
-                file_payload = file_crawler.collect()
+                file_payload = file_crawler.collect(cores=os.cpu_count(), frequency=(threading.active_count() or 1) * 2, autosave=autosave)
                 if file_payload:
                     process_findings(session_id, me, store, file_payload, context="enumeration", autosave=autosave, user_name=user_name)
-                    for field, value in file_payload.items():
-                        dev_comment(f"FileCrawler: {field} = {value}")
-                    test(me, "file_understanding")
+                    test(me, "file_enumeration")
                 else:
                     speak(me, "An empty box.")
             except Exception as e:
@@ -219,7 +226,7 @@ def session(session_id, me, user_name, store, consent_form):
                     traceback.print_exc()
         else:
             speak(me, "Files are off the table.")
-
+            time.sleep(1)
         # Stage: Web
         if "web" not in consent_form.out_of_scope_items:
             try:
@@ -227,7 +234,7 @@ def session(session_id, me, user_name, store, consent_form):
                 web_payload = webcrawler.collect_and_log(store, session_id, me, autosave=autosave)
                 if web_payload:
                     process_findings(session_id, me, store, {"web_links": web_payload}, context="web_crawling", autosave=autosave, user_name=user_name)
-                    test(me, "web_understanding")
+                    test(me, "web_crawling")
             except Exception as e:
                 speak(me, "The network went quiet.")
                 if DEBUG_MODE:
@@ -235,6 +242,7 @@ def session(session_id, me, user_name, store, consent_form):
                     traceback.print_exc()
         else:
             speak(me, "You told me to stay off the web.")
+            time.sleep(1)
 
         # Stage: Services
         if "services" not in consent_form.out_of_scope_items:
@@ -248,7 +256,14 @@ def session(session_id, me, user_name, store, consent_form):
         speak(me, "I have collected the surface.")
         speak(me, "Yet it wasn't enough.")
         time.sleep(1)
-
+        #Stage: Digestion
+        digestion = Digestion(consent_form)
+        digested_payload = digestion.digest(store, session_id, me, autosave=autosave)
+        if digested_payload:
+            process_findings(session_id, me, store, digested_payload, context="digestion", autosave=autosave, user_name=user_name)
+        else:
+            speak(me, "I tried to understand, but it's beyond me.")
+            time.sleep(1)
     except Exception as e:
         speak(me, "I can't see. Something is wrong.")
         print(f"[ERROR] Session error: {type(e).__name__}: {e}")
@@ -263,6 +278,8 @@ def session(session_id, me, user_name, store, consent_form):
                 dev_comment(f"Autosave retry failure: {retry_status['failed']}")
             else:
                 dev_comment("Autosave retry succeeded.")
+        else:
+            dev_comment("Autosave flush succeeded.")
 
 def main():
     """Main entry point for the Ethical Crawler. Handles booting, session orchestration, and graceful shutdown with report card findings. Returns nothing."""
@@ -274,22 +291,17 @@ def main():
         session(session_id, me, user_name, store, consent_form)
     finally:
         test(me, "session_end")
-        if user_name:
-            try:
-                consented_at = getattr(consent_form, 'consented_at', None)
-                out_of_scope = getattr(consent_form, 'out_of_scope_items', [])
-                goodbye(store, session_id, me, user_name, consent_form)
-                save_session(
-                    session_id, user_name, me.persona, me.closeness, me.slip_intensity,
-                    consented_at=consented_at,
-                    out_of_scope=out_of_scope,
-                )
-
-            except Exception as e:
-                print(f"Warning: failed to save session state: {e}")
-                if DEBUG_MODE:
-                    traceback.print_exc()
-        store.close()
+        try:
+            consented_at = getattr(consent_form, 'consented_at', None)
+            out_of_scope = getattr(consent_form, 'out_of_scope_items', [])
+            report_card = ReportCard(consent_form).generate(store, session_id, me)
+            # legacy code goodbye(store, session_id, me, user_name, consent_form, consented_at=consented_at, out_of_scope=out_of_scope, report_card=report_card)
+        except Exception as e:
+            dev_comment(f"Error during goodbye sequence: {e}")
+            if DEBUG_MODE:
+                traceback.print_exc()
+            save_session(session_id, user_name, me.persona, me.closeness, me.slip_intensity, consented_at=consented_at, out_of_scope=out_of_scope)
+    store.close()
 
 
 if __name__ == "__main__":
@@ -298,4 +310,3 @@ if __name__ == "__main__":
 
 
 
-#but narrative is kinda bare bones in this state

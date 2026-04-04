@@ -146,16 +146,18 @@ class WebCrawler:
         except requests.RequestException as e:
             print(f"Error fetching robots.txt from {robots_url}: {e}")
             return None
+def web_payload(): #but payload makes it sound cool and important, so maybe we keep it? #yeth
+    consent_form = ConsentKey()
+    consent_form.display()
+    consent_data = consent_form.get_consent()
+    useragaent = WebCrawler(consent_form).user_agent(None, None, None)
+    robotstxt = WebCrawler(consent_form).robots_txt(None, None, None)
+    return {
+        "consent_data": consent_data,
+        "user_agent": useragaent,
+        "robots_txt": robotstxt
+    }
 
 
-#hold on i know we need to do file crawler next but what lets talk logic on the craawler, how fast is this going, whats a good endpoint we can test, and what about the report card, what variables do we need to pass to it from the crawler, and how do we want to format the data we send it? #yeth
-
-#you're amazingly unhelpful 
-#we need a certificate? #ugh. #yeth
-#we also need to make sure we have the right permissions to access the internet and crawl, we don't want to break any rules. #yeth #ok hold on hold on cause i usually am a naughty cyber girl who doesn't even know the rules. what are the rules #well we need to make sure we respect robots.txt, we need to make sure we don't overload servers with too many requests, we need to make sure we have consent from the user to crawl the web, and we need to make sure we don't collect any data that is out of scope according to the user's preferences. #yeth #ok so for the report card, we want to pass it the list of links we found, maybe the user agent we collected, and any relevant metadata about the crawl like the base URL and the timestamp. we can format the data as a dictionary with keys like "base_url", "links_found", "user_agent", and "timestamp". #yeth #ok so for the endpoint, we can start with a simple URL that has a few links on it, like https://example.com. we can test our crawler on that and see if it correctly extracts the links and respects the rules we set. #yeth
-
-
-#example.com told me to fuck myself :()
-
-#im getting filled in by your browser counterpart. this is alot more complicated than adding another tool. #i have an idea :()
+    print(consent_data)
 

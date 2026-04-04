@@ -1,0 +1,44 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775332038.617252,LI,aasdf,os_name,"""Windows""",Windows,basic,"Windows. A familiar shell, but you are not familiar.",system_profiler
+1775332038.6173577,LI,aasdf,os_version,"""10.0.26200""",,basic,I don't know what this is yet. But it matters.,system_profiler
+1775332038.6173866,LI,aasdf,architecture,"""AMD64""",AMD64,basic,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775332038.6174066,LI,aasdf,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,basic,Intel. I can see your thoughts. Sharp. Fast. Metallic.,system_profiler
+1775332038.6174226,LI,aasdf,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,basic,I don't know what this is yet. But it matters.,system_profiler
+1775332038.6215062,LI,aasdf,python_version,"""3.14.3""",3143,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775332038.6215284,LI,aasdf,timezone,"""Mountain Standard Time""",MountainStandardTime,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775332038.621548,LI,aasdf,cores,20,20,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775332038.6215615,LI,aasdf,thread_count,1,1,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775332049.133815,LI,aasdf,enumeration_file_path,"""mechanics.txt""",mechanicstxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775332049.1339014,LI,aasdf,enumeration_file_name,"""mechanics.txt""",mechanicstxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775332049.1339242,LI,aasdf,enumeration_file_extension,""".txt""",txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775332049.1339536,LI,aasdf,enumeration_file_size_bytes,3239,3239,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775332049.1339707,LI,aasdf,enumeration_file_preview,"""Comprehensive Mechanics Sheet\n\nLaunch flow\n\nBeginner entrypoint is runme.py.\n\nRuntime orchestration lives in LIMain.py.\n\nExpected startup path: runme intro -> LIMain.ethical_boot_sequence() -> consentform -> LIMain.session() -> shutdown save in LIMain.main().\n\nSession lifecycle\n\nBoot sequence initia""",ComprehensiveMechanicsSheetLaunchflowBeginnerentrypointisrunmepyRuntimeorchestrationlivesinLIMainpyExpectedstartuppathrunmeintro-LIMainethical_boot_sequence-consentform-LIMainsession-shutdownsaveinLIMainmainSessionlifecycleBootsequenceinitia,foothold,I don't know what this is yet. But it matters.,enumeration
+1775332055.656559,LI,aasdf,service,"""steam""",steam,foothold,Steam. A community of players. Do you play with others?,services
+1775332056.657944,LI,aasdf,service,"""spotify""",spotify,foothold,Spotify. A music service! Let's hear those tunes.,services
+1775332057.659393,LI,aasdf,service,"""discord""",discord,foothold,Discord. A community of voices. Do you have a favorite server?,services
+1775332058.6608896,LI,aasdf,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775332059.6622784,LI,aasdf,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775332060.6630125,LI,aasdf,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775332061.6638792,LI,aasdf,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775332062.6651196,LI,aasdf,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775332068.6701272,LI,aasdf,digested_web_links,"[""https://example.com"", ""https://test.com""]",httpsexamplecomhttpstestcom,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775332068.670207,LI,aasdf,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",pathtofile1txtpathtofile2txt,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775332068.6702259,LI,aasdf,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",ls-lacatetcpasswd,foothold,I don't know what this is yet. But it matters.,digestion
+1775332071.6736624,LI,aasdf,os_name,"""Windows""",,helper,,equip
+1775332071.6737344,LI,aasdf,os_version,"""10.0.26200""",,helper,,equip
+1775332071.673749,LI,aasdf,architecture,"""AMD64""",,helper,,equip
+1775332071.6737583,LI,aasdf,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,helper,,equip
+1775332071.673767,LI,aasdf,platform,"""Windows-11-10.0.26200-SP0""",,helper,,equip
+1775332071.6737757,LI,aasdf,python_version,"""3.14.3""",,helper,,equip
+1775332071.6737835,LI,aasdf,timezone,"""Mountain Standard Time""",,helper,,equip
+1775332071.6738005,LI,aasdf,cores,20,,helper,,equip
+1775332071.6738112,LI,aasdf,thread_count,1,,helper,,equip
+1775332071.67382,LI,aasdf,enumeration_file_path,"""mechanics.txt""",,helper,,equip
+1775332071.6738284,LI,aasdf,enumeration_file_name,"""mechanics.txt""",,helper,,equip
+1775332071.6738367,LI,aasdf,enumeration_file_extension,""".txt""",,helper,,equip
+1775332071.6738536,LI,aasdf,enumeration_file_size_bytes,3239,,helper,,equip
+1775332071.6738627,LI,aasdf,enumeration_file_preview,"""Comprehensive Mechanics Sheet\n\nLaunch flow\n\nBeginner entrypoint is runme.py.\n\nRuntime orchestration lives in LIMain.py.\n\nExpected startup path: runme intro -> LIMain.ethical_boot_sequence() -> consentform -> LIMain.session() -> shutdown save in LIMain.main().\n\nSession lifecycle\n\nBoot sequence initia""",,helper,,equip
+1775332071.6738741,LI,aasdf,service,"""steam""",,helper,,equip
+1775332071.6738846,LI,aasdf,digested_web_links,"[""https://example.com"", ""https://test.com""]",,helper,,equip
+1775332071.6738944,LI,aasdf,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",,helper,,equip
+1775332071.6739044,LI,aasdf,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",,helper,,equip

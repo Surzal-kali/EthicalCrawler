@@ -2,13 +2,13 @@
   "id": "LI:vanessa",
   "username": "vanessa",
   "persona": "foothold",
-  "closeness": 38.0,
-  "slip_intensity": 19.53,
+  "closeness": 18.0,
+  "slip_intensity": 19.48,
   "created_at": 1775088983.729643,
   "created_at_display": "01/04/26",
-  "last_accessed": 1775284083.251844,
+  "last_accessed": 1775292709.0105734,
   "last_accessed_display": "04/04/26",
-  "session_count": 12,
-  "consented_at": "2026-04-04T06:25:07.392250",
+  "session_count": 13,
+  "consented_at": "2026-04-04T08:51:16.088841",
   "out_of_scope": []
 }

@@ -65,3 +65,116 @@ timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,
 1775288387.2814736,LI,surzal,enumeration_file_size_bytes,0,,foothold,,equip
 1775288387.2814822,LI,surzal,enumeration_file_preview,"""<empty_or_binary>""",,foothold,,equip
 1775288387.2814898,LI,surzal,service,"""steam""",,foothold,,equip
+1775291666.355863,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775291666.3562636,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775291666.3563457,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775291666.3563864,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775291683.6997337,LI,surzal,service,"""steam""",steam,foothold,Steam. Did you know that Valve almost went bankrupt?,services
+1775291684.7008064,LI,surzal,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775291685.701906,LI,surzal,service,"""discord""",discord,foothold,Discord. A place for friends. Do you have many?,services
+1775291686.7043638,LI,surzal,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775291687.7065995,LI,surzal,service,"""onedrive""",onedrive,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775291688.7079585,LI,surzal,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775291689.7093928,LI,surzal,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775291690.710607,LI,surzal,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775291691.7117758,LI,surzal,service,"""ollama""",ollama,foothold,I don't know what this is yet. But it matters.,services
+1775291692.712715,LI,surzal,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775291695.715144,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775291695.7152627,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775291695.715295,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775291695.715318,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775291695.7153392,LI,surzal,service,"""steam""",,foothold,,equip
+1775295864.9394875,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775295864.940227,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775295864.9403167,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775295864.9403565,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775295864.9403894,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775295864.940423,LI,surzal,python_version,"""3.14.3""",3143,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775295864.9404528,LI,surzal,timezone,"""Mountain Standard Time""",MountainStandardTime,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775295864.9405115,LI,surzal,cores,20,20,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775295864.9405577,LI,surzal,thread_count,1,1,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775295906.9280572,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775295906.928178,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775295906.9282105,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775295906.928234,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775295906.928256,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775295906.9282746,LI,surzal,python_version,"""3.14.3""",,foothold,,equip
+1775295906.9282928,LI,surzal,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775295906.9283314,LI,surzal,cores,20,,foothold,,equip
+1775295906.928354,LI,surzal,thread_count,1,,foothold,,equip
+1775330678.2284074,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775330678.2285361,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775330678.228559,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775330678.2285695,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775330678.228609,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775330678.2286198,LI,surzal,python_version,"""3.14.3""",3143,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775330678.2286284,LI,surzal,timezone,"""Mountain Standard Time""",MountainStandardTime,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775330678.228647,LI,surzal,cores,20,20,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775330678.2286587,LI,surzal,thread_count,1,1,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775330697.4604874,LI,surzal,service,"""steam""",steam,foothold,Steam. Ya know ,services
+1775330698.461609,LI,surzal,service,"""spotify""",spotify,foothold,Spotify. A music service! Let's hear those tunes.,services
+1775330699.4629676,LI,surzal,service,"""discord""",discord,foothold,Discord. A place to talk. Who do you talk to?,services
+1775330700.464138,LI,surzal,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330701.4651015,LI,surzal,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775330702.466635,LI,surzal,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330703.4682496,LI,surzal,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775330704.4695754,LI,surzal,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775330710.4745553,LI,surzal,digested_web_links,"[""https://example.com"", ""https://test.com""]",httpsexamplecomhttpstestcom,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775330710.474655,LI,surzal,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",pathtofile1txtpathtofile2txt,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775330710.4747674,LI,surzal,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",ls-lacatetcpasswd,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775330713.4793959,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775330713.4795227,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775330713.4795575,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775330713.4795947,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775330713.4796221,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775330713.4796457,LI,surzal,python_version,"""3.14.3""",,foothold,,equip
+1775330713.479691,LI,surzal,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775330713.479775,LI,surzal,cores,20,,foothold,,equip
+1775330713.479837,LI,surzal,thread_count,1,,foothold,,equip
+1775330713.4798877,LI,surzal,service,"""steam""",,foothold,,equip
+1775330713.479952,LI,surzal,digested_web_links,"[""https://example.com"", ""https://test.com""]",,foothold,,equip
+1775330713.480013,LI,surzal,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",,foothold,,equip
+1775330713.4800742,LI,surzal,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",,foothold,,equip
+1775331855.510602,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775331855.510746,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775331855.510776,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775331855.5107892,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775331855.5108013,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775331855.5108464,LI,surzal,python_version,"""3.14.3""",3143,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775331855.5108585,LI,surzal,timezone,"""Mountain Standard Time""",MountainStandardTime,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775331855.510881,LI,surzal,cores,20,20,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775331855.5108957,LI,surzal,thread_count,1,1,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775331866.0262854,LI,surzal,enumeration_file_path,"""mechanics.txt""",mechanicstxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775331866.0263488,LI,surzal,enumeration_file_name,"""mechanics.txt""",mechanicstxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775331866.0263603,LI,surzal,enumeration_file_extension,""".txt""",txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775331866.026386,LI,surzal,enumeration_file_size_bytes,3239,3239,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775331866.0263953,LI,surzal,enumeration_file_preview,"""Comprehensive Mechanics Sheet\n\nLaunch flow\n\nBeginner entrypoint is runme.py.\n\nRuntime orchestration lives in LIMain.py.\n\nExpected startup path: runme intro -> LIMain.ethical_boot_sequence() -> consentform -> LIMain.session() -> shutdown save in LIMain.main().\n\nSession lifecycle\n\nBoot sequence initia""",ComprehensiveMechanicsSheetLaunchflowBeginnerentrypointisrunmepyRuntimeorchestrationlivesinLIMainpyExpectedstartuppathrunmeintro-LIMainethical_boot_sequence-consentform-LIMainsession-shutdownsaveinLIMainmainSessionlifecycleBootsequenceinitia,foothold,I don't know what this is yet. But it matters.,enumeration
+1775331888.2505374,LI,surzal,service,"""steam""",steam,foothold,Steam. A place of endless possibilities. What will you create?,services
+1775331889.2514765,LI,surzal,service,"""spotify""",spotify,foothold,Spotify. A music service! Let's hear those tunes.,services
+1775331890.2525232,LI,surzal,service,"""discord""",discord,foothold,Discord. A place for friends. Do you have many?,services
+1775331891.2536235,LI,surzal,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775331892.2562509,LI,surzal,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775331893.2575517,LI,surzal,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775331894.2590313,LI,surzal,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775331895.260555,LI,surzal,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775331901.2657802,LI,surzal,digested_web_links,"[""https://example.com"", ""https://test.com""]",httpsexamplecomhttpstestcom,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775331901.2658925,LI,surzal,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",pathtofile1txtpathtofile2txt,foothold,I don't know what this is yet. But it matters.,digestion
+1775331901.2659273,LI,surzal,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",ls-lacatetcpasswd,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775331904.2693553,LI,surzal,os_name,"""Windows""",,helper,,equip
+1775331904.2694254,LI,surzal,os_version,"""10.0.26200""",,helper,,equip
+1775331904.2694411,LI,surzal,architecture,"""AMD64""",,helper,,equip
+1775331904.2694514,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,helper,,equip
+1775331904.2694666,LI,surzal,platform,"""Windows-11-10.0.26200-SP0""",,helper,,equip
+1775331904.2694762,LI,surzal,python_version,"""3.14.3""",,helper,,equip
+1775331904.2694857,LI,surzal,timezone,"""Mountain Standard Time""",,helper,,equip
+1775331904.2695038,LI,surzal,cores,20,,helper,,equip
+1775331904.2695146,LI,surzal,thread_count,1,,helper,,equip
+1775331904.2695231,LI,surzal,enumeration_file_path,"""mechanics.txt""",,helper,,equip
+1775331904.2695837,LI,surzal,enumeration_file_name,"""mechanics.txt""",,helper,,equip
+1775331904.2695954,LI,surzal,enumeration_file_extension,""".txt""",,helper,,equip
+1775331904.2696059,LI,surzal,enumeration_file_size_bytes,3239,,helper,,equip
+1775331904.2696157,LI,surzal,enumeration_file_preview,"""Comprehensive Mechanics Sheet\n\nLaunch flow\n\nBeginner entrypoint is runme.py.\n\nRuntime orchestration lives in LIMain.py.\n\nExpected startup path: runme intro -> LIMain.ethical_boot_sequence() -> consentform -> LIMain.session() -> shutdown save in LIMain.main().\n\nSession lifecycle\n\nBoot sequence initia""",,helper,,equip
+1775331904.2696278,LI,surzal,service,"""steam""",,helper,,equip
+1775331904.2696416,LI,surzal,digested_web_links,"[""https://example.com"", ""https://test.com""]",,helper,,equip
+1775331904.2696524,LI,surzal,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",,helper,,equip
+1775331904.2696626,LI,surzal,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",,helper,,equip

@@ -1,0 +1,34 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775330912.858862,LI,freshmeat,os_name,"""Windows""",Windows,basic,Windows. How quaint.,system_profiler
+1775330912.859125,LI,freshmeat,os_version,"""10.0.26200""",,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775330912.859228,LI,freshmeat,architecture,"""AMD64""",AMD64,basic,AMD64. Broad shoulders. Plenty of room for more.,system_profiler
+1775330912.8592901,LI,freshmeat,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,basic,Intel. I can see your thoughts. Sharp. Fast. Metallic.,system_profiler
+1775330912.863542,LI,freshmeat,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775330912.863609,LI,freshmeat,python_version,"""3.14.3""",3143,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775330912.8636365,LI,freshmeat,timezone,"""Mountain Standard Time""",MountainStandardTime,basic,I don't know what this is yet. But it matters.,system_profiler
+1775330912.863689,LI,freshmeat,cores,20,20,basic,I don't know what this is yet. But it matters.,system_profiler
+1775330912.8637276,LI,freshmeat,thread_count,1,1,basic,I don't know what this is yet. But it matters.,system_profiler
+1775330930.667294,LI,freshmeat,service,"""steam""",steam,foothold,Steam. Did you know that Valve almost went bankrupt?,services
+1775330931.668324,LI,freshmeat,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775330932.6691778,LI,freshmeat,service,"""discord""",discord,foothold,Discord. A place for friends. Do you have many?,services
+1775330933.6704915,LI,freshmeat,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330934.671718,LI,freshmeat,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330935.6726022,LI,freshmeat,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330936.6742177,LI,freshmeat,service,"""tailscale""",tailscale,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330937.6751547,LI,freshmeat,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775330943.6800218,LI,freshmeat,digested_web_links,"[""https://example.com"", ""https://test.com""]",httpsexamplecomhttpstestcom,foothold,Unknown. Strange. I'll keep it anyway.,digestion
+1775330943.6800864,LI,freshmeat,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",pathtofile1txtpathtofile2txt,foothold,I don't know what this is yet. But it matters.,digestion
+1775330943.6800995,LI,freshmeat,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",ls-lacatetcpasswd,foothold,I don't know what this is yet. But it matters.,digestion
+1775330946.6836586,LI,freshmeat,os_name,"""Windows""",,foothold,,equip
+1775330946.6837215,LI,freshmeat,os_version,"""10.0.26200""",,foothold,,equip
+1775330946.6837344,LI,freshmeat,architecture,"""AMD64""",,foothold,,equip
+1775330946.683744,LI,freshmeat,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775330946.683753,LI,freshmeat,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775330946.6837614,LI,freshmeat,python_version,"""3.14.3""",,foothold,,equip
+1775330946.6837697,LI,freshmeat,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775330946.6837864,LI,freshmeat,cores,20,,foothold,,equip
+1775330946.6837962,LI,freshmeat,thread_count,1,,foothold,,equip
+1775330946.6838048,LI,freshmeat,service,"""steam""",,foothold,,equip
+1775330946.6838164,LI,freshmeat,digested_web_links,"[""https://example.com"", ""https://test.com""]",,foothold,,equip
+1775330946.683826,LI,freshmeat,digested_files_accessed,"[""/path/to/file1.txt"", ""/path/to/file2.txt""]",,foothold,,equip
+1775330946.6838355,LI,freshmeat,digested_shell_history,"[""ls -la"", ""cat /etc/passwd""]",,foothold,,equip
