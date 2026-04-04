@@ -58,32 +58,9 @@ class FileCrawler:
 
         return self._build_payload(selected_file)
 
-    def collect_and_log(self, cursor, session_id, me, autosave=None):
-        """Compatibility wrapper; orchestration now owns logging and narration. takes cursor, session_id, me, and optional autosave manager as parameters. Returns the collected log data."""
-        log_data = self.collect()
-        if log_data:
-            cursor.execute(
-                """
-                INSERT INTO files (
-                    session_id,
-                    file_path,
-                    file_name,
-                    file_extension,
-                    file_size_bytes,
-                    file_preview
-                ) VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    session_id,
-                    log_data["enumeration_file_path"],
-                    log_data["enumeration_file_name"],
-                    log_data["enumeration_file_extension"],
-                    log_data["enumeration_file_size_bytes"],
-                    log_data["enumeration_file_preview"],
-                )
-            )
-            cursor.connection.commit()
-        return log_data
+    def collect_and_log(self, autosave=None):
+        """Compatibility wrapper; orchestration owns logging and narration."""
+        return self.collect()
 
 # TODO: loop collect() to allow multi-file picks, returning a list logged one at a time.
 # Separate links table planned; background crawl process post-report-card.

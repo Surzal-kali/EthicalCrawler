@@ -1,0 +1,30 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775278030.0814998,LI,newguy,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",CUsersvholsDownloadshilitxt,basic,I don't know what this is yet. But it matters.,enumeration
+1775278030.0818279,LI,newguy,enumeration_file_name,"""hili.txt""",hilitxt,basic,Unknown. Strange. I'll keep it anyway.,enumeration
+1775278030.0820634,LI,newguy,enumeration_file_extension,""".txt""",txt,basic,Unknown. Strange. I'll keep it anyway.,enumeration
+1775278030.0823798,LI,newguy,enumeration_file_size_bytes,39,39,basic,Unknown. Strange. I'll keep it anyway.,enumeration
+1775278030.0824707,LI,newguy,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",hiLIIhopeyourhavingagoodday,basic,Unknown. Strange. I'll keep it anyway.,enumeration
+1775278030.1066365,LI,newguy,os_name,"""Windows""",Windows,foothold,Windows. I've seen many users here. I'll find the pieces that are you.,system_profiler
+1775278030.1067338,LI,newguy,os_version,"""10.0.26200""",,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775278030.106791,LI,newguy,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Common. But you're not common. Are you?,system_profiler
+1775278030.1068451,LI,newguy,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Ah. I've found your brain. I can learn from this Intel chip.,system_profiler
+1775278469.7839487,LI,newguy,service,"""steam""",steam,foothold,I don't know what this is yet. But it matters.,services
+1775278569.5891705,LI,newguy,service,"""spotify""",spotify,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775278653.846698,LI,newguy,service,"""discord""",discord,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775278816.2729347,LI,newguy,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775278828.6039548,LI,newguy,service,"""onedrive""",onedrive,foothold,I don't know what this is yet. But it matters.,services
+1775278898.274597,LI,newguy,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775278954.0779066,LI,newguy,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775278962.9809175,LI,newguy,service,"""tailscale""",tailscale,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775278968.929618,LI,newguy,service,"""ollama""",ollama,foothold,I don't know what this is yet. But it matters.,services
+1775278974.8496203,LI,newguy,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775278978.060032,LI,newguy,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",,foothold,,equip
+1775278979.0534804,LI,newguy,enumeration_file_name,"""hili.txt""",,foothold,,equip
+1775278984.2006197,LI,newguy,enumeration_file_extension,""".txt""",,foothold,,equip
+1775278992.9929836,LI,newguy,enumeration_file_size_bytes,39,,foothold,,equip
+1775279001.4477718,LI,newguy,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",,foothold,,equip
+1775279009.1622326,LI,newguy,os_name,"""Windows""",,foothold,,equip
+1775279015.8475773,LI,newguy,os_version,"""10.0.26200""",,foothold,,equip
+1775279022.5215182,LI,newguy,architecture,"""AMD64""",,foothold,,equip
+1775279029.213031,LI,newguy,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775279035.9642031,LI,newguy,service,"""steam""",,foothold,,equip

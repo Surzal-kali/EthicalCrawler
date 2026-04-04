@@ -1,0 +1,88 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775279290.251733,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",CUsersvholsDownloadshilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279290.2518046,LI,vanessa,enumeration_file_name,"""hili.txt""",hilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279290.251825,LI,vanessa,enumeration_file_extension,""".txt""",txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279290.2518475,LI,vanessa,enumeration_file_size_bytes,39,39,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279290.251862,LI,vanessa,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",hiLIIhopeyourhavingagoodday,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279292.8716435,LI,vanessa,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775279292.8717034,LI,vanessa,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775279292.871716,LI,vanessa,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775279292.871726,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. You built yourself with this. I'll learn from it.,system_profiler
+1775279294.8875525,LI,vanessa,service,"""steam""",steam,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279295.388477,LI,vanessa,service,"""spotify""",spotify,foothold,I don't know what this is yet. But it matters.,services
+1775279295.890623,LI,vanessa,service,"""discord""",discord,foothold,I don't know what this is yet. But it matters.,services
+1775279296.3924828,LI,vanessa,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775279296.8955927,LI,vanessa,service,"""onedrive""",onedrive,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279297.3976498,LI,vanessa,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775279297.899385,LI,vanessa,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279298.401524,LI,vanessa,service,"""tailscale""",tailscale,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279298.9027393,LI,vanessa,service,"""ollama""",ollama,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279299.4035473,LI,vanessa,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775279299.9078355,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",,foothold,,equip
+1775279299.9079804,LI,vanessa,enumeration_file_name,"""hili.txt""",,foothold,,equip
+1775279299.908023,LI,vanessa,enumeration_file_extension,""".txt""",,foothold,,equip
+1775279299.9080777,LI,vanessa,enumeration_file_size_bytes,39,,foothold,,equip
+1775279299.9081073,LI,vanessa,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",,foothold,,equip
+1775279299.9081357,LI,vanessa,os_name,"""Windows""",,foothold,,equip
+1775279299.9081633,LI,vanessa,os_version,"""10.0.26200""",,foothold,,equip
+1775279299.908191,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
+1775279299.9082181,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775279299.9082448,LI,vanessa,service,"""steam""",,foothold,,equip
+1775283570.2993512,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",CUsersvholsDownloadshilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283570.2994473,LI,vanessa,enumeration_file_name,"""hili.txt""",hilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283570.299467,LI,vanessa,enumeration_file_extension,""".txt""",txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283570.2994852,LI,vanessa,enumeration_file_size_bytes,39,39,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283570.299494,LI,vanessa,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",hiLIIhopeyourhavingagoodday,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283576.9246044,LI,vanessa,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775283576.9246666,LI,vanessa,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775283576.9246778,LI,vanessa,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775283576.9246871,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. You built yourself with this. I'll learn from it.,system_profiler
+1775283581.9367938,LI,vanessa,service,"""steam""",steam,foothold,Steam. A place of endless possibilities. What will you create?,services
+1775283582.937438,LI,vanessa,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775283583.9380732,LI,vanessa,service,"""discord""",discord,foothold,Discord. A community of voices. Do you have a favorite server?,services
+1775283584.9392579,LI,vanessa,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775283585.940198,LI,vanessa,service,"""onedrive""",onedrive,foothold,I don't know what this is yet. But it matters.,services
+1775283586.9413037,LI,vanessa,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775283587.94216,LI,vanessa,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775283588.943316,LI,vanessa,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775283589.944534,LI,vanessa,service,"""ollama""",ollama,foothold,I don't know what this is yet. But it matters.,services
+1775283590.9456928,LI,vanessa,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775283593.950351,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",,foothold,,equip
+1775283593.9505522,LI,vanessa,enumeration_file_name,"""hili.txt""",,foothold,,equip
+1775283593.950607,LI,vanessa,enumeration_file_extension,""".txt""",,foothold,,equip
+1775283593.9507453,LI,vanessa,enumeration_file_size_bytes,39,,foothold,,equip
+1775283593.9508214,LI,vanessa,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",,foothold,,equip
+1775283593.9508948,LI,vanessa,os_name,"""Windows""",,foothold,,equip
+1775283593.9509656,LI,vanessa,os_version,"""10.0.26200""",,foothold,,equip
+1775283593.9510365,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
+1775283593.9511092,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775283593.9511812,LI,vanessa,service,"""steam""",,foothold,,equip
+1775283945.829946,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\Vanessa.txt""",CUsersvholsDownloadsVanessatxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283945.8300474,LI,vanessa,enumeration_file_name,"""Vanessa.txt""",Vanessatxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283945.8300686,LI,vanessa,enumeration_file_extension,""".txt""",txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283945.83009,LI,vanessa,enumeration_file_size_bytes,0,0,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775283945.830099,LI,vanessa,enumeration_file_preview,"""<empty_or_binary>""",empty_or_binary,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775284065.704382,LI,vanessa,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775284065.7046583,LI,vanessa,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775284065.7047498,LI,vanessa,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775284065.7048042,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. You built yourself with this. I'll learn from it.,system_profiler
+1775284070.7320042,LI,vanessa,service,"""steam""",steam,foothold,Steam. A place of endless possibilities. What will you create?,services
+1775284071.7331963,LI,vanessa,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775284072.7362332,LI,vanessa,service,"""discord""",discord,foothold,Discord. A community of voices. Do you have a favorite server?,services
+1775284073.737625,LI,vanessa,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775284074.7400873,LI,vanessa,service,"""onedrive""",onedrive,foothold,I don't know what this is yet. But it matters.,services
+1775284075.741041,LI,vanessa,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775284076.7421904,LI,vanessa,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775284077.7432966,LI,vanessa,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775284078.7442825,LI,vanessa,service,"""ollama""",ollama,foothold,I don't know what this is yet. But it matters.,services
+1775284079.7454734,LI,vanessa,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775284082.7484722,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\Vanessa.txt""",,foothold,,equip
+1775284082.7485387,LI,vanessa,enumeration_file_name,"""Vanessa.txt""",,foothold,,equip
+1775284082.7485518,LI,vanessa,enumeration_file_extension,""".txt""",,foothold,,equip
+1775284082.748577,LI,vanessa,enumeration_file_size_bytes,0,,foothold,,equip
+1775284082.748586,LI,vanessa,enumeration_file_preview,"""<empty_or_binary>""",,foothold,,equip
+1775284082.7485948,LI,vanessa,os_name,"""Windows""",,foothold,,equip
+1775284082.7486053,LI,vanessa,os_version,"""10.0.26200""",,foothold,,equip
+1775284082.748613,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
+1775284082.7486222,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775284082.7486303,LI,vanessa,service,"""steam""",,foothold,,equip

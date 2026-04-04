@@ -1,0 +1,14 @@
+{
+  "id": "LI:newguy",
+  "username": "newguy",
+  "persona": "foothold",
+  "closeness": 38.0,
+  "slip_intensity": 1.0,
+  "created_at": 1775279075.160281,
+  "created_at_display": "03/04/26",
+  "last_accessed": 1775279075.160281,
+  "last_accessed_display": "03/04/26",
+  "session_count": 1,
+  "consented_at": "2026-04-04T04:47:03.814539",
+  "out_of_scope": []
+}

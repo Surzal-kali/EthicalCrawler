@@ -1,7 +1,7 @@
-"""
-Test suite for autosave.py — buffering, persistence, and error recovery.
-Run with: python test_autosave.py
-"""
+# These tests were written for the SQLite-backed autosave/database layer.
+# That layer has been removed in favour of SessionStore + CSV audit logging.
+# Delete this file and write new tests against the new API when needed.
+raise SystemExit("test_autosave.py is stale — delete and rewrite for SessionStore.")
 
 import sqlite3
 import json

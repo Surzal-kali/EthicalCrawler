@@ -1,4 +1,4 @@
-# LI - Executive Summary
+    # LI - Executive Summary
 
 LI is a narrative-driven system enumerator that behaves like a character rather than a plain tool.
 

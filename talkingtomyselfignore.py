@@ -1,61 +1,4 @@
-#ok so we need to think architectually. what the hell is the end goal? a blue team ai that can crawl and enumerate and then report on what it found? or a red team ai that can do the same but also exploit? or both?....a grey hat? then grey is as far as we can go. but even then, we need to be careful about how we design it. we don't want to create something that can be easily weaponized. we want to create something that can be used for good. so maybe we start with a blue team ai that can crawl and enumerate and then report on what it found. and then we can add in some red team capabilities later on. but for now, let's focus on the blue team aspect.
-####so lets list some good blue team aspects
 
-# 1. crawl and enumerate the local system #update the logs, im thinking the logic right now we have is a little vague. 
-# 2. crawl and enumerate the network
-# 3. identify vulnerabilities and misconfigurations
-# 4. monitor for suspicious activity
-# 5. provide recommendations for remediation
-# 6. generate reports for stakeholders
-
-#i have this book of malware,,,,, to feed it ioc knowledge. how tho??? 
-
-
-#we need easy ways to dev test the capabilities of our detection logic 
-
-#well good morning to you too, ethical crawler.
-
-# LI is a modular, persona‑driven cybersecurity system designed to examine the ethical boundaries of digital enumeration. Its core purpose is to reveal a user’s digital footprint through a blend of traditional system‑profiling techniques and dynamic, narrative‑driven interaction.
-
-# Instead of presenting raw data in a sterile, tool‑like format, LI interprets its discoveries through adaptive storytelling and dialogue. Its responses shift based on user behavior, consent choices, and the artifacts uncovered during enumeration. This creates an experience that is both technically informative and emotionally engaging, helping users understand how much of themselves their systems quietly expose.
-
-# LI is intentionally accessible — anyone who can turn on a computer can use it — yet it also includes deeper technical modules for cybersecurity‑inclined users. After each session, users can modify LI through a dedicated interface, reshaping its persona, tone, and behavior for future interactions. This regeneration mechanic reinforces the project’s central theme: your digital footprint shapes the systems that observe you.
-
-# Beyond its initial interactions, LI serves as a commentary on digital surveillance and the often‑invisible ways personal data is collected, interpreted, and repurposed. By engaging with LI, users are encouraged to reflect on their own digital presence and the broader implications of living in an interconnected world. These reflections are intentionally foregrounded before regeneration, ensuring the user understands the weight of the system’s design.
-
-# Ultimately, LI is a thought‑provoking exploration of the intersection between technology, privacy, and identity. It challenges users to consider how much of themselves they are willing to expose — and what it means to have a digital footprint in an age of ubiquitous surveillance. Through its unique blend of technical functionality and narrative immersion, LI aims to foster a deeper understanding of the ethical dimensions of cybersecurity and digital self‑awareness.
-
-#now u get it :)
-
-#current timeline implementations
-
-#VANESSA GREENWALD — CYBERSECURITY CAREER ROADMAP (.txt)
-
-# GOAL:  
-# Red‑team–oriented cybersecurity professional with a specialization in adversarial reasoning, ethical enumeration, and persona‑driven tooling (LI Project).
-#Current Courses:
-#fund of info lit and systems
-
-# intro to cyber security
-
-#computer prog fundamentals: python
-#semester end date : 4/26/26 
-# SUMMER 2026 — FOUNDATION / ACT I (Stabilization)
-
-# CIST 1413 – Network Admin Concepts
-# CIST 1680 – Linux Essentials
-# MATH 1130 – Survey of Mathematics
-
-# Focus:
-
-# System fundamentals
-
-# Enumeration basics
-
-# Shell logic
-
-# LI Act I: boot sequence, mood table, encoded logs
-#we are here. this is the next step layed out directly above. we have the boot sequence, the mood table and the encoded logs. now we need to build out the actual enumeration logic and start feeding it into theatrics. we also need to start building out the report card logic so we can give feedback on what it finds.
 # FALL 2026 — RED TEAM TRANSITION / ACT II (Adversarial Expansion)
 
 # BUSA 1110 – Introduction to Business
@@ -137,15 +80,16 @@
 # Long‑term: Degree project expansion at Arizona State University, potential publication of LI’s architecture and ethical analysis, ongoing development of persona‑driven cybersecurity tools. 
 
 
-#here is where i talk to the inline suggestions directly. pay no attention to the fact that this is a chat interface, its just easier to test out code snippets here and then move them over to the actual files.
+#here is where i talk to the inline suggestions directly. pay no attention to the fact that this is not a chat interface, its just easier to test out code snippets here and then move them over to the actual files.
 
-#good morning to you too, ethical crawler. # ok so we need to think architectually. what the hell is the end goal? a blue team ai that can crawl and enumerate and then report on what it found? or a red team ai that can do the same but also exploit? or both?....a grey hat? then grey is as far as we can go. but even then, we need to be careful about how we design it. we don't want to create something that can be easily weaponized. we want to create something that can be used for good. so maybe we start with a blue team ai that can crawl and enumerate and then report on what it found. and then we can add in some red team capabilities later on. but for now, let's focus on the blue team aspect. red team is soon tho! #lets list some good blue team aspects
+#me good blue team aspects
 #good enviroment reading and easy configuration for host
 #crawl and enumerate the local system #update the logs, im thinking the logic right now we have is a little vague.
 #crawl and enumerate the network :)
 #identify vulnerabilities and misconfigurations
 #monitor for suspicious activity
 #provide recommendations for remediation
+#generate reports for sharks#i stg. 
 
 #lets list some red team capabilities
 #reconnaissance and target profiling
@@ -154,16 +98,23 @@
 #social engineering simulation
 #payload generation and delivery #:_)
 #command and control simulation
+#reporting and analysis
+
+#some thoughts. he needs to pause based on mood, not time.sleep. in addition we need to wire a set threads amount from system enumeration to both web crawler and file crawler. in addition file crawler needs some work.  we still are in the "canned dialogue" phase of dev, but once report card is finished i hope to start moving into LLM territory
+
+#whats this. #lets talk file crawler #yeth ok so #yeth #ok so for file crawler, we want to be able to scan the local file system for files of interest based on certain criteria, such as file type, size, or keywords in the filename. we also want to be able to log the files we find and any relevant metadata about them, such as their location, size, and last modified date. we can use the os module in Python to walk through the file system and collect this information. we also need to make sure we respect any permissions and only access files that we have permission to access. #yeth #ok so for the report card, we want to pass it a list of the files we found, along with their metadata. we can format this data as a list of dictionaries, where each dictionary represents a file and contains keys like "filename", "location", "size", and "last_modified". this way, the report card can easily process and display this information in a readable format. #yeth #ok so for the endpoint, we can start by scanning a specific directory on the local system, such as the user's home directory. this will allow us to test our file crawler without needing to worry about permissions or accessing sensitive areas of the file system. once we have that working, we can expand our scope to include other directories or even network shares if needed. #yeth #when did i give you "yeth" #i just want to make sure we have a clear plan before we start coding, so we can avoid any unnecessary rewrites later on. #yeth
+from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, dev_comment, clear
+from services import prog as services_prog
+import os 
+import time
+import psutil
+import threading
+import concurrent.futures
+from consentform import ConsentKey
+from database import Store
+from webcrawling import WebCrawler
+from enumeration import FileCrawler
 
 
-#i've added dec threads to EVERYTHING. hopefully that will make it more responsive and less likely to crash my poor pi. also added a lot of error handling and logging to try to catch any issues before they cause a crash.
 
-#k so this has been submitted to the final, we can build freely now. it hit all the right notes and its time to add more. right now li doesn't have a report card, no web crawling and no digestion.py to feed it anything. theatrics needs a hard pass over. its the beating heart of the experience and its, while long, somehow also shallow. 
-
-#step one: web crawling. we build it in a seperate dev enviroment so we can test feedback directly. 
-
-#step two: digestion. we *need* to feed it the variables its already logging back into theatrics
-
-#step two: build into theatrics with digestion and close the loop with the report card.
-
-#step four, do it all again. but more detailed. 
+#need smoke and food hold

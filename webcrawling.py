@@ -1,40 +1,20 @@
 
-from database import DatabaseManager
-from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, dev_comment, clear
-from services import prog as services_prog
+from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, clear
 from consentform import ConsentKey
 import time
 from bs4 import BeautifulSoup
 import requests
 import threading
-import pdfkit
 import re
 import tkinter as tk
-from tkinter import filedialog
-import psutil 
+from tkinter import filedialog, simpledialog, messagebox
+import psutil
 from pathlib import Path
 from urllib.parse import urlparse, urljoin
 import os
-import json 
+import json
 import datetime
-import threading
 import concurrent.futures
-import pdfkit
-import re
-import asyncio #unsure but sounds good. #
-from tkinter import simpledialog
-from tkinter import messagebox
-
-
-
-#am i missing anything? #
-#######current problems, it needs some form of background slowdown while crawling, and we need to wire it into chattin in a way that feels organic, and allows us to pick up keywords during the main orchestration.
-
-
-# Web crawling logic
-# take url, split into base and path, check robots.txt, crawl allowed pages, extract links, log the tree and snapshot the required padges into pdfs. also collect user agent and other metadata. needs to be careful about rate limiting and not crashing the system. should be able to exclude web crawling from the scope if the user chooses. we also need concurrency and rate limiting. we can use threading or asyncio for concurrency, and we can implement a simple rate limiter to avoid overwhelming the system or the target website. we also need to handle errors gracefully and log them for the report card. we are bothering people other than the user, so extra logging is needed. need to make sure everythign works properly on web server connection and crawl. 
-
-
 
 class WebCrawler:
     def __init__(self, consent_form):
@@ -65,52 +45,72 @@ class WebCrawler:
             if self._is_valid_url(full_url):
                 links.add(full_url)
         return list(links)
-     #addy bar is kind of the main event and is very basic rn. #report card is at the end of the sprint shhhhhhhhhhhh
+     #addy bar is kind of the main event. mood drives everything now.
 
-
-    def addy_bar(self, cursor, session_id, me, autosave=None):
-        if not self.consent_given:
-            print("Consent not given. Cannot perform web crawling.")
-            return []
-
-
-        elif self._is_out_of_scope("web crawling"):
-            print("Web crawling is out of scope. Cannot perform web crawling.")
-            return []
-
+    def _crawl_config(self, me):
+        """Map Me's current state to crawl aggressiveness."""
+        if me.persona == "sudo" or me.slip_intensity >= 10:
+            return {"threads": "high", "concurrency": 5, "rate": 5}
+        elif me.persona == "helper" or me.closeness >= 50:
+            return {"threads": "medium", "concurrency": 3, "rate": 3}
+        elif me.persona == "foothold" or me.closeness >= 20:
+            return {"threads": "low", "concurrency": 1, "rate": 1}
         else:
-            import tk as tk
-            from tkinter import simpledialog
-            root = tk.Tk()
-            root.withdraw()
-            url = simpledialog.askstring("Web Crawler", "Enter the URL to crawl:")
-            if not url:
-                print("No URL entered. Aborting web crawling.")
-                return []
-            if not self._is_valid_url(url):
-                print("Invalid URL entered. Aborting web crawling.")
-                return []
-            print(f"Crawling {url}...")
-            html = self._fetch_page(url)
-            if not html:
-                print("Failed to fetch the page. Aborting web crawling.")
-                return []
-            links = self._extract_links(html, url)
-            for link in links:
-                print(f"Found link: {link}")
-                time.sleep(0.2)  # Simple rate limiting
-                self._fetch_page(link)  # Optionally fetch linked pages for deeper crawling
-            print(f"Found {len(links)} links on the page.")
-            self.collect_and_log_links(cursor, session_id, me, url, links)
-            return links
+            return {"threads": "stop", "concurrency": 0, "rate": 0}
+
+    def addy_bar(self, store, session_id, me, autosave=None):
+        if not self.consent_given:
+            speak(me, "You haven't said yes. I'm not going anywhere.")
+            return []
+
+        if self._is_out_of_scope("web"):
+            speak(me, "Web's off the table. You said so yourself.")
+            return []
+
+        config = self._crawl_config(me)
+        if config["threads"] == "stop":
+            speak(me, "Not today. The network stays quiet.")
+            return []
+
+        root = tk.Tk()
+        root.withdraw()
+        url = simpledialog.askstring("Web Crawler", "Enter the URL to crawl:")
+        root.destroy()
+
+        if not url:
+            speak(me, "No address. Nothing to chase.")
+            return []
+        if not self._is_valid_url(url):
+            speak(me, "That's not a real place. Try again.")
+            return []
+
+        speak(me, f"Reaching out to {url}... [{config['threads']} intensity]")
+        html = self._fetch_page(url)
+        if not html:
+            speak(me, "Nothing came back. The page isn't talking.")
+            return []
+
+        links = self._extract_links(html, url)
+        store.add_log("web_crawl_base", url, context="webcrawler", persona=me.persona)
+
+        def fetch_and_log(link):
+            time.sleep(1 / config["rate"])
+            self._fetch_page(link)
+            store.add_log("web_link", link, context="webcrawler", persona=me.persona)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=config["concurrency"]) as executor:
+            executor.map(fetch_and_log, links)
+
+        speak(me, f"Found {len(links)} links. All accounted for.")
+        return links
     
-    def collect_and_log(self, cursor, session_id, me, autosave=None):
+    def collect_and_log(self, store, session_id, me, autosave=None):
         """Compatibility wrapper; orchestration now owns logging and narration."""
-        links = self.addy_bar(cursor, session_id, me, autosave)
+        links = self.addy_bar(store, session_id, me, autosave)
 
         return links
 
-    def user_agent(self, conn, cursor, session_id, me, autosave=None):
+    def user_agent(self, store, session_id, me, autosave=None):
         if not self.consent_given:
             print("Consent not given. Cannot collect user agent.")
             return None
@@ -122,7 +122,7 @@ class WebCrawler:
         return user_agent #the internet has rules after all lets check for robots.txt next. 
     
 
-    def robots_txt(self, conn, cursor, session_id, me, autosave=None):
+    def robots_txt(self, store, session_id, me, autosave=None):
         if not self.consent_given:
             print("Consent not given. Cannot check robots.txt.")
             return None
@@ -146,5 +146,16 @@ class WebCrawler:
         except requests.RequestException as e:
             print(f"Error fetching robots.txt from {robots_url}: {e}")
             return None
-        
-#now to wire it into digestion. digestion should be able to pick up the links and user agent and feed them into theatrics for narration and logging. we also need to make sure the report card can pull this data and give feedback on it. we can log the links found and the user agent used, and then in the report card we can analyze the number of links found, the diversity of domains, and the user agent string for any interesting information. we also need to make sure we handle any errors that occur during crawling and log those as well for the report card to analyze.
+
+
+#hold on i know we need to do file crawler next but what lets talk logic on the craawler, how fast is this going, whats a good endpoint we can test, and what about the report card, what variables do we need to pass to it from the crawler, and how do we want to format the data we send it? #yeth
+
+#you're amazingly unhelpful 
+#we need a certificate? #ugh. #yeth
+#we also need to make sure we have the right permissions to access the internet and crawl, we don't want to break any rules. #yeth #ok hold on hold on cause i usually am a naughty cyber girl who doesn't even know the rules. what are the rules #well we need to make sure we respect robots.txt, we need to make sure we don't overload servers with too many requests, we need to make sure we have consent from the user to crawl the web, and we need to make sure we don't collect any data that is out of scope according to the user's preferences. #yeth #ok so for the report card, we want to pass it the list of links we found, maybe the user agent we collected, and any relevant metadata about the crawl like the base URL and the timestamp. we can format the data as a dictionary with keys like "base_url", "links_found", "user_agent", and "timestamp". #yeth #ok so for the endpoint, we can start with a simple URL that has a few links on it, like https://example.com. we can test our crawler on that and see if it correctly extracts the links and respects the rules we set. #yeth
+
+
+#example.com told me to fuck myself :()
+
+#im getting filled in by your browser counterpart. this is alot more complicated than adding another tool. #i have an idea :()
+

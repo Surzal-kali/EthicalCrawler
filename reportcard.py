@@ -1,4 +1,3 @@
-from database import DatabaseManager
 from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, dev_comment, clear
 from services import prog as services_prog
 from consentform import ConsentKey
@@ -21,7 +20,7 @@ class ReportCard:
         self.out_of_scope_items = consent_form.out_of_scope_items
     def _is_out_of_scope(self, data_type: str) -> bool:
         return data_type.strip().lower() in self.out_of_scope_items
-    def generate(self, cursor, session_id, me, autosave=None):
+    def generate(self, store, session_id, me, autosave=None):
         if not self.consent_given:
             print("Consent not given. Cannot generate report card.")
             return {}
@@ -30,15 +29,26 @@ class ReportCard:
             return {}
         # Placeholder for actual report card generation logic
         report_card = {
+            "user_id": me.user_id,
             "session_id": session_id,
             "persona": me.persona,
             "services_used": services_prog.services_used,
             "data_collected": {
                 "web_links": [],  # This would be populated with actual data
                 "files": [],      # This would be populated with actual data
-                "shell_history": []  # This would be populated with actual data
+                # "shell_history": []  # This would be populated with actual data
             },
             "timestamp": time.time()
         }
         print("Report card generated successfully.")
         return report_card
+    
+    #we gotta fix this first before we wire everything, i have to know what variables go where. 
+
+def report():
+    consent_form = ConsentKey()
+    consent_form.display()
+    consent_data = consent_form.get_consent()
+    print(consent_data)
+
+    #this is next, but first i need to do digestion 

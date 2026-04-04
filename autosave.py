@@ -5,7 +5,6 @@ Pass instance through function calls to accumulate and save incrementally.
 Supports partial saves: successful fields persist even if others fail.
 """
 
-import sqlite3
 import json
 import time
 import traceback
@@ -24,17 +23,17 @@ class AutosaveManager:
     5. Retry: if status["failed"], autosave.retry_failed()
     """
     
-    def __init__(self, cursor: sqlite3.Cursor, session_id: str, narrator=None, user_name: str = None):
+    def __init__(self, store, session_id: str, narrator=None, user_name: str = None):
         """
         Initialize autosave manager.
         
         Args:
-            cursor: SQLite cursor (from database.init_db())
+            store: SessionStore instance (from database.SessionStore)
             session_id: Session identifier (e.g., "LI")
             narrator: Optional Me instance for logging commentary
             user_name: Optional username for per-user log filtering
         """
-        self.cursor = cursor
+        self.store = store
         self.session_id = session_id
         self.narrator = narrator
         self.user_name = (user_name or "").strip().lower() or None
@@ -92,20 +91,12 @@ class AutosaveManager:
         
         for field, data in list(self.buffer.items()):
             try:
-                self.cursor.execute("""
-                    INSERT INTO logs (session_id, user_name, field, raw_value, normalized_key, persona, quip_text, context, timestamp)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    self.session_id,
-                    self.user_name,
+                self.store.add_log(
                     field,
-                    self._serialize_value(data["value"]),
-                    None,  # normalized_key - not tracked in autosave
-                    self.narrator.persona if self.narrator else None,
-                    None,  # quip_text - not stored here
-                    data.get("context"),
-                    data.get("timestamp", time.time())
-                ))
+                    data["value"],
+                    context=data.get("context"),
+                    persona=self.narrator.persona if self.narrator else None,
+                )
                 results["saved"].append(field)
                 self.saved_count += 1
                 del self.buffer[field]  # Only remove if successful
@@ -124,13 +115,6 @@ class AutosaveManager:
                 self.failed_fields[field] = error_msg
                 self.failed_payloads[field] = data.copy()
                 results["failed"].append(field)
-        
-        # Commit successful saves
-        if results["saved"]:
-            try:
-                self.cursor.connection.commit()
-            except Exception:
-                pass  # Connection may handle commits automatically
         
         self.flush_count += 1
         return results
@@ -158,7 +142,14 @@ class AutosaveManager:
     
     def peek_buffer(self) -> Dict[str, Dict[str, Any]]:
         """Inspect buffered data without flushing."""
-        return self.buffer.copy()
+        decode_quip = lambda x: x #ok explain lambda cause my teacher never tuaght me :( ) # we have the logic in quips tho don't worry it's just a placeholder here. #yeth (❁´◡`❁)
+        decoded_buffer = {}
+        for field, data in self.buffer.items():
+            decoded_data = data.copy()
+            if "quip_text" in decoded_data:
+                decoded_data["quip_text"] = decode_quip(decoded_data["quip_text"], {}, None)
+            decoded_buffer[field] = decoded_data
+        return decoded_buffer
     
     def peek_failed(self) -> Dict[str, str]:
         """Inspect failed fields and their error reasons."""

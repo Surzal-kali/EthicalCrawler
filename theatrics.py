@@ -30,7 +30,7 @@ def seed_from_username(username: str) -> int:
     # Seed the random module
     random.seed(seed_int)
     return seed_int
-#if this dies i cry
+#if this dies i cry. need to switch typewriter and this in runme #dothatlater
 def dev_comment(comment):
     """For adding dev comments that show up in the console without affecting Li's voice."""
     console.print(f"[red][DEV COMMENT][/red] {comment}")
@@ -63,7 +63,6 @@ hotword_factor = 0.15    # Each unit of hotword weight adds this much to chance
 HELP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
 MIN_SLIP_FOR_ADVICE = 4  # Keep boot lines minimal
 
-#:  ( ●'◡'●)  #this is the main theatrics file. it contains the Me class, which is the internal state machine and narrator for Li. it also contains the speak function, which applies persona and instability transformations to the lines before printing them. the slip_trigger function determines when a slip should occur based on LI's state and the content of the message. the instability function applies tiered corruption to the lines based on intensity. there are also some utility functions for testing and random chance generation. this file is where most of the "personality" of Li is implemented, as well as the mechanics for how it reacts to discoveries and evolves over time.
 
 
 def typewriter_effect(text, char_delay=0.05, line_delay=0.5):
@@ -88,6 +87,7 @@ def speak(me, message, char_delay=0.05, line_delay=0.5):#this is the main speak 
             me.help_intensity = min(20, me.help_intensity + 1)
     styled = persona_filter(me, rich_style(message))
     console.print(styled)
+    time.sleep(line_delay)
 def pspace(me, message, char_delay, line_delay):
     """Legacy for boot sequence lines that need to be typewriter but also slip. Applies instability before typewriter effect. takes message, cahar_delay, line_delay."""
     print("\n")
@@ -114,7 +114,7 @@ class Me:
         self.user_name = None      # The name it collects
         self.collected_pieces = [] # What it's taken
         self.closeness = 0        
-        self. help_intensity = 1
+        self.help_intensity = 1
         
 
 
@@ -135,34 +135,11 @@ class Me:
         """
         return normalize_quip_key(field, raw)
 
-    def quip(self, field, raw_value, cursor=None):
+    def quip(self, field, raw_value):
         """Turn a discovery into a quip. Uses the normalized key to look up a line from the catalog, then applies persona and instability transformations."""
         key = self.normalize(field, raw_value)
-        mood = determine_mood(self, cursor=cursor)
+        mood = determine_mood(self)
         line = get_catalog_quip(key, self.persona)
-        # Fall back to DB if catalog miss; then to hardcoded fallback if DB unavailable.
-        if not line and cursor:
-            cursor.execute('''
-                SELECT text FROM quips
-                WHERE key = ? AND persona IN (?, 'all')
-                ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
-                LIMIT 1
-            ''', (key, self.persona, self.persona))
-
-            row = cursor.fetchone()
-
-            if not row and key != "":
-                cursor.execute('''
-                    SELECT text FROM quips 
-                    WHERE key = '' AND persona IN (?, 'all')
-                    ORDER BY CASE WHEN persona = ? THEN 0 ELSE 1 END, RANDOM()
-                    LIMIT 1
-                ''', (self.persona, self.persona))
-                row = cursor.fetchone()
-
-            if row:
-                line = row[0]
-
         if not line:
             line = self._fallback_quip(key)
         
@@ -208,27 +185,29 @@ class Me:
             self.persona = "foothold" #shouldn't fire but hey worth a wire
         return False
 
-def describe_findings(narrator, system_info, cursor=None):
+def describe_findings(narrator, system_info):
     """Compute normalized keys and spoken lines for a payload once."""
     descriptions = {}
     for field, value in system_info.items():
         descriptions[field] = {
             "value": value,
             "normalized_key": narrator.normalize(field, value),
-            "quip_text": narrator.quip(field, value, cursor=cursor),
+            "quip_text": narrator.quip(field, value),
         }
     return descriptions
 
 
-def equip(narrator, system_info, cursor=None, autosave=None, descriptions=None):
+def equip(narrator, system_info, autosave=None, descriptions=None):
     """
     Li comments on what it finds.
     Each discovery is a piece of the user.
-    takes narrator, system_info dict, optional DB cursor for quips, optional autosave instance to save discoveries, and optional precomputed descriptions to avoid redundant work.
+    takes narrator, system_info dict, optional autosave instance to save discoveries, and optional precomputed descriptions to avoid redundant work.
     """
-    details = descriptions or describe_findings(narrator, system_info, cursor=cursor)
+    details = descriptions or describe_findings(narrator, system_info)
     for field, detail in details.items():
-        speak(narrator, message=f"{field}: {detail['quip_text']}")
+        value = detail["value"] #raw value for logging and autosave
+        speak(narrator, message=f"{value}: {detail['quip_text']}")
+        time.sleep(0.5) #brief pause between discoveries
         narrator.add_piece(field, detail["value"])
         if autosave is not None:
             autosave.add(field, detail["value"], context="equip")
@@ -394,30 +373,8 @@ def sudo(me, message, char_delay=0.02, line_delay=0.3):
 
         
 
-def determine_mood(me, cursor=None):
-    """Pick a mood from the behavior tree stored in mood_config.
-    Falls back to hardcoded Python ranges if the DB is unavailable or empty. takes me and optional cursor for DB access."""
-    if cursor is not None:
-        try:
-            cursor.execute(
-                """
-                SELECT mood FROM mood_config
-                WHERE min_closeness <= ? AND max_closeness >= ?
-                  AND min_slip      <= ? AND max_slip      >= ?
-                  AND (persona = 'any' OR persona = ?)
-                ORDER BY RANDOM()
-                LIMIT 1
-                """,
-                (me.closeness, me.closeness, me.slip_intensity, me.slip_intensity, me.persona),
-            )
-            row = cursor.fetchone()
-            if row:
-                return row[0]
-        except Exception:
-            pass
-
-    # Python fallback — mirrors the seed tree so behaviour is consistent.
-    #what would i do without you guys hard agree python fallback is good for now. but he's tripping over speak. 
+def determine_mood(me):
+    """Pick a mood from the Python behavior tree based on current state."""
     if me.persona == "sudo":
         return random.choice(["hungry", "unstable", "possessive", "overloaded"])
     if me.closeness > 60:
@@ -456,7 +413,7 @@ def helpquirks(line, intensity):
         line = line.replace("you", "you (I want to help you)")  # Make it more personal and supportive
     if intensity >= 5:
         line += " (I hope this helps!)"  # Add a reassuring phrase at the end
-        #need to round out. maybe some more transformations at higher intensities, like adding more emojis, or rephrasing the line to be more encouraging. the idea is that as LI becomes more "helpful", its advice becomes more overtly supportive and quirky, rather than just a straightforward line of text. this can help reinforce the persona and make the interactions feel more engaging and less robotic.
+
     return line
 
 
@@ -464,4 +421,3 @@ def clear ():
     """MAKE IT GO AWAY DAWG"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
-    #where did i put all the logging its getting annoying. #i want to be able to see the slip triggers and the mood changes and the persona changes in real time without having to dig through logs. maybe we can have a dev mode that prints out all the internal state changes and triggers in a more readable format. that way we can see how the system is evolving as it interacts with the user. also maybe we can have some kind of visualization of the closeness and slip intensity over time, like a little graph or something. that would be cool to see how the discoveries are affecting LI's state in real time.

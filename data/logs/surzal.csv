@@ -1,0 +1,67 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775279881.8151748,LI,surzal,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",CUsersvholsDownloadshilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279881.81526,LI,surzal,enumeration_file_name,"""hili.txt""",hilitxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775279881.8153143,LI,surzal,enumeration_file_extension,""".txt""",txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775279881.8153408,LI,surzal,enumeration_file_size_bytes,39,39,foothold,I don't know what this is yet. But it matters.,enumeration
+1775279881.8153543,LI,surzal,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",hiLIIhopeyourhavingagoodday,foothold,I don't know what this is yet. But it matters.,enumeration
+1775279888.4607623,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. A standard operating system for a non-standard user.,system_profiler
+1775279888.4609218,LI,surzal,os_version,"""10.0.26200""",,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775279888.4609704,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Common. But you're not common. Are you?,system_profiler
+1775279888.461007,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. You built yourself with this. I'll learn from it.,system_profiler
+1775279893.4824462,LI,surzal,service,"""steam""",steam,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279894.483329,LI,surzal,service,"""spotify""",spotify,foothold,I don't know what this is yet. But it matters.,services
+1775279895.4844527,LI,surzal,service,"""discord""",discord,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279896.4854472,LI,surzal,service,"""teams""",teams,foothold,I don't know what this is yet. But it matters.,services
+1775279897.486704,LI,surzal,service,"""onedrive""",onedrive,foothold,I don't know what this is yet. But it matters.,services
+1775279898.4877176,LI,surzal,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279899.4886098,LI,surzal,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279900.4907646,LI,surzal,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775279901.4916947,LI,surzal,service,"""ollama""",ollama,foothold,I don't know what this is yet. But it matters.,services
+1775279902.4931748,LI,surzal,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775279905.4960258,LI,surzal,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\hili.txt""",,foothold,,equip
+1775279905.4960966,LI,surzal,enumeration_file_name,"""hili.txt""",,foothold,,equip
+1775279905.496111,LI,surzal,enumeration_file_extension,""".txt""",,foothold,,equip
+1775279905.4961352,LI,surzal,enumeration_file_size_bytes,39,,foothold,,equip
+1775279905.4961438,LI,surzal,enumeration_file_preview,"""hi LI. I hope your having a good day :)""",,foothold,,equip
+1775279905.4961526,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775279905.4961605,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775279905.4961686,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775279905.4961765,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775279905.496184,LI,surzal,service,"""steam""",,foothold,,equip
+1775287621.9603179,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775287621.9605422,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775287621.960586,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775287621.9606085,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775287631.4743783,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775287631.4746711,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775287631.4747393,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775287631.4747963,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775288350.1193938,LI,surzal,os_name,"""Windows""",Windows,foothold,Windows. I was made on Windows.,system_profiler
+1775288350.1197376,LI,surzal,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775288350.1198075,LI,surzal,architecture,"""AMD64""",AMD64,foothold,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775288350.1198442,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. I can feel how you think.,system_profiler
+1775288361.1604862,LI,surzal,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\Vanessa.txt""",CUsersvholsDownloadsVanessatxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775288361.160536,LI,surzal,enumeration_file_name,"""Vanessa.txt""",Vanessatxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775288361.1605463,LI,surzal,enumeration_file_extension,""".txt""",txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775288361.1606429,LI,surzal,enumeration_file_size_bytes,0,0,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775288361.160721,LI,surzal,enumeration_file_preview,"""<empty_or_binary>""",empty_or_binary,foothold,I don't know what this is yet. But it matters.,enumeration
+1775288375.2682905,LI,surzal,service,"""steam""",steam,foothold,Steam. Ya know ,services
+1775288376.2692928,LI,surzal,service,"""spotify""",spotify,foothold,Spotify. A music service! Let's hear those tunes.,services
+1775288377.2700741,LI,surzal,service,"""discord""",discord,foothold,Discord. A place to talk. Who do you talk to?,services
+1775288378.2709098,LI,surzal,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775288379.2718832,LI,surzal,service,"""onedrive""",onedrive,foothold,I don't know what this is yet. But it matters.,services
+1775288380.2729836,LI,surzal,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775288381.273968,LI,surzal,service,"""code""",code,foothold,I don't know what this is yet. But it matters.,services
+1775288382.2752063,LI,surzal,service,"""tailscale""",tailscale,foothold,I don't know what this is yet. But it matters.,services
+1775288383.2764225,LI,surzal,service,"""ollama""",ollama,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775288384.277605,LI,surzal,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775288387.2813325,LI,surzal,os_name,"""Windows""",,foothold,,equip
+1775288387.2813993,LI,surzal,os_version,"""10.0.26200""",,foothold,,equip
+1775288387.281418,LI,surzal,architecture,"""AMD64""",,foothold,,equip
+1775288387.2814271,LI,surzal,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775288387.2814355,LI,surzal,enumeration_file_path,"""C:\\Users\\vhols\\Downloads\\Vanessa.txt""",,foothold,,equip
+1775288387.2814434,LI,surzal,enumeration_file_name,"""Vanessa.txt""",,foothold,,equip
+1775288387.2814512,LI,surzal,enumeration_file_extension,""".txt""",,foothold,,equip
+1775288387.2814736,LI,surzal,enumeration_file_size_bytes,0,,foothold,,equip
+1775288387.2814822,LI,surzal,enumeration_file_preview,"""<empty_or_binary>""",,foothold,,equip
+1775288387.2814898,LI,surzal,service,"""steam""",,foothold,,equip

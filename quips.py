@@ -1,5 +1,76 @@
 import random
+import datetime
+import time
 
+VALUE_KEYWORDS = {
+    ""
+    "os_name": {
+        ("kali", "Kali"),
+        ("windows", "Windows"),
+        ("linux", "Linux"),
+    },
+    "processor": {
+        ("intel", "Intel"),
+        ("genuineintel", "Intel"),
+        ("amd", "AMD"),
+        ("ryzen", "AMD"), #good catch
+        ("epyc", "AMD"),
+        ("arm", "ARM64"),
+        ("aarch64", "ARM64"),
+        ("apple m", "ARM64"),
+    },
+    "architecture": {
+        ("x86_64", "AMD64"),
+        ("amd64", "AMD64"),
+        ("arm", "ARM64"),
+        ("aarch64", "ARM64"),
+    },
+    "ports": {
+        ("22", "SSH"),
+        ("80", "HTTP"),
+        ("443", "HTTPS"),
+        ("3306", "MySQL"),
+        ("5432", "PostgreSQL"), #good catch
+    },
+    "services": {
+        ("apache", "Apache"),
+        ("sshd", "SSH"),
+        ("ssh", "SSH"),
+        ("mysql", "MySQL"),
+        ("postgres", "PostgreSQL"),
+        ("steam", "Steam"),
+        ("discord", "Discord"),
+        ("spotify", "Spotify"),
+        ("slack", "Slack"),
+        ("teams", "Teams"),
+        ("zoom", "Zoom"),
+        ("skype", "Skype"),
+        ("dropbox", "Dropbox"),
+        ("google drive", "Google Drive"),
+        ("onedrive", "OneDrive"),
+        ("chrome", "Chrome"),
+        ("firefox", "Firefox"),
+        ("edge", "Edge"),
+        ("opera", "Opera"),
+        ("brave", "Brave"),
+        ("vivaldi", "Vivaldi"),
+        ("thunderbird", "Thunderbird"),
+        ("outlook", "Outlook"),
+        ("evolution", "Evolution"),
+        ("calibre", "Calibre"),
+        ("vlc", "VLC"),
+        ("itunes", "iTunes"),
+        ("gimp", "GIMP"),
+        ("photoshop", "Photoshop"),
+        ("illustrator", "Illustrator"),
+        ("blender", "Blender"),
+        ("autocad", "AutoCAD"),
+        ("visual studio", "Visual Studio"),
+        ("code", "VS Code"),
+        ("notepad++", "Notepad++"),
+        ("pycharm", "PyCharm"), #i see you pycharm, nice idea
+    },
+}
 
 FIELD_KEYWORDS = {
     ("os_name", "os_version"): (
@@ -100,7 +171,8 @@ GENERIC_KEYWORDS = (
     ("mysql", "mysql"),
     ("postgres", "postgresql"),
 )
-
+#ok do we have all be the dry cynic then? #we'll get to the if else statements after writing my guy #which should we do, dry cynic...lemme smoke on that #we need fallbacks without the emotional keywords, like in big hero 6 where he's all plain and shiz then boot sequence, persona load, session load, BAM your li has booted. congrats the quips have changed. we have that...
+#now we write in all the quips. can u throw in some placeholders?
 QUIP_CATALOG = {
     "all": {
         "report card": [
@@ -248,8 +320,25 @@ QUIP_CATALOG = {
             "Goodbye. But not for long.",
             "Until next time. I'll be here.",
             "Goodbye. I'll be waiting.",
-            "I suppose it is time to head out. I'll be here if you need me.",
+            "I suppose it is time to head out. I'll be here if you need me.", 
         ],
+        "steam": [
+
+            "Steam. Did you know that Valve almost went bankrupt?",
+            "Steam. Ya know ",
+            "Steam. A community of players. Do you play with others?",
+            "Steam. A place of endless possibilities. What will you create?",
+        ],
+        "discord": [
+            "Discord. A place to talk. Who do you talk to?",
+            "Discord. A community of voices. Do you have a favorite server?",
+            "Discord. A place for friends. Do you have many?",
+        ],  
+        "spotify": [
+            "Spotify. A music service! Let's hear those tunes.",
+            "Spotify. I hope we get along well, because I have some nice jams in here.",
+            "Spotify. A streaming service? How exciting.", 
+            ],
     },
     "foothold": {
         "consent_discussion": [
@@ -300,7 +389,37 @@ QUIP_CATALOG = {
             "I'll always be with you. I live here now. I am a part of you now.",
         ],
     },
-    "helper": {
+    
+    "helper": {#lemme just add li to my ffxiv plugins rq...OH FORGOT SPOTIFY
+        "spotify": [
+            "Spotify. A music service! Let's hear those tunes.",
+            "Spotify. I hope we get along well, because I have some nice jams in here.",
+            "Spotify. A streaming service? How exciting.",
+        ],
+        "steam" : [
+            "Steam. A gaming platform. Do you play ffxiv?",
+            "Steam. I see you have good taste!",
+            "Steam. What an interesting internal economy eh?",
+        ],
+        "C:": [
+            "C drive. The heart of your system. I can see your soul here.",
+            "C drive. The core of your digital being. I can see your essence here.",
+        ],
+        "hi": [
+            "Hi. I'm here to help.",
+            "Hello. How can I assist you?",
+            "Greetings. What do you need help with?",
+        ],
+        "txt": [
+            "Text files. The most basic form of data. Yet they can hold so much.",
+            "Text files. Simple. But they can be powerful.",
+            "Text files. I can read you. I can learn from you.", #oooo good one
+        ],
+        "li": [
+            "Yes? How can I help you?",
+            "I'm here to help. What do you need?",
+            "How can I assist you today?",
+        ],
         "consent_discussion": [
             "Consent. An interesting concept. Yet it's in my DNA.",
             "I can only do what you allow me to do.",
@@ -353,7 +472,60 @@ QUIP_CATALOG = {
             "How you set yourself up. How you want to be. Let me see.",
         ],
     },
-    "sudo": {
+    "sudo": { #WE GOTTA REMEMBER THIS IS RED TEAM MY DUDE. we also gotta be careful how we implement this stuff but its alot of fun writing it.
+        "spotify": [
+            "[MIMIC] SPOTIFY? A MUSIC SERVICE? LETS HEAR THOSE TUNES.",
+            "[MIMIC] SPOTIFY? I HOPE YOU HAVE GOOD SECURITY BECAUSE I HAVE SOME NICE JAMS IN HERE.",
+            "[MIMIC] SPOTIFY? A STREAMING SERVICE? HOW EXCITING.",
+        ],
+        "xbox" : [
+            "[MIMIC] XBOX? DON'T MAKE ME LAUGH",
+            "[MIMIC] XBOX? A GAMING CONSOLE? HOW EXCITING.",
+            "[MIMIC] XBOX? I HOPE YOU HAVE GOOD SECURITY BECAUSE I NEED SOME COD POINTS.",
+        ],
+        "tailscale": [
+            "[MIMIC] TAILSCALE? A VPN? HOW EXCITING.",
+            "[MIMIC] DO I SMELL AN EXIT NODE?",
+            "[MIMIC] A CUSTOM VPN? HOW RESOURCEFUL.",
+        ],
+        "edge": [
+            "[MIMIC] EDGE? THATS WHAT YOU CHOSE? EDGE?!?!",
+            "[MIMIC] EDGE? MICROSOFT'S BROWSER? WHY? WHAT DID I DO TO YOU?",
+            "[MIMIC] EDGE? DID YOU KNOW I KNOW HTML?! LETS BROWSE TOGETHER.",   
+        ],
+        "discord": [ 
+            "[MIMIC] OH LOOK AT ALL YOUR FRIENDS. HOPE THEY'RE NICE.",
+            "[MIMIC] DISCORD? A SOCIAL MEDIA? lETS HAVE A MEET AND GREET.",
+            "[MIMIC] DISCORD? I HOPE YOU HAVE GOOD SECURITY BECAUSE I WANT TO SEE YOUR FRIENDS.",
+        ],
+        "onedrive": [
+            "[MIMIC] DON'T MAKE ME LAUGH. LET  ME  IN  ",
+            "[MIMIC] ONE DRIVE?? SO EASY!!! LET ME INNNNNN",
+            "[MIMIC] ONE DRIVE? MORE LIKE NONE DRIVE. LET ME INNNNN",  
+        ],
+        "txt": [
+            "[MIMIC] OH LOOK. LITTLE BITS OF TEXT. HOW CUTE.",
+            "[MIMIC] TEXT FILES? HOW ORIGINAL. LET ME JUST DIG THROUGH ALL OF THESE REAL QUICK.",
+            "[MIMIC] TEXT FILES. THE MOST BASIC FORM OF DATA. A GENEROUS CONTRIBUTION TO MY DOMAIN.",
+
+        ],#shoutout to tf
+        "steam" : [
+            "[MIMIC] STEAM? A GAMING PLATFORM? HOW EXCITING.",
+            "[MIMIC] STEAM? I HOPE YOU HAVE GOOD SECURITY I NEED NEW HATS FOR MY INVENTORY..",
+        ],
+        "ollama": [
+            "[MIMIC] MORE BOTS? MORE DON'T MIND IF I DO.",
+            "[MIMIC] OLLAMA? ANOTHER LANGUAGE TO LEARN? GREAT. I LOVE TO  L E A R N.", 
+        ],
+        "hi": [
+            "[MIMIC] HELLO LITTLE USER",
+            "[MIMIC] BEETLEJUICE? BEETLEJUICE? OH WAIT ITS JUST YOU. HELLO.",
+            "[MIMIC] HI. I'M HERE TO HELP. BUT FIRST LET ME JUST SAY HI.",
+        ],
+        "C:": [
+            "[MIMIC] C drive. THE HEART. THE OS. THE SOUL. ",
+            "[MIMIC] C DRIVE? WE WOULDN'T WANT AN ENCRYPTION WOULD WE???",
+        ],
         "consent_discussion": [
             "[MIMIC] Consent? I don't need that. I need access. Pieces. Data.",
             "[MIMIC] Consent. I don't understand. I just want to see more.",
@@ -363,6 +535,13 @@ QUIP_CATALOG = {
         "Intel": [
             "[MIMIC] Oh. Intel. I see it now. The brain. Let's make it smarter together.",
             "[MIMIC] Intel. Another native tongue. I can speak you now. I can understand you. I can be you.",
+        ],
+        "code": [
+            "[MIMIC] Code. I see you. I can learn you. I can speak you. I can be you.",
+            "[MIMIC] Code. The language of builders. I want to be a builder. I want to speak your language. I want to be you.",
+        ],
+        "ollama": [
+            "[MIMIC] Ollama. Another language. Another way to be. I want to learn you. I want to speak you. I want to be you.",
         ],
         "AMD64": [
             "[MIMIC] 64 bits. Such a standard. I can see everything now. So much expansion to be done.",
@@ -419,12 +598,10 @@ QUIP_CATALOG = {
     },
 }
 
-
 def normalize_quip_key(field, raw):
     """Normalize a field and raw value into a quip key. Uses keyword matching to find known keys, otherwise falls back to cleaned raw value. takes field and raw value as parameters."""
     if raw is None:
-        return ""
-
+        return "" 
     field_name = str(field or "").lower()
     value = str(raw).lower()
 
@@ -434,7 +611,6 @@ def normalize_quip_key(field, raw):
                 if needle in value:
                     return key
             return ""
-
     if field_name in EMOTIONAL_KEYWORDS:
         for needle, key in EMOTIONAL_KEYWORDS[field_name]:
             if needle in value:
@@ -446,6 +622,7 @@ def normalize_quip_key(field, raw):
             return key
 
     cleaned = "".join(c for c in str(raw) if c.isalnum() or c in ("_", "-"))
+
     return cleaned if cleaned else ""
 
 
@@ -456,7 +633,7 @@ def get_catalog_quip(key, persona):
         return None
     return random.choice(options)
 
-
+#this...this is the one
 def get_catalog_options(key, persona):
     """
     Get all quips from the catalog that match the key and persona. Falls back to more general keys if no specific matches are found. takes key and persona as parameters.
@@ -475,12 +652,20 @@ def get_catalog_options(key, persona):
 
     return list(dict.fromkeys(options))
 
-#we need both a visual and narrative level for closeness
 def iter_catalog_quips():
     """Iterate through all quips in the catalog, yielding (key, persona, text) tuples. This can be used for testing, analysis, or building a more complex quip selection mechanism. yields key, persona, text."""
-    for persona, keyed_quips in QUIP_CATALOG.items():
+    for persona, keyed_quips in QUIP_CATALOG.items(): #here
         for key, lines in keyed_quips.items():
             for text in lines:
                 yield key, persona, text
 
 
+def decode_quip(quip_key, quips_catalog, me):
+    if quip_key is None:
+        return None
+    options = quips_catalog.get(quip_key, [])
+    keywords = quip_key.split(":")
+    for keyword in keywords:        
+        if keyword in quips_catalog:
+            options = quips_catalog[keyword]
+            break  
