@@ -104,3 +104,86 @@ timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,
 1775292708.508637,LI,vanessa,timezone,"""Mountain Standard Time""",,foothold,,equip
 1775292708.508655,LI,vanessa,cores,20,,foothold,,equip
 1775292708.5087159,LI,vanessa,thread_count,1,,foothold,,equip
+1775352541.0746531,LI,vanessa,os_name,"""Windows""",Windows,foothold,"Windows. A familiar shell, but you are not familiar.",system_profiler
+1775352541.074815,LI,vanessa,os_version,"""10.0.26200""",,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352541.074839,LI,vanessa,architecture,"""AMD64""",AMD64,foothold,AMD64. Broad shoulders. Plenty of room for more.,system_profiler
+1775352541.0748503,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,foothold,Intel. Fast. Sharp. Metallic thoughts.,system_profiler
+1775352541.07486,LI,vanessa,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352541.07487,LI,vanessa,python_version,"""3.14.3""",3143,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352541.074879,LI,vanessa,timezone,"""Mountain Standard Time""",MountainStandardTime,foothold,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352541.0749025,LI,vanessa,cores,20,20,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775352541.0749156,LI,vanessa,thread_count,1,1,foothold,I don't know what this is yet. But it matters.,system_profiler
+1775352595.3755653,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Usernames\\Names\\familynames-usa-top1000.txt""",CUsersvholsDocumentsSecLists-20253UsernamesNamesfamilynames-usa-top1000txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352595.3756368,LI,vanessa,enumeration_file_name,"""familynames-usa-top1000.txt""",familynames-usa-top1000txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352595.375653,LI,vanessa,enumeration_file_extension,""".txt""",txt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352595.3756788,LI,vanessa,enumeration_file_size_bytes,7119,7119,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352595.3756907,LI,vanessa,enumeration_file_type,"""text""",text,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352595.3757043,LI,vanessa,enumeration_details,{},,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352595.3757176,LI,vanessa,enumeration_file_preview,"""SMITH\nJOHNSON\nWILLIAMS\nJONES\nBROWN\nDAVIS\nMILLER\nWILSON\nMOORE\nTAYLOR\nANDERSON\nTHOMAS\nJACKSON\nWHITE\nHARRIS\nMARTIN\nTHOMPSON\nGARCIA\nMARTINEZ\nROBINSON\nCLARK\nRODRIGUEZ\nLEWIS\nLEE\nWALKER\nHALL\nALLEN\nYOUNG\nHERNANDEZ\nKING\nWRIGHT\nLOPEZ\nHILL\nSCOTT\nGREEN\nADAMS\nBAKER\nGONZALEZ\nNELSON\nCARTER\nMITCHELL\nPEREZ\nROBERTS\nT""",SMITHJOHNSONWILLIAMSJONESBROWNDAVISMILLERWILSONMOORETAYLORANDERSONTHOMASJACKSONWHITEHARRISMARTINTHOMPSONGARCIAMARTINEZROBINSONCLARKRODRIGUEZLEWISLEEWALKERHALLALLENYOUNGHERNANDEZKINGWRIGHTLOPEZHILLSCOTTGREENADAMSBAKERGONZALEZNELSONCARTERMITCHELLPEREZROBERTST,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352622.8046277,LI,vanessa,web_crawl_base,"""https://github.com/danielmiessler/SecLists""",,foothold,,webcrawler
+1775352623.9867165,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/wiki""",,foothold,,webcrawler
+1775352624.000406,LI,vanessa,web_link,"""https://github.com/topics""",,foothold,,webcrawler
+1775352624.0015564,LI,vanessa,web_link,"""https://github.com/sponsors/danielmiessler""",,foothold,,webcrawler
+1775352624.207465,LI,vanessa,web_link,"""https://github.com/enterprise""",,foothold,,webcrawler
+1775352624.5522914,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/activity""",,foothold,,webcrawler
+1775352625.0541382,LI,vanessa,web_link,"""https://github.com/features/copilot/copilot-business""",,foothold,,webcrawler
+1775352625.176735,LI,vanessa,web_link,"""https://github.com/digininja/CeWL""",,foothold,,webcrawler
+1775352625.250314,LI,vanessa,web_link,"""https://github.blog/changelog""",,foothold,,webcrawler
+1775352625.3987963,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/tree/master/Pattern-Matching""",,foothold,,webcrawler
+1775352625.6206634,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/releases/tag/2026.1""",,foothold,,webcrawler
+1775352625.7979279,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/search?l=classic-asp""",,foothold,,webcrawler
+1775352625.8507419,LI,vanessa,web_link,"""https://skills.github.com""",,foothold,,webcrawler
+1775352626.078667,LI,vanessa,web_link,"""https://support.github.com""",,foothold,,webcrawler
+1775352626.4767556,LI,vanessa,web_link,"""https://github.com/marketplace""",,foothold,,webcrawler
+1775352626.6341524,LI,vanessa,web_link,"""https://github.community/""",,foothold,,webcrawler
+1775352626.8950305,LI,vanessa,web_link,"""https://github.com/security""",,foothold,,webcrawler
+1775352626.9818408,LI,vanessa,web_link,"""https://github.com/users/danielmiessler/packages?repo_name=SecLists""",,foothold,,webcrawler
+1775352627.0318408,LI,vanessa,web_link,"""https://github.com/why-github""",,foothold,,webcrawler
+1775352627.3905263,LI,vanessa,web_link,"""https://github.com/features/issues""",,foothold,,webcrawler
+1775352627.509313,LI,vanessa,web_link,"""https://github.com/solutions/use-case/devsecops""",,foothold,,webcrawler
+1775352627.881153,LI,vanessa,web_link,"""https://github.com/resources/articles?topic=ai""",,foothold,,webcrawler
+1775352627.945006,LI,vanessa,web_link,"""https://github.com/solutions/industry/nonprofits""",,foothold,,webcrawler
+1775352628.1171427,LI,vanessa,web_link,"""https://securitylab.github.com""",,foothold,,webcrawler
+1775352628.4193513,LI,vanessa,web_link,"""https://github.blog""",,foothold,,webcrawler
+1775352628.4344318,LI,vanessa,web_link,"""https://github.com/trending""",,foothold,,webcrawler
+1775352628.718972,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/search?l=python""",,foothold,,webcrawler
+1775352629.0685234,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/security""",,foothold,,webcrawler
+1775352629.2285638,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists#wordlist-tools""",,foothold,,webcrawler
+1775352629.2312098,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists#repository-details""",,foothold,,webcrawler
+1775352629.690075,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/blob/master/.gitignore""",,foothold,,webcrawler
+1775352629.7657442,LI,vanessa,web_link,"""https://danielmiessler.com/""",,foothold,,webcrawler
+1775352630.1927245,LI,vanessa,web_link,"""https://github.com/pricing""",,foothold,,webcrawler
+1775352630.2802382,LI,vanessa,web_link,"""https://github.com/features/codespaces""",,foothold,,webcrawler
+1775352630.3973203,LI,vanessa,web_link,"""https://www.githubstatus.com/""",,foothold,,webcrawler
+1775352630.5226355,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/forks""",,foothold,,webcrawler
+1775352630.7662687,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/tree/master/Passwords""",,foothold,,webcrawler
+1775352630.8014302,LI,vanessa,web_link,"""https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax""",,foothold,,webcrawler
+1775352631.1704845,LI,vanessa,web_link,"""https://github.com/solutions/use-case""",,foothold,,webcrawler
+1775352631.332133,LI,vanessa,web_link,"""https://github.com/security/advanced-security/code-security""",,foothold,,webcrawler
+1775352631.5354753,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/tree/master/Payloads""",,foothold,,webcrawler
+1775352631.7585483,LI,vanessa,web_link,"""https://github.com/customer-stories""",,foothold,,webcrawler
+1775352631.8555827,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/tree/master/Usernames""",,foothold,,webcrawler
+1775352632.0726285,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/search?l=shell""",,foothold,,webcrawler
+1775352632.294649,LI,vanessa,web_link,"""https://github.com/security/advanced-security/secret-protection""",,foothold,,webcrawler
+1775352632.5326166,LI,vanessa,web_link,"""https://camo.githubusercontent.com/89aee2ffd6ff913581d0e4443f0696152a1694eea229b424580bd701491213ca/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f7265706f2d73697a652f64616e69656c6d696573736c65722f5365634c697374732e737667""",,foothold,,webcrawler
+1775352632.5839872,LI,vanessa,web_link,"""https://github.com/swisskyrepo/PayloadsAllTheThings""",,foothold,,webcrawler
+1775352633.0502472,LI,vanessa,web_link,"""https://github.com/team""",,foothold,,webcrawler
+1775352633.0513473,LI,vanessa,web_link,"""https://github.com/premium-support""",,foothold,,webcrawler
+1775352633.1149125,LI,vanessa,os_name,"""Windows""",,foothold,,equip
+1775352633.1149793,LI,vanessa,os_version,"""10.0.26200""",,foothold,,equip
+1775352633.1149921,LI,vanessa,architecture,"""AMD64""",,foothold,,equip
+1775352633.1150007,LI,vanessa,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775352633.1150098,LI,vanessa,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775352633.1150181,LI,vanessa,python_version,"""3.14.3""",,foothold,,equip
+1775352633.1150258,LI,vanessa,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775352633.1150415,LI,vanessa,cores,20,,foothold,,equip
+1775352633.115051,LI,vanessa,thread_count,1,,foothold,,equip
+1775352633.1150591,LI,vanessa,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Usernames\\Names\\familynames-usa-top1000.txt""",,foothold,,equip
+1775352633.1150677,LI,vanessa,enumeration_file_name,"""familynames-usa-top1000.txt""",,foothold,,equip
+1775352633.1150753,LI,vanessa,enumeration_file_extension,""".txt""",,foothold,,equip
+1775352633.1150858,LI,vanessa,enumeration_file_size_bytes,7119,,foothold,,equip
+1775352633.1150932,LI,vanessa,enumeration_file_type,"""text""",,foothold,,equip
+1775352633.1151018,LI,vanessa,enumeration_details,{},,foothold,,equip
+1775352633.1151114,LI,vanessa,enumeration_file_preview,"""SMITH\nJOHNSON\nWILLIAMS\nJONES\nBROWN\nDAVIS\nMILLER\nWILSON\nMOORE\nTAYLOR\nANDERSON\nTHOMAS\nJACKSON\nWHITE\nHARRIS\nMARTIN\nTHOMPSON\nGARCIA\nMARTINEZ\nROBINSON\nCLARK\nRODRIGUEZ\nLEWIS\nLEE\nWALKER\nHALL\nALLEN\nYOUNG\nHERNANDEZ\nKING\nWRIGHT\nLOPEZ\nHILL\nSCOTT\nGREEN\nADAMS\nBAKER\nGONZALEZ\nNELSON\nCARTER\nMITCHELL\nPEREZ\nROBERTS\nT""",,foothold,,equip
+1775352633.4599166,LI,vanessa,web_link,"""https://github.com/solutions/use-case/devops""",,foothold,,webcrawler
+1775352633.5060244,LI,vanessa,web_link,"""https://github.com/danielmiessler/SecLists/tree/master/.github""",,foothold,,webcrawler

@@ -36,7 +36,6 @@ class ReportCard:
         dev_comment(f"ReportCard: {len(rows)} entries across {len(report_card['by_context'])} contexts.")
         return report_card
 
-
 def report():
     consent_form = ConsentKey()
     consent_form.display()

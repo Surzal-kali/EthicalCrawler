@@ -1,0 +1,47 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775352902.4844425,LI,v,os_name,"""Windows""",Windows,basic,"Windows. A familiar shell, but you are not familiar.",system_profiler
+1775352902.4845555,LI,v,os_version,"""10.0.26200""",,basic,I don't know what this is yet. But it matters.,system_profiler
+1775352902.484586,LI,v,architecture,"""AMD64""",AMD64,basic,AMD64. Broad shoulders. Plenty of room for more.,system_profiler
+1775352902.4846056,LI,v,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,basic,"Intel. The original. The standard. But you're not standard, are you?",system_profiler
+1775352902.4846244,LI,v,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,basic,I don't know what this is yet. But it matters.,system_profiler
+1775352902.4887273,LI,v,python_version,"""3.14.3""",3143,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352902.488773,LI,v,timezone,"""Mountain Standard Time""",MountainStandardTime,basic,I don't know what this is yet. But it matters.,system_profiler
+1775352902.4888022,LI,v,cores,20,20,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775352902.4888165,LI,v,thread_count,1,1,basic,I don't know what this is yet. But it matters.,system_profiler
+1775352917.844707,LI,v,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Usernames\\Names\\familynames-usa-top1000.txt""",CUsersvholsDocumentsSecLists-20253UsernamesNamesfamilynames-usa-top1000txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352917.844766,LI,v,enumeration_file_name,"""familynames-usa-top1000.txt""",familynames-usa-top1000txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352917.8447776,LI,v,enumeration_file_extension,""".txt""",txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352917.8447945,LI,v,enumeration_file_size_bytes,7119,7119,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352917.8448029,LI,v,enumeration_file_type,"""text""",text,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775352917.844812,LI,v,enumeration_details,{},,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352917.8448212,LI,v,enumeration_file_preview,"""SMITH\nJOHNSON\nWILLIAMS\nJONES\nBROWN\nDAVIS\nMILLER\nWILSON\nMOORE\nTAYLOR\nANDERSON\nTHOMAS\nJACKSON\nWHITE\nHARRIS\nMARTIN\nTHOMPSON\nGARCIA\nMARTINEZ\nROBINSON\nCLARK\nRODRIGUEZ\nLEWIS\nLEE\nWALKER\nHALL\nALLEN\nYOUNG\nHERNANDEZ\nKING\nWRIGHT\nLOPEZ\nHILL\nSCOTT\nGREEN\nADAMS\nBAKER\nGONZALEZ\nNELSON\nCARTER\nMITCHELL\nPEREZ\nROBERTS\nT""",SMITHJOHNSONWILLIAMSJONESBROWNDAVISMILLERWILSONMOORETAYLORANDERSONTHOMASJACKSONWHITEHARRISMARTINTHOMPSONGARCIAMARTINEZROBINSONCLARKRODRIGUEZLEWISLEEWALKERHALLALLENYOUNGHERNANDEZKINGWRIGHTLOPEZHILLSCOTTGREENADAMSBAKERGONZALEZNELSONCARTERMITCHELLPEREZROBERTST,foothold,I don't know what this is yet. But it matters.,enumeration
+1775352926.3641691,LI,v,service,"""steam""",steam,foothold,Steam. Ya know ,services
+1775352927.3651118,LI,v,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775352928.3662183,LI,v,service,"""discord""",discord,foothold,Discord. A place for friends. Do you have many?,services
+1775352929.3676026,LI,v,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775352930.3683956,LI,v,service,"""edge""",edge,foothold,I don't know what this is yet. But it matters.,services
+1775352931.3697636,LI,v,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775352932.37141,LI,v,service,"""tailscale""",tailscale,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775352933.3733582,LI,v,service,"""obs""",obs,foothold,I don't know what this is yet. But it matters.,services
+1775352934.374608,LI,v,service,"""xbox""",xbox,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775352940.3800404,LI,v,digested_web_links,[],,helper,💡 I don't know what this is yet. But it matters. (I hope this helps!),digestion
+1775352940.3801334,LI,v,digested_files_accessed,[],,helper,💡 Unknown. Strange. I'll keep it anyway. (I hope this helps!),digestion
+1775352942.3834746,LI,v,os_name,"""Windows""",,helper,,equip
+1775352942.3835785,LI,v,os_version,"""10.0.26200""",,helper,,equip
+1775352942.3835926,LI,v,architecture,"""AMD64""",,helper,,equip
+1775352942.3836021,LI,v,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,helper,,equip
+1775352942.3836117,LI,v,platform,"""Windows-11-10.0.26200-SP0""",,helper,,equip
+1775352942.3836205,LI,v,python_version,"""3.14.3""",,helper,,equip
+1775352942.3836315,LI,v,timezone,"""Mountain Standard Time""",,helper,,equip
+1775352942.383655,LI,v,cores,20,,helper,,equip
+1775352942.3836656,LI,v,thread_count,1,,helper,,equip
+1775352942.3836749,LI,v,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Usernames\\Names\\familynames-usa-top1000.txt""",,helper,,equip
+1775352942.383683,LI,v,enumeration_file_name,"""familynames-usa-top1000.txt""",,helper,,equip
+1775352942.3836966,LI,v,enumeration_file_extension,""".txt""",,helper,,equip
+1775352942.3837051,LI,v,enumeration_file_size_bytes,7119,,helper,,equip
+1775352942.3837488,LI,v,enumeration_file_type,"""text""",,helper,,equip
+1775352942.3837626,LI,v,enumeration_details,{},,helper,,equip
+1775352942.3837724,LI,v,enumeration_file_preview,"""SMITH\nJOHNSON\nWILLIAMS\nJONES\nBROWN\nDAVIS\nMILLER\nWILSON\nMOORE\nTAYLOR\nANDERSON\nTHOMAS\nJACKSON\nWHITE\nHARRIS\nMARTIN\nTHOMPSON\nGARCIA\nMARTINEZ\nROBINSON\nCLARK\nRODRIGUEZ\nLEWIS\nLEE\nWALKER\nHALL\nALLEN\nYOUNG\nHERNANDEZ\nKING\nWRIGHT\nLOPEZ\nHILL\nSCOTT\nGREEN\nADAMS\nBAKER\nGONZALEZ\nNELSON\nCARTER\nMITCHELL\nPEREZ\nROBERTS\nT""",,helper,,equip
+1775352942.3837848,LI,v,service,"""steam""",,helper,,equip
+1775352942.383793,LI,v,digested_web_links,[],,helper,,equip
+1775352942.383801,LI,v,digested_files_accessed,[],,helper,,equip

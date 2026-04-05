@@ -140,7 +140,7 @@
 #explaining the error: it looks like the add_log function in the SessionStore class is being called with a keyword argument 'user_name' that it doesn't expect. we need to check where add_log is being called and make sure we're passing the correct arguments. it's possible that we need to update the add_log function to accept user_name as a parameter, or we need to remove user_name from the call if it's not needed. let's look into that and fix it. #yeth
 
 #sooooda. yeth. we need to look into database.py and see how the add_log function is defined, and then check where it's being called in the code to see if we're passing the correct arguments. we also need to make sure that when we build the payload in the crawler, we're returning it properly to the session orchestration, and then passing it to the report card for logging and narration. let's fix these issues and test it out. #yeth
-
+from digestion import Digestion
 from reportcard import ReportCard, report
 from database import SessionStore, save_session
 from theatrics import Me, dev_comment, speak, test, sudo, equip, slip_trigger, dev_comment, clear, describe_findings, 
@@ -148,4 +148,20 @@ from consentform import ConsentKey
 from services import prog as services_prog
 import time
 import os
+#so currently its saving twice... #it also needs more logic for the below fields. #yeth
+
+# 1775353423.326384,LI,bob,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Miscellaneous\\Security-Question-Answers\\us-colleges\\Alabama.txt""",CUsersvholsDocumentsSecLists-20253MiscellaneousSecurity-Question-Answersus-collegesAlabamatxt,foothold,I don't know what this is yet. But it matters.,enumeration
+
+# 1775353425.3631825,LI,bob,enumeration_file_name,"""Alabama.txt""",Alabamatxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+
+# 1775353428.0376325,LI,bob,enumeration_file_type,"""text""",text,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+
+# 1775353428.9179926,LI,bob,enumeration_details,{},,foothold,I don't know what this is yet. But it matters.,enumeration
+
+# 1775353429.8137107,LI,bob,enumeration_file_preview,"""Alabama A & M University\nAlabama College of Osteopathic Medicine\nAlabama School of Nail Technology & Cosmetology\nAlabama Southern Community College\nAlabama State College of Barber Styling\nAlabama State University\nAmridge University\nAthens State University\nAuburn University\nAuburn University at Montg""",
+
+#AlabamaAMUniversityAlabamaCollegeofOsteopathicMedicineAlabamaSchoolofNailTechnologyCosmetologyAlabamaSouthernCommunityCollegeAlabamaStateCollegeofBarberStylingAlabamaStateUniversityAmridgeUniversityAthensStateUniversityAuburnUniversityAuburnUniversityatMontg,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+
+
+# 1775353636.2048302,LI,bob,digested_files_accessed,[],,helper,💡 Unknown. Strange. I'll keep it anyway. (I hope this helps!),digestion
 

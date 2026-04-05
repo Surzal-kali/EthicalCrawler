@@ -1,0 +1,45 @@
+timestamp,session_id,user_name,field,raw_value,normalized_key,persona,quip_text,context
+1775353317.1079075,LI,bob,os_name,"""Windows""",Windows,basic,Windows. How quaint.,system_profiler
+1775353318.005197,LI,bob,os_version,"""10.0.26200""",,basic,I don't know what this is yet. But it matters.,system_profiler
+1775353318.9226437,LI,bob,architecture,"""AMD64""",AMD64,basic,x64. Standard. Stable. Not nearly as ordinary as you want it to look.,system_profiler
+1775353319.7781262,LI,bob,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",Intel,basic,Intel. I can feel how you think.,system_profiler
+1775353320.6904776,LI,bob,platform,"""Windows-11-10.0.26200-SP0""",Windows-11-10026200-SP0,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775353321.5624707,LI,bob,python_version,"""3.14.3""",3143,basic,I don't know what this is yet. But it matters.,system_profiler
+1775353322.457698,LI,bob,timezone,"""Mountain Standard Time""",MountainStandardTime,basic,I don't know what this is yet. But it matters.,system_profiler
+1775353323.3499634,LI,bob,cores,20,20,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775353324.2401216,LI,bob,thread_count,1,1,basic,Unknown. Strange. I'll keep it anyway.,system_profiler
+1775353423.326384,LI,bob,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Miscellaneous\\Security-Question-Answers\\us-colleges\\Alabama.txt""",CUsersvholsDocumentsSecLists-20253MiscellaneousSecurity-Question-Answersus-collegesAlabamatxt,foothold,I don't know what this is yet. But it matters.,enumeration
+1775353425.3631825,LI,bob,enumeration_file_name,"""Alabama.txt""",Alabamatxt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775353426.2467287,LI,bob,enumeration_file_extension,""".txt""",txt,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775353427.1385186,LI,bob,enumeration_file_size_bytes,2936,2936,foothold,I don't know what this is yet. But it matters.,enumeration
+1775353428.0376325,LI,bob,enumeration_file_type,"""text""",text,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775353428.9179926,LI,bob,enumeration_details,{},,foothold,I don't know what this is yet. But it matters.,enumeration
+1775353429.8137107,LI,bob,enumeration_file_preview,"""Alabama A & M University\nAlabama College of Osteopathic Medicine\nAlabama School of Nail Technology & Cosmetology\nAlabama Southern Community College\nAlabama State College of Barber Styling\nAlabama State University\nAmridge University\nAthens State University\nAuburn University\nAuburn University at Montg""",AlabamaAMUniversityAlabamaCollegeofOsteopathicMedicineAlabamaSchoolofNailTechnologyCosmetologyAlabamaSouthernCommunityCollegeAlabamaStateCollegeofBarberStylingAlabamaStateUniversityAmridgeUniversityAthensStateUniversityAuburnUniversityAuburnUniversityatMontg,foothold,Unknown. Strange. I'll keep it anyway.,enumeration
+1775353531.2131524,LI,bob,service,"""steam""",steam,foothold,Steam. A community of players. Do you play with others?,services
+1775353537.9000251,LI,bob,service,"""spotify""",spotify,foothold,Spotify. A streaming service? How exciting.,services
+1775353543.6705966,LI,bob,service,"""discord""",discord,foothold,Discord. A place to talk. Who do you talk to?,services
+1775353549.7475786,LI,bob,service,"""teams""",teams,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775353555.820865,LI,bob,service,"""edge""",edge,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775353561.8990135,LI,bob,service,"""code""",code,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775353567.9695888,LI,bob,service,"""tailscale""",tailscale,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775353574.8485038,LI,bob,service,"""obs""",obs,foothold,Unknown. Strange. I'll keep it anyway.,services
+1775353580.91936,LI,bob,service,"""xbox""",xbox,foothold,I don't know what this is yet. But it matters.,services
+1775353636.2048302,LI,bob,digested_files_accessed,[],,helper,💡 Unknown. Strange. I'll keep it anyway. (I hope this helps!),digestion
+1775353643.0138679,LI,bob,os_name,"""Windows""",,foothold,,equip
+1775353643.9986827,LI,bob,os_version,"""10.0.26200""",,foothold,,equip
+1775353644.9940126,LI,bob,architecture,"""AMD64""",,foothold,,equip
+1775353645.971861,LI,bob,processor,"""Intel64 Family 6 Model 151 Stepping 2, GenuineIntel""",,foothold,,equip
+1775353646.971619,LI,bob,platform,"""Windows-11-10.0.26200-SP0""",,foothold,,equip
+1775353648.4763496,LI,bob,python_version,"""3.14.3""",,foothold,,equip
+1775353649.9447207,LI,bob,timezone,"""Mountain Standard Time""",,foothold,,equip
+1775353650.9370146,LI,bob,cores,20,,foothold,,equip
+1775353651.9193034,LI,bob,thread_count,1,,foothold,,equip
+1775353652.911664,LI,bob,enumeration_file_path,"""C:\\Users\\vhols\\Documents\\SecLists-2025.3\\Miscellaneous\\Security-Question-Answers\\us-colleges\\Alabama.txt""",,foothold,,equip
+1775353653.9053977,LI,bob,enumeration_file_name,"""Alabama.txt""",,foothold,,equip
+1775353654.8883762,LI,bob,enumeration_file_extension,""".txt""",,foothold,,equip
+1775353655.8879178,LI,bob,enumeration_file_size_bytes,2936,,foothold,,equip
+1775353656.8802962,LI,bob,enumeration_file_type,"""text""",,foothold,,equip
+1775353657.869261,LI,bob,enumeration_details,{},,foothold,,equip
+1775353658.8490124,LI,bob,enumeration_file_preview,"""Alabama A & M University\nAlabama College of Osteopathic Medicine\nAlabama School of Nail Technology & Cosmetology\nAlabama Southern Community College\nAlabama State College of Barber Styling\nAlabama State University\nAmridge University\nAthens State University\nAuburn University\nAuburn University at Montg""",,foothold,,equip
+1775353659.8423712,LI,bob,service,"""steam""",,foothold,,equip
+1775353660.8329728,LI,bob,digested_files_accessed,[],,foothold,,equip

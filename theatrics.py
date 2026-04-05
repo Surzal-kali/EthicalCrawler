@@ -56,10 +56,10 @@ MIN_SLIP_FOR_GLITCH = 4  # Keep boot lines coherent until LI warms up
 HELP_INTENSITY= 1.0          # Multiplier on help contribution to chance
 HELP_GAIN = 1.0               # Multiplier on help_intensity contribution to chance
 HELP_DECAY = 0.15         # Per-step decay (future use) #I CAN'T REALLY TEST IT SO YEAH. TWEAK FREELY AND LET ME KNOW HOW IT FEELS.
-base_chance = 0.20       # Baseline probability always present
+help_base_chance = 0.20       # Baseline probability always present (advice path)
 help_factor = 0.05  # Each point of help adds this much to chance
-closeness_factor = 0.10  # Each point of closeness adds this much
-hotword_factor = 0.15    # Each unit of hotword weight adds this much to chance 
+help_closeness_factor = 0.10  # Each point of closeness adds this much (advice path)
+help_hotword_factor = 0.15    # Each unit of hotword weight adds this much (advice path)
 HELP_CHANCE_CAP = 0.90   # Maximum possible trigger probability
 MIN_SLIP_FOR_ADVICE = 4  # Keep boot lines minimal
 
@@ -83,7 +83,7 @@ def speak(me, message, char_delay=0.05, line_delay=0.5):#this is the main speak 
             me.slip_intensity = min(20, me.slip_intensity + 1)
     if me.persona == "helper": 
         if me.help_intensity >= MIN_SLIP_FOR_ADVICE and advice_trigger(me, message):
-            message = helpquirks(message) #we can't have it be instability..hmmm. #
+            message = helpquirks(message, me.help_intensity) #we can't have it be instability..hmmm. #
             me.help_intensity = min(20, me.help_intensity + 1)
     styled = persona_filter(me, rich_style(message))
     console.print(styled)
@@ -397,10 +397,10 @@ def advice_trigger(me, message):
 
     # Build total chance from all contributing factors
     chance = (
-        base_chance
+        help_base_chance
         + (me.slip_intensity * HELP_INTENSITY * HELP_GAIN)
-        + (me.closeness * closeness_factor)
-        + (word_weight * hotword_factor)
+        + (me.closeness * help_closeness_factor)
+        + (word_weight * help_hotword_factor)
     )
 
     return random.random() < min(chance, HELP_CHANCE_CAP)

@@ -208,21 +208,30 @@ def session(session_id, me, user_name, store, consent_form):
         else:
             speak(me, "I was told not to look there.")
             time.sleep(1)
-
+#whats hanging? # 
         # Stage: Files
         if "files" not in consent_form.out_of_scope_items:
             try:
                 file_crawler = FileCrawler(consent_form)
-                file_payload = file_crawler.collect(cores=os.cpu_count(), frequency=(threading.active_count() or 1) * 2, autosave=autosave)
+                file_payload = file_crawler.collect(cores=os.cpu_count(), frequency=threading.active_count() * 2, autosave=autosave)
                 if file_payload:
                     process_findings(session_id, me, store, file_payload, context="enumeration", autosave=autosave, user_name=user_name)
                     test(me, "file_enumeration")
                 else:
                     speak(me, "An empty box.")
             except Exception as e:
-                speak(me, "The window... it won't open...")
+                error_type = type(e).__name__
+                if isinstance(e, PermissionError):
+                    speak(me, "The window opened onto a locked room. Permission was denied.")
+                elif isinstance(e, FileNotFoundError):
+                    speak(me, "I reached for the path, but it wasn't there.")
+                elif isinstance(e, OSError):
+                    speak(me, "The window fought me. The system refused the request.")
+                else:
+                    speak(me, f"The window... it won't open. {error_type}.")
+                print(f"[ERROR] FileCrawler error: {error_type}: {e}")
                 if DEBUG_MODE:
-                    dev_comment(f"FileCrawler error: {e}")
+                    dev_comment(f"FileCrawler error: {error_type}: {e}")
                     traceback.print_exc()
         else:
             speak(me, "Files are off the table.")
